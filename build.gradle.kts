@@ -10,11 +10,9 @@ buildscript {
         classpath(libs.tools.build.gradle)
         classpath(libs.kotlin.gradle.plugin)
         classpath(libs.compose.compiler.gradle.plugin)
+        classpath(libs.hilt.android.gradle.plugin)
     }
 }
 plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.kotlin.compose) apply false
-    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.ksp) apply false
 }
