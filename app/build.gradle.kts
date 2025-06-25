@@ -1,3 +1,6 @@
+import Versions.JAVA_VERSION
+import Versions.JAVA_VERSION_STRING
+
 plugins {
     id(libs.plugins.android.application.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
@@ -8,16 +11,13 @@ plugins {
 
 android {
     namespace = "com.keeply.kr"
-    compileSdk = 36
+
+    setConfigs()
 
     defaultConfig {
         applicationId = "com.keeply.kr"
-        minSdk = 28
-        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -30,11 +30,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JAVA_VERSION
+        targetCompatibility = JAVA_VERSION
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JAVA_VERSION_STRING
     }
     buildFeatures {
         compose = true

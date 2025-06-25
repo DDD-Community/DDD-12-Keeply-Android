@@ -1,3 +1,6 @@
+import Versions.JAVA_VERSION
+import Versions.JAVA_VERSION_STRING
+
 plugins {
     id(libs.plugins.android.library.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
@@ -7,12 +10,9 @@ plugins {
 
 android {
     namespace = "com.keeply.domain"
-    compileSdk = 36
 
+    setConfigs()
     defaultConfig {
-        minSdk = 28
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -26,11 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JAVA_VERSION
+        targetCompatibility = JAVA_VERSION
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JAVA_VERSION_STRING
     }
 }
 
