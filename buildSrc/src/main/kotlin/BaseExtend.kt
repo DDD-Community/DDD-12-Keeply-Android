@@ -25,3 +25,20 @@ fun BaseExtension.setConfigs() {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }
+
+fun BaseExtension.setBuildType() {
+    buildTypes {
+        getByName(BuildTask.DEBUG) {
+            isDebuggable = BuildTaskDebug.isDebuggable
+            isMinifyEnabled = BuildTaskDebug.isMinifyEnabled
+        }
+        getByName(BuildTask.RELEASE) {
+            isDebuggable = BuildTaskRelease.isDebuggable
+            isMinifyEnabled = BuildTaskRelease.isMinifyEnabled
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+}
