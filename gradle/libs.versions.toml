@@ -19,6 +19,7 @@ hilt-navigation = "1.2.0"
 
 retrofit = "2.11.0"
 okhttp = "4.12.0"
+serialization-json = "1.8.1"
 
 [libraries]
 javapoet = { module = "com.squareup:javapoet", version.ref = "javapoet" }
@@ -51,9 +52,10 @@ hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.re
 
 ## retrofit
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
-retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit-kotlin-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
+
+serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -66,7 +68,6 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-android-grad
 [bundles]
 retrofit = [
     "retrofit",
-    "retrofit-converter-gson",
     "logging-interceptor",
     "retrofit-kotlin-serialization"
 ]

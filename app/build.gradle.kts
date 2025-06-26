@@ -21,6 +21,9 @@ android {
     }
 
     setBuildType()
+    buildFeatures {
+        buildConfig = true
+    }
     compileOptions {
         sourceCompatibility = JAVA_VERSION
         targetCompatibility = JAVA_VERSION

@@ -13,10 +13,18 @@ android {
 
     setConfigs()
     defaultConfig {
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            getBuildConfigProperty("BASE_URL")
+        )
         consumerProguardFiles("consumer-rules.pro")
     }
 
     setBuildType()
+    buildFeatures {
+        buildConfig = true
+    }
     compileOptions {
         sourceCompatibility = JAVA_VERSION
         targetCompatibility = JAVA_VERSION
@@ -36,6 +44,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.bundles.retrofit)
+    implementation(libs.serialization.json)
 
     hiltDependency()
 }
