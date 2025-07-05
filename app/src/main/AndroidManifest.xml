@@ -12,7 +12,7 @@
         android:name=".KeeplyApplication"
         android:theme="@style/Theme.Keeply">
         <activity
-            android:name=".MainActivity"
+            android:name="com.keeply.presentation.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Keeply">
             <intent-filter>
