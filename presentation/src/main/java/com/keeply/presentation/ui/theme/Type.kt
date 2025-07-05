@@ -1,4 +1,4 @@
-package com.keeply.kr.ui.theme
+package com.keeply.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
