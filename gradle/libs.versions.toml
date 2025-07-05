@@ -23,6 +23,9 @@ retrofit = "2.11.0"
 okhttp = "4.12.0"
 serialization-json = "1.8.1"
 
+compose-navigation = "2.9.1"
+compose-lifecycle-viewmodel = "2.9.1"
+
 [libraries]
 javapoet = { module = "com.squareup:javapoet", version.ref = "javapoet" }
 tools-build-gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -62,6 +65,11 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit-kotlin-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
 
+## navigation
+compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
+compose-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-lifecycle-viewmodel" }
+compose-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle-viewmodel" }
+
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json" }
 
 [plugins]
@@ -71,6 +79,7 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 android-library = { id = "com.android.library", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-android-gradle-plugin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [bundles]
 retrofit = [
@@ -83,4 +92,11 @@ orbit = [
     "orbit-compose",
     "orbit-core",
     "orbit-viewmodel"
+]
+
+navigation = [
+    "compose-navigation",
+    "compose-lifecycle-viewmodel",
+    "compose-lifecycle-runtime",
+    "hilt-navigation"
 ]

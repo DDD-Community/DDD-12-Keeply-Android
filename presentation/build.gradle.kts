@@ -7,6 +7,7 @@ plugins {
     id(libs.plugins.kotlin.compose.get().pluginId)
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.hilt.get().pluginId)
+    id(libs.plugins.kotlin.serialization.get().pluginId)
 }
 
 android {
@@ -50,8 +51,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.serialization.json)
 
     implementation(libs.bundles.orbit)
+    implementation(libs.bundles.navigation)
 
     hiltDependency()
 }
