@@ -1,8 +1,6 @@
-package com.keeply.presentation.ui.home.navigation
+package com.keeply.presentation.ui.home
 
 import androidx.lifecycle.ViewModel
-import com.keeply.presentation.ui.home.HomeSideEffect
-import com.keeply.presentation.ui.home.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
