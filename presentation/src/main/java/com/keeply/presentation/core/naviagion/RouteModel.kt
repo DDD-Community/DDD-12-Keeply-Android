@@ -1,4 +1,4 @@
-package com.keeply.presentation.ui.naviagion
+package com.keeply.presentation.core.naviagion
 
 import kotlinx.serialization.Serializable
 

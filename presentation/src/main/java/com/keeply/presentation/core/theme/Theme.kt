@@ -1,4 +1,4 @@
-package com.keeply.presentation.ui.theme
+package com.keeply.presentation.core.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

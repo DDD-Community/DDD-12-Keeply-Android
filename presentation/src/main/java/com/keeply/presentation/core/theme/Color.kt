@@ -1,4 +1,4 @@
-package com.keeply.presentation.ui.theme
+package com.keeply.presentation.core.theme
 
 import androidx.compose.ui.graphics.Color
 

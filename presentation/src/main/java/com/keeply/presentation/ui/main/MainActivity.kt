@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.keeply.presentation.ui.naviagion.KeeplyNavHost
-import com.keeply.presentation.ui.naviagion.rememberKeeplyNavigator
-import com.keeply.presentation.ui.theme.KeeplyTheme
+import com.keeply.presentation.core.naviagion.KeeplyNavHost
+import com.keeply.presentation.core.naviagion.rememberKeeplyNavigator
+import com.keeply.presentation.core.theme.KeeplyTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

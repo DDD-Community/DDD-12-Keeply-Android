@@ -1,4 +1,4 @@
-package com.keeply.presentation.ui.naviagion
+package com.keeply.presentation.core.naviagion
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
