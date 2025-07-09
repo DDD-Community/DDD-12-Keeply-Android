@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.keeply.presentation.core.theme.LocalColors
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -31,6 +32,7 @@ fun HomeScreen(
     ) {
         Text(
             name,
+            color = LocalColors.current.success
         )
     }
 }
