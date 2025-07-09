@@ -32,6 +32,10 @@ fun HomeScreen(
         Text(
             name,
         )
+
+        Text(
+            "코드레빗 테스트",
+        )
     }
 }
 
