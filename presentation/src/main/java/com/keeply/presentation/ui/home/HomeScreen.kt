@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.keeply.presentation.core.theme.LocalTypography
+import com.keeply.presentation.core.theme.LocalColors
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -31,7 +32,8 @@ fun HomeScreen(
             .fillMaxSize()
     ) {
         Text(
-            text = name,
+            name,
+            color = LocalColors.current.success
             style = LocalTypography.current.header01
         )
     }
@@ -41,6 +43,6 @@ fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(
-        name = "Keeply",
+        name = "Keeply"
     )
 }
