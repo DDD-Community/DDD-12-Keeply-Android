@@ -37,103 +37,88 @@ internal val Typography = KeeplyTypography(
     header01 = AltformStyle.copy(
         fontWeight = FontWeight.SemiBold,
         fontSize = 32.sp,
-        lineHeight = (32 * 1.4).sp,
+        lineHeight = (32 * LINE_HEIGHT_140).sp,
     ),
     header02 = AltformStyle.copy(
         fontWeight = FontWeight.SemiBold,
         fontSize = 26.sp,
-        lineHeight = (26 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (26 * LINE_HEIGHT_140).sp,
     ),
     header03 = AltformStyle.copy(
         fontWeight = FontWeight.Normal,
         fontSize = 24.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.sp
     ),
     header04 = AltformStyle.copy(
         fontWeight = FontWeight.Light,
         fontSize = 22.sp,
         lineHeight = 22.sp,
-        letterSpacing = 0.sp
     ),
     header05 = AltformStyle.copy(
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
-        lineHeight = (18 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (18 * LINE_HEIGHT_140).sp,
     ),
     header06 = AltformStyle.copy(
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        lineHeight = (14 * 1.3).sp,
-        letterSpacing = 0.sp
+        lineHeight = (14 * LINE_HEIGHT_130).sp,
     ),
     
     // Suit Subtitles
     subtitle01 = SuitStyle.copy(
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
-        lineHeight = (16 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (16 * LINE_HEIGHT_140).sp,
     ),
     subtitle02 = SuitStyle.copy(
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
-        lineHeight = (14 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (14 * LINE_HEIGHT_140).sp,
     ),
     subtitle03 = SuitStyle.copy(
         fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,
-        lineHeight = (12 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (12 * LINE_HEIGHT_140).sp,
     ),
     
     // Suit Body & Caption
     body = SuitStyle.copy(
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
-        lineHeight = (14 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (14 * LINE_HEIGHT_140).sp,
     ),
     caption01 = SuitStyle.copy(
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
-        lineHeight = (14 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (14 * LINE_HEIGHT_140).sp,
     ),
     caption02 = SuitStyle.copy(
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
-        lineHeight = (12 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (12 * LINE_HEIGHT_140).sp,
     ),
 
     // Button Styles
     button01Altform = AltformStyle.copy(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = (16 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (16 * LINE_HEIGHT_140).sp,
     ),
     button02Altform = AltformStyle.copy(
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
-        lineHeight = (12 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (12 * LINE_HEIGHT_140).sp,
     ),
     button01Suit = SuitStyle.copy(
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
-        lineHeight = (14 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (14 * LINE_HEIGHT_140).sp,
     ),
     button02Suit = SuitStyle.copy(
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
-        lineHeight = (16 * 1.4).sp,
-        letterSpacing = 0.sp
+        lineHeight = (16 * LINE_HEIGHT_140).sp,
     )
 )
 
@@ -180,3 +165,6 @@ val LocalTypography = staticCompositionLocalOf {
         button02Suit = SuitStyle
     )
 }
+
+private const val LINE_HEIGHT_140 = 1.4
+private const val LINE_HEIGHT_130 = 1.3
