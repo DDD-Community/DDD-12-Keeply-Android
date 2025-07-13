@@ -23,7 +23,7 @@ val orange300 = Color(0xFFFF9A76)
 val orange200 = Color(0xFFFFE3D9)
 val orange100 = Color(0xFFFFECE6)
 
-val neutralBlack = Color(0xFF121212)
+val neutralBlack = Color(0xFF000000)
 val neutral1000 = Color(0xFF1E1E1E)
 val neutral900 = Color(0xFF323235)
 val neutral800 = Color(0xFF545456)
