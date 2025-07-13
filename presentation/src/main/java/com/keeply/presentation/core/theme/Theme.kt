@@ -1,15 +1,9 @@
 package com.keeply.presentation.core.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = KeeplyColors(
     orange1000 = orange1000,
@@ -80,13 +74,12 @@ private val LightColorScheme = KeeplyColors(
 @Composable
 fun KeeplyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     CompositionLocalProvider(
+        LocalTypography provides Typography,
         LocalColors provides colorScheme
     ) {
         MaterialTheme(
