@@ -27,11 +27,12 @@ import kotlinx.collections.immutable.persistentListOf
 fun KeeplyTab(
     selectedTabIndex: Int,
     tabs: ImmutableList<String>,
+    modifier: Modifier = Modifier,
     onClick: (Int) -> Unit,
 ) {
     Box {
         HorizontalDivider(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .height(2.dp)
                 .align(Alignment.BottomCenter)
