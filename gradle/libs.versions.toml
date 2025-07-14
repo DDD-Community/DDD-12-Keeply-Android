@@ -13,6 +13,8 @@ appcompat = "1.6.1"
 material = "1.10.0"
 ksp = "2.0.21-1.0.28"
 
+kotlinxCollections = "0.4.0"
+
 orbit = "10.0.0"
 
 hilt = "2.56"
@@ -48,6 +50,8 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollections" }
 
 ## orbit
 orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbit" }
