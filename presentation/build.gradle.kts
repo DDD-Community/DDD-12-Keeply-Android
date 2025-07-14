@@ -2,22 +2,19 @@ import Versions.JAVA_VERSION
 import Versions.JAVA_VERSION_STRING
 
 plugins {
-    id(libs.plugins.android.application.get().pluginId)
+    id(libs.plugins.android.library.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
     id(libs.plugins.kotlin.compose.get().pluginId)
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.hilt.get().pluginId)
+    id(libs.plugins.kotlin.serialization.get().pluginId)
 }
 
 android {
-    namespace = "com.keeply.kr"
-
+    namespace = "com.keeply.presentation"
     setConfigs()
-
     defaultConfig {
-        applicationId = "com.keeply.kr"
-        versionCode = 1
-        versionName = "1.0"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     setBuildType()
@@ -37,8 +34,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":presentation"))
-    implementation(project(":data"))
     implementation(project(":domain"))
 
     implementation(libs.androidx.core.ktx)
@@ -56,6 +51,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.serialization.json)
+
+    implementation(libs.bundles.orbit)
+    implementation(libs.bundles.navigation)
 
     hiltDependency()
 }
