@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,53 +29,44 @@ fun KeeplyTab(
     tabs: ImmutableList<String>,
     onClick: (Int) -> Unit,
 ) {
-    TabRow(
-        selectedTabIndex = selectedTabIndex,
-        containerColor = Color.Transparent,
-        indicator = { tabPositions ->
-            if (tabPositions.isNotEmpty()) {
-                val currentTabPosition = tabPositions[selectedTabIndex]
-                val indicatorStartPadding = if (selectedTabIndex == 0) 16.dp else 0.dp
-                val indicatorEndPadding = if (selectedTabIndex == tabPositions.lastIndex) 16.dp else 0.dp
-                Box(
-                    Modifier
-                        .tabIndicatorOffset(currentTabPosition)
-                        .fillMaxWidth()
-                        .height(2.dp)
-                        .padding(
-                            start = indicatorStartPadding,
-                            end = indicatorEndPadding
-                        )
-                        .background(
-                            color = KeeplyTheme.colors.neutralBlack
-                        )
+    Box {
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(2.dp)
+                .align(Alignment.BottomCenter)
+        )
+
+        TabRow(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
+            selectedTabIndex = selectedTabIndex,
+            containerColor = Color.Transparent,
+            indicator = { tabPositions ->
+                if (tabPositions.isNotEmpty()) {
+                    Box(
+                        Modifier
+                            .tabIndicatorOffset(tabPositions[selectedTabIndex])
+                            .fillMaxWidth()
+                            .height(2.dp)
+                            .background(
+                                color = KeeplyTheme.colors.neutralBlack
+                            )
+                    )
+                }
+            }
+        ) {
+            tabs.forEachIndexed { index, title ->
+                val isSelected = selectedTabIndex == index
+
+                Tabs(
+                    title = title,
+                    index = index,
+                    isSelected = isSelected,
+                    onClick = onClick
                 )
             }
-        },
-        divider = {
-            HorizontalDivider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2.dp)
-            )
-        }
-    ) {
-        tabs.forEachIndexed { index, title ->
-            val isSelected = selectedTabIndex == index
-            val startPadding = if (index == 0) 16.dp else 0.dp
-            val endPadding = if (index == tabs.lastIndex) 16.dp else 0.dp
-
-            Tabs(
-                modifier = Modifier
-                    .padding(
-                        start = startPadding,
-                        end = endPadding
-                    ),
-                title = title,
-                index = index,
-                isSelected = isSelected,
-                onClick = onClick
-            )
         }
     }
 }
@@ -84,13 +76,13 @@ private fun Tabs(
     title: String,
     index: Int,
     isSelected: Boolean,
-    modifier: Modifier = Modifier,
     onClick: (Int) -> Unit
 ) {
     Tab(
         selected = isSelected,
         onClick = { onClick(index) },
-        modifier = modifier.height(48.dp),
+        modifier = Modifier
+            .height(36.dp),
         content = {
             val titleColor: Color = if (isSelected) {
                 KeeplyTheme.colors.neutralBlack
@@ -114,7 +106,7 @@ private fun KeeplyTabPreview() {
     var selectedTabIndex by remember { mutableStateOf(0) }
     val tabs = persistentListOf("Keeply", "안칠수")
     KeeplyTab(
-        selectedTabIndex = 0,
+        selectedTabIndex = selectedTabIndex,
         tabs = tabs,
         onClick = { index ->
             selectedTabIndex = index
