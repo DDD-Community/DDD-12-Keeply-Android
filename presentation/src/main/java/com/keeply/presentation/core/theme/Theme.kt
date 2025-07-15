@@ -87,3 +87,13 @@ fun KeeplyTheme(
         )
     }
 }
+
+object KeeplyTheme {
+    val typography: KeeplyTypography
+        @Composable
+        get() = LocalTypography.current
+
+    val colors: KeeplyColors
+        @Composable
+        get() = LocalColors.current
+}

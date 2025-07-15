@@ -145,26 +145,7 @@ data class KeeplyTypography(
     val button02Suit: TextStyle
 )
 
-val LocalTypography = staticCompositionLocalOf {
-    KeeplyTypography(
-        header01 = AltformStyle,
-        header02 = AltformStyle,
-        header03 = AltformStyle,
-        header04 = AltformStyle,
-        header05 = AltformStyle,
-        header06 = AltformStyle,
-        subtitle01 = SuitStyle,
-        subtitle02 = SuitStyle,
-        subtitle03 = SuitStyle,
-        body = SuitStyle,
-        caption01 = SuitStyle,
-        caption02 = SuitStyle,
-        button01Altform = AltformStyle,
-        button02Altform = AltformStyle,
-        button01Suit = SuitStyle,
-        button02Suit = SuitStyle
-    )
-}
+val LocalTypography = staticCompositionLocalOf { Typography }
 
 private const val LINE_HEIGHT_RATIO_100 = 1.0    // 100%
 private const val LINE_HEIGHT_RATIO_130 = 1.3    // 130%
