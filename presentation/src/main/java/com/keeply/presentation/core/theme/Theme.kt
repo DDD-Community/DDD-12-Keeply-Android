@@ -77,10 +77,12 @@ fun KeeplyTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val iconography = keeplyIconography()
 
     CompositionLocalProvider(
         LocalTypography provides Typography,
-        LocalColors provides colorScheme
+        LocalColors provides colorScheme,
+        LocalIconography provides iconography
     ) {
         MaterialTheme(
             content = content
@@ -96,4 +98,8 @@ object KeeplyTheme {
     val colors: KeeplyColors
         @Composable
         get() = LocalColors.current
+
+    val icons : KeeplyIconography
+        @Composable
+        get() = LocalIconography.current
 }

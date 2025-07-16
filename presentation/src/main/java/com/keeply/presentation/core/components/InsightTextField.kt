@@ -68,7 +68,7 @@ fun InsightTextField(
         KeeplyText(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 4.dp),
+                .padding(top = 12.dp),
             text = "${value.length}/$maxLength",
             style = KeeplyTheme.typography.caption02,
             color = LocalColors.current.neutral500,

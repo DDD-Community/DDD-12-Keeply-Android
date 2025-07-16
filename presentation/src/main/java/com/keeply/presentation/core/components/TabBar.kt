@@ -83,7 +83,8 @@ private fun Tabs(
         selected = isSelected,
         onClick = { onClick(index) },
         modifier = Modifier
-            .height(48.dp),
+            .height(48.dp)
+            .padding(top = 12.dp),
         content = {
             val titleColor: Color = if (isSelected) {
                 KeeplyTheme.colors.neutralBlack
@@ -92,10 +93,6 @@ private fun Tabs(
             }
 
             KeeplyText(
-                modifier = Modifier
-                    .padding(
-                        top = 12.dp
-                    ),
                 text = title,
                 style = KeeplyTheme.typography.subtitle01,
                 color = titleColor,
