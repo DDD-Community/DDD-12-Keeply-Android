@@ -3,6 +3,8 @@ package com.keeply.presentation.ui.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -50,6 +52,11 @@ fun HomeScreen(
             text = tabs[selectedTabIndex],
             style = KeeplyTheme.typography.header01,
             color = KeeplyTheme.colors.success
+        )
+        Icon(
+            painter = LocalIconography.current.checkmark,
+            contentDescription = "체크아이콘",
+            tint = LocalColors.current.orange1000
         )
     }
 }
