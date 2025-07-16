@@ -21,9 +21,9 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 
 @Composable
 fun Tag(
+    label: String,
+    checked: Boolean,
     modifier: Modifier = Modifier,
-    text: String,
-    checked: Boolean = false,
     onCheckedChange: (Boolean) -> Unit,
 ) {
     val backgroundColor = if (checked)
@@ -37,7 +37,7 @@ fun Tag(
         KeeplyTheme.colors.neutral500
 
     KeeplyText(
-        text = text,
+        text = label,
         style = KeeplyTheme.typography.button01Suit,
         color = textColor,
         modifier = modifier
@@ -70,12 +70,12 @@ private fun TagInteractivePreview() {
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Tag(
-                        text = "label",
+                        label = "label",
                         checked = checked1,
                         onCheckedChange = { checked1 = it }
                     )
                     Tag(
-                        text = "label",
+                        label = "label",
                         checked = checked2,
                         onCheckedChange = { checked2 = it }
                     )

@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.keeply.presentation.core.components.Tag
 import com.keeply.presentation.core.theme.LocalColors
 import com.keeply.presentation.core.theme.LocalTypography
 import org.orbitmvi.orbit.compose.collectAsState
@@ -19,13 +20,17 @@ fun HomeRoute(
     val uiState by viewModel.collectAsState()
 
     HomeScreen(
-        name = uiState.name
+        name = uiState.name,
+        isTagChecked = uiState.isTagChecked,
+        onCheckedChange = viewModel::tagCheckedChange
     )
 }
 
 @Composable
 fun HomeScreen(
-    name: String
+    name: String,
+    isTagChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -36,6 +41,12 @@ fun HomeScreen(
             color = LocalColors.current.success,
             style = LocalTypography.current.header01
         )
+
+        Tag(
+            label = "Label",
+            checked = isTagChecked,
+            onCheckedChange = onCheckedChange
+        )
     }
 }
 
@@ -43,6 +54,8 @@ fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(
-        name = "Keeply"
+        name = "Keeply",
+        isTagChecked = false,
+        onCheckedChange = {}
     )
 }
