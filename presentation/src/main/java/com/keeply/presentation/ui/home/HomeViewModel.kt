@@ -9,8 +9,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(): ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
-    override val container: Container<HomeState, HomeSideEffect>
-        get() = container(HomeState())
+    override val container: Container<HomeState, HomeSideEffect> = container(HomeState())
 
-
+    fun onClickTab(index: Int) = intent {
+        reduce {
+            state.copy(
+                selectedTabIndex = index
+            )
+        }
+    }
 }

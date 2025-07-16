@@ -53,6 +53,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.serialization.json)
 
+    implementation(libs.kotlinx.immutable)
+
     implementation(libs.bundles.orbit)
     implementation(libs.bundles.navigation)
 

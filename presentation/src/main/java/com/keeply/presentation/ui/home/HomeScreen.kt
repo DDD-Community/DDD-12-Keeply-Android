@@ -1,17 +1,20 @@
 package com.keeply.presentation.ui.home
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.keeply.presentation.core.theme.LocalColors
-import com.keeply.presentation.core.theme.LocalTypography
-import com.keeply.presentation.core.theme.LocalIconography
+import com.keeply.presentation.core.components.KeeplyTab
+import com.keeply.presentation.core.components.KeeplyText
+import com.keeply.presentation.core.theme.KeeplyTheme
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -21,27 +24,38 @@ fun HomeRoute(
     val uiState by viewModel.collectAsState()
 
     HomeScreen(
-        name = uiState.name
+        tabs = uiState.tabs,
+        selectedTabIndex = uiState.selectedTabIndex,
+        onClickTab = viewModel::onClickTab
     )
 }
 
 @Composable
 fun HomeScreen(
-    name: String
+    tabs: ImmutableList<String>,
+    selectedTabIndex: Int,
+    onClickTab: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            name,
-            color = LocalColors.current.success,
-            style = LocalTypography.current.header01
+        KeeplyTab(
+            selectedTabIndex = selectedTabIndex,
+            tabs = tabs,
+            onClick = onClickTab
+        )
+
+        KeeplyText(
+            text = tabs[selectedTabIndex],
+            style = KeeplyTheme.typography.header01,
+            color = KeeplyTheme.colors.success
         )
         Icon(
-            painter = LocalIconography.current.checkmark,
+            painter = KeeplyTheme.icons.checkmark,
             contentDescription = "체크아이콘",
-            tint = LocalColors.current.orange1000
+            tint = KeeplyTheme.colors.orange1000
         )
     }
 }
@@ -50,6 +64,8 @@ fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(
-        name = "Keeply"
+        tabs = persistentListOf("Keeply", "안칠수"),
+        selectedTabIndex = 0,
+        onClickTab = {}
     )
 }
