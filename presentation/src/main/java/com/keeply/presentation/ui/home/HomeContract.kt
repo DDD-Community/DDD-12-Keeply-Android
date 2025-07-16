@@ -11,6 +11,7 @@ data class HomeState(
     val selectedTabIndex: Int = 0,
     val textField: String = "",
     val textFieldMaxLength: Int = 300,
+    val isTagChecked: Boolean = false
 )
 
 sealed interface HomeSideEffect {

@@ -26,4 +26,11 @@ class HomeViewModel @Inject constructor() : ContainerHost<HomeState, HomeSideEff
             )
         }
     }
+    fun tagCheckedChange(isCheck: Boolean) = intent {
+        reduce {
+            state.copy(
+                isTagChecked = isCheck
+            )
+        }
+    }
 }

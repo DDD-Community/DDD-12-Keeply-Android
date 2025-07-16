@@ -15,6 +15,7 @@ import com.keeply.presentation.core.components.InsightTextField
 import com.keeply.presentation.core.components.KeeplyTab
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.core.components.Tag
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
@@ -30,6 +31,8 @@ fun HomeRoute(
         selectedTabIndex = uiState.selectedTabIndex,
         textField = uiState.textField,
         textFieldMaxLength = uiState.textFieldMaxLength,
+        isTagChecked = uiState.isTagChecked,
+        onCheckedChange = viewModel::tagCheckedChange,
         onClickTab = viewModel::onClickTab,
         onValueChange = viewModel::onValueChange
     )
@@ -41,6 +44,8 @@ fun HomeScreen(
     selectedTabIndex: Int,
     textField: String,
     textFieldMaxLength: Int,
+    isTagChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
     onClickTab: (Int) -> Unit,
     onValueChange: (String) -> Unit,
 ) {
@@ -74,6 +79,12 @@ fun HomeScreen(
             contentDescription = "체크아이콘",
             tint = KeeplyTheme.colors.orange1000
         )
+
+        Tag(
+            label = "Label",
+            checked = isTagChecked,
+            onCheckedChange = onCheckedChange
+        )
     }
 }
 
@@ -85,6 +96,8 @@ fun HomeScreenPreview() {
         selectedTabIndex = 0,
         textField = "",
         textFieldMaxLength = 300,
+        isTagChecked = false,
+        onCheckedChange = {},
         onClickTab = {},
         onValueChange = {}
     )
