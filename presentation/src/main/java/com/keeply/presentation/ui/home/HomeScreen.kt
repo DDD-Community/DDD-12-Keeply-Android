@@ -3,6 +3,7 @@ package com.keeply.presentation.ui.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.keeply.presentation.core.components.InsightTextField
 import com.keeply.presentation.core.components.KeeplyTab
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
@@ -26,7 +28,10 @@ fun HomeRoute(
     HomeScreen(
         tabs = uiState.tabs,
         selectedTabIndex = uiState.selectedTabIndex,
-        onClickTab = viewModel::onClickTab
+        textField = uiState.textField,
+        textFieldMaxLength = uiState.textFieldMaxLength,
+        onClickTab = viewModel::onClickTab,
+        onValueChange = viewModel::onValueChange
     )
 }
 
@@ -34,11 +39,15 @@ fun HomeRoute(
 fun HomeScreen(
     tabs: ImmutableList<String>,
     selectedTabIndex: Int,
-    onClickTab: (Int) -> Unit
+    textField: String,
+    textFieldMaxLength: Int,
+    onClickTab: (Int) -> Unit,
+    onValueChange: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         KeeplyTab(
@@ -51,6 +60,13 @@ fun HomeScreen(
             text = tabs[selectedTabIndex],
             style = KeeplyTheme.typography.header01,
             color = KeeplyTheme.colors.success
+        )
+
+        InsightTextField(
+            value = textField,
+            placeholder = "인사이트를 적어주세요.",
+            onValueChange = onValueChange,
+            maxLength = textFieldMaxLength
         )
         Icon(
             painter = KeeplyTheme.icons.checkmark,
@@ -66,6 +82,9 @@ fun HomeScreenPreview() {
     HomeScreen(
         tabs = persistentListOf("Keeply", "안칠수"),
         selectedTabIndex = 0,
-        onClickTab = {}
+        textField = "",
+        textFieldMaxLength = 300,
+        onClickTab = {},
+        onValueChange = {}
     )
 }

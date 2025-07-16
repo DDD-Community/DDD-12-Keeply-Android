@@ -8,7 +8,9 @@ import kotlinx.collections.immutable.persistentListOf
 data class HomeState(
     val name: String = "Keeply",
     val tabs: ImmutableList<String> = persistentListOf("Keeply", "안칠수"),
-    val selectedTabIndex: Int = 0
+    val selectedTabIndex: Int = 0,
+    val textField: String = "",
+    val textFieldMaxLength: Int = 300,
 )
 
 sealed interface HomeSideEffect {
