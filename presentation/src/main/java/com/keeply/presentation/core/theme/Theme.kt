@@ -98,4 +98,8 @@ object KeeplyTheme {
     val colors: KeeplyColors
         @Composable
         get() = LocalColors.current
+
+    val icons : KeeplyIconography
+        @Composable
+        get() = LocalIconography.current
 }
