@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -66,6 +67,11 @@ fun HomeScreen(
             placeholder = "인사이트를 적어주세요.",
             onValueChange = onValueChange,
             maxLength = textFieldMaxLength
+        )
+        Icon(
+            painter = KeeplyTheme.icons.checkmark,
+            contentDescription = "체크아이콘",
+            tint = KeeplyTheme.colors.orange1000
         )
     }
 }
