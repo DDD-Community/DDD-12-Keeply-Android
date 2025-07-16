@@ -68,6 +68,7 @@ fun HomeScreen(
             onValueChange = onValueChange,
             maxLength = textFieldMaxLength
         )
+
         Icon(
             painter = KeeplyTheme.icons.checkmark,
             contentDescription = "체크아이콘",
