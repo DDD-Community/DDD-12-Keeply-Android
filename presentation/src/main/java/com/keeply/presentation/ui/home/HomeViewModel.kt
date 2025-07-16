@@ -8,9 +8,24 @@ import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(): ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
+class HomeViewModel @Inject constructor() : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container: Container<HomeState, HomeSideEffect> = container(HomeState())
 
+    fun onClickTab(index: Int) = intent {
+        reduce {
+            state.copy(
+                selectedTabIndex = index
+            )
+        }
+    }
+
+    fun onValueChange(value: String) = intent {
+        reduce {
+            state.copy(
+                textField = value
+            )
+        }
+    }
     fun tagCheckedChange(isCheck: Boolean) = intent {
         reduce {
             state.copy(

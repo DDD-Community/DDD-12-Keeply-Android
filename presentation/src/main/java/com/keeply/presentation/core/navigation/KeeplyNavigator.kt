@@ -1,4 +1,4 @@
-package com.keeply.presentation.core.naviagion
+package com.keeply.presentation.core.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
