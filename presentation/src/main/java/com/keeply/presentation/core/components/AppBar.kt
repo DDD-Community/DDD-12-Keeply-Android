@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.keeply.domain.extend.default
 import com.keeply.presentation.core.theme.KeeplyTheme
 
 @Composable
@@ -70,7 +71,7 @@ fun KeeplyAppBar(
 
         if (trailingText.isNullOrEmpty().not()) {
             KeeplyText(
-                text = trailingText ?: "",
+                text = trailingText.default(),
                 style = KeeplyTheme.typography.subtitle01,
                 color = contentColor,
                 modifier = Modifier
