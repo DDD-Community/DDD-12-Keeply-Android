@@ -26,13 +26,13 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 fun KeeplyAppBar(
     modifier: Modifier = Modifier,
     title: String? = null,
-    leadingIcon: @Composable (() -> Unit)? = {},
-    trailingIcon: @Composable (() -> Unit)? = {},
+    leadingIcon: @Composable (() -> Unit)? = {}, // null 이면 아이콘 영역이 할당되지 않음
+    trailingIcon: @Composable (() -> Unit)? = {}, // null 이면 아이콘 영역이 할당되지 않음
     trailingText: String? = null,
     customTitleContent: @Composable (BoxScope.() -> Unit)? = null,
-    onClickLeading: () -> Unit = {},
-    onClickTrailing: () -> Unit = {},
-    backgroundColor: Color = KeeplyTheme.colors.neutralWhite,
+    onClickLeading: (() -> Unit)? = null,
+    onClickTrailing: (() -> Unit)? = null,
+    backgroundColor: Color = KeeplyTheme.colors.neutral100,
     contentColor: Color = KeeplyTheme.colors.neutralBlack,
 ) {
     Row(
@@ -46,7 +46,8 @@ fun KeeplyAppBar(
         leadingIcon?.let {
             AppBarIconButton(
                 content = leadingIcon,
-                onClick = onClickLeading
+                enabled = onClickLeading != null,
+                onClick = { onClickLeading?.let { it() } }
             )
         }
 
@@ -74,13 +75,18 @@ fun KeeplyAppBar(
                 color = contentColor,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .clickable { onClickTrailing }
+                    .clickable(
+                        enabled = onClickTrailing != null
+                    ) { onClickTrailing?.let { it() } }
             )
         } else {
             trailingIcon?.let {
                 AppBarIconButton(
                     content = trailingIcon,
-                    onClick = onClickTrailing
+                    enabled = onClickTrailing != null,
+                    onClick = {
+                        onClickTrailing?.let { it() }
+                    }
                 )
             }
         }
@@ -91,12 +97,14 @@ fun KeeplyAppBar(
 @Composable
 private fun AppBarIconButton(
     modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
     onClick: () -> Unit,
-    content: @Composable () -> Unit
+    enabled: Boolean = true,
 ) {
     IconButton(
         modifier = modifier
             .size(24.dp),
+        enabled = enabled,
         onClick = onClick
     ) {
         content()
