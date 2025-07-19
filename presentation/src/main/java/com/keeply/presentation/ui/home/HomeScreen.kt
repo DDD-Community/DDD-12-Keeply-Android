@@ -14,8 +14,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.keeply.presentation.core.components.InsightTextField
 import com.keeply.presentation.core.components.KeeplyTab
 import com.keeply.presentation.core.components.KeeplyText
-import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.core.components.KeeplyTextField
 import com.keeply.presentation.core.components.Tag
+import com.keeply.presentation.core.theme.KeeplyTheme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
@@ -85,20 +86,31 @@ fun HomeScreen(
             checked = isTagChecked,
             onCheckedChange = onCheckedChange
         )
+
+        KeeplyTextField(
+            value = textField,
+            onValueChange = onValueChange,
+            placeholder = "placeHolder",
+            helpIcon = KeeplyTheme.icons.error,
+            helpText = "에러메세지 입니다.",
+            showClearButton = true
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(
-        tabs = persistentListOf("Keeply", "안칠수"),
-        selectedTabIndex = 0,
-        textField = "",
-        textFieldMaxLength = 300,
-        isTagChecked = false,
-        onCheckedChange = {},
-        onClickTab = {},
-        onValueChange = {}
-    )
+    KeeplyTheme {
+        HomeScreen(
+            tabs = persistentListOf("Keeply", "안칠수"),
+            selectedTabIndex = 0,
+            textField = "",
+            textFieldMaxLength = 300,
+            isTagChecked = false,
+            onCheckedChange = {},
+            onClickTab = {},
+            onValueChange = {}
+        )
+    }
 }
