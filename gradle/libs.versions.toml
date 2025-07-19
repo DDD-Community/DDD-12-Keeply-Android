@@ -28,6 +28,8 @@ serialization-json = "1.8.1"
 compose-navigation = "2.9.1"
 compose-lifecycle-viewmodel = "2.9.1"
 
+kakaoSdk = "2.21.4"
+
 [libraries]
 javapoet = { module = "com.squareup:javapoet", version.ref = "javapoet" }
 tools-build-gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -75,6 +77,9 @@ compose-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel
 compose-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle-viewmodel" }
 
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json" }
+
+## 카카오
+kakao-user-sdk = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoSdk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -58,5 +58,7 @@ dependencies {
     implementation(libs.bundles.orbit)
     implementation(libs.bundles.navigation)
 
+    implementation(libs.kakao.user.sdk)
+
     hiltDependency()
 }
