@@ -70,7 +70,7 @@ fun KeeplyAppBar(
 
         if (trailingText.isNullOrEmpty().not()) {
             KeeplyText(
-                text = trailingText,
+                text = trailingText ?: "",
                 style = KeeplyTheme.typography.subtitle01,
                 color = contentColor,
                 modifier = Modifier
