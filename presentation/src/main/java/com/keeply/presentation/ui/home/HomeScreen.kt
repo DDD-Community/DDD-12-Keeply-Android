@@ -91,6 +91,9 @@ fun HomeScreen(
             value = textField,
             onValueChange = onValueChange,
             placeholder = "placeHolder",
+            helpIcon = KeeplyTheme.icons.error,
+            helpText = "에러메세지 입니다.",
+            showClearButton = true
         )
     }
 }
