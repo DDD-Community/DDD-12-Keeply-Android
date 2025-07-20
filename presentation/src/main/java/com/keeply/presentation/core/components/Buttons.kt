@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -39,10 +40,11 @@ fun KeeplyButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    buttonSize: KeeplyButtonSize = KeeplyButtonSize.MEDIUM,
-    buttonStyle: KeeplyButtonStyle = KeeplyButtonStyle.PRIMARY,
     icon: Painter? = null,
     text: String,
+    textStyle: TextStyle = KeeplyTheme.typography.button02Suit,
+    buttonSize: KeeplyButtonSize = KeeplyButtonSize.MEDIUM,
+    buttonStyle: KeeplyButtonStyle = KeeplyButtonStyle.PRIMARY
 ) {
     Surface(
         onClick = onClick,
@@ -53,7 +55,7 @@ fun KeeplyButton(
         color = if (enabled) buttonStyle.containerColor else buttonStyle.disabledContainerColor,
         contentColor = if (enabled) buttonStyle.contentColor else buttonStyle.disabledContentColor // 필요없으면 제거
     ) {
-        ProvideTextStyle(value = LocalTypography.current.header03) {
+        ProvideTextStyle(value = textStyle) {
             Row(
                 Modifier
                     .defaultMinSize(
