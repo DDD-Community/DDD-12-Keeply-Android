@@ -17,8 +17,9 @@ import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyButtonStyle
 import com.keeply.presentation.core.components.KeeplyTab
 import com.keeply.presentation.core.components.KeeplyText
-import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.core.components.KeeplyTextField
 import com.keeply.presentation.core.components.Tag
+import com.keeply.presentation.core.theme.KeeplyTheme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
@@ -52,72 +53,81 @@ fun HomeScreen(
     onClickTab: (Int) -> Unit,
     onValueChange: (String) -> Unit,
 ) {
-    KeeplyTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            KeeplyTab(
-                selectedTabIndex = selectedTabIndex,
-                tabs = tabs,
-                onClick = onClickTab
-            )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        KeeplyTab(
+            selectedTabIndex = selectedTabIndex,
+            tabs = tabs,
+            onClick = onClickTab
+        )
 
-            KeeplyText(
-                text = tabs[selectedTabIndex],
-                style = KeeplyTheme.typography.header01,
-                color = KeeplyTheme.colors.success
-            )
+        KeeplyText(
+            text = tabs[selectedTabIndex],
+            style = KeeplyTheme.typography.header01,
+            color = KeeplyTheme.colors.success
+        )
 
-            InsightTextField(
-                value = textField,
-                placeholder = "인사이트를 적어주세요.",
-                onValueChange = onValueChange,
-                maxLength = textFieldMaxLength
-            )
+        InsightTextField(
+            value = textField,
+            placeholder = "인사이트를 적어주세요.",
+            onValueChange = onValueChange,
+            maxLength = textFieldMaxLength
+        )
 
-            Icon(
-                painter = KeeplyTheme.icons.checkmark,
-                contentDescription = "체크아이콘",
-                tint = KeeplyTheme.colors.orange1000
-            )
+        Icon(
+            painter = KeeplyTheme.icons.checkmark,
+            contentDescription = "체크아이콘",
+            tint = KeeplyTheme.colors.orange1000
+        )
 
-            Tag(
-                label = "Label",
-                checked = isTagChecked,
-                onCheckedChange = onCheckedChange
-            )
+        Tag(
+            label = "Label",
+            checked = isTagChecked,
+            onCheckedChange = onCheckedChange
+        )
 
-            KeeplyButton(
-                onClick = { },
-                text = "Button",
-                icon = KeeplyTheme.icons.add,
-                buttonSize = KeeplyButtonSize.SMALL_FIXED_WIDTH
-            )
+        KeeplyButton(
+            onClick = { },
+            text = "Button",
+            icon = KeeplyTheme.icons.add,
+            buttonSize = KeeplyButtonSize.SMALL_FIXED_WIDTH
+        )
 
-            KeeplyButton(
-                onClick = { },
-                text = "Button",
-                buttonStyle = KeeplyButtonStyle.SECONDARY,
-                buttonSize = KeeplyButtonSize.XSMALL
-            )
-        }
+        KeeplyButton(
+            onClick = { },
+            text = "Button",
+            buttonStyle = KeeplyButtonStyle.SECONDARY,
+            buttonSize = KeeplyButtonSize.XSMALL
+        )
+
+        KeeplyTextField(
+            value = textField,
+            onValueChange = onValueChange,
+            placeholder = "placeHolder",
+            helpIcon = KeeplyTheme.icons.error,
+            helpText = "에러메세지 입니다.",
+            showClearButton = true
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(
-        tabs = persistentListOf("Keeply", "안칠수"),
-        selectedTabIndex = 0,
-        textField = "",
-        textFieldMaxLength = 300,
-        isTagChecked = false,
-        onCheckedChange = {},
-        onClickTab = {},
-        onValueChange = {}
-    )
+    KeeplyTheme {
+        HomeScreen(
+            tabs = persistentListOf("Keeply", "안칠수"),
+            selectedTabIndex = 0,
+            textField = "",
+            textFieldMaxLength = 300,
+            isTagChecked = false,
+            onCheckedChange = {},
+            onClickTab = {},
+            onValueChange = {}
+        )
+    }
 }
