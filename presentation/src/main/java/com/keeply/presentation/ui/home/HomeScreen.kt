@@ -100,6 +100,7 @@ fun HomeScreen(
         KeeplyButton(
             onClick = { },
             text = "Button",
+            textStyle = KeeplyTheme.typography.button01Suit,
             buttonStyle = KeeplyButtonStyle.SECONDARY,
             buttonSize = KeeplyButtonSize.XSMALL
         )
