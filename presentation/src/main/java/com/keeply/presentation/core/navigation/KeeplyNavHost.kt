@@ -4,7 +4,11 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
+import com.keeply.presentation.ui.alarm.navigation.alarmNavGraph
+import com.keeply.presentation.ui.folder.navigation.folderNavGraph
 import com.keeply.presentation.ui.home.navigation.homeNavGraph
+import com.keeply.presentation.ui.my.navigation.myNavGraph
+import com.keeply.presentation.ui.scan.navigation.scanNavGraph
 
 @Composable
 internal fun KeeplyNavHost(
@@ -21,5 +25,13 @@ internal fun KeeplyNavHost(
         }
     ) {
         homeNavGraph()
+
+        folderNavGraph()
+
+        scanNavGraph()
+
+        alarmNavGraph()
+
+        myNavGraph()
     }
 }
