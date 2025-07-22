@@ -2,12 +2,10 @@ package com.keeply.presentation.core.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,7 +14,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,12 +43,14 @@ fun NavigationBar(
         NavigationBarItem(
             icon = KeeplyTheme.icons.home,
             isSelected = selectedTab == KeeplyTab.HOME,
+            contentDescription = KeeplyTab.HOME.name,
             onClick = { onTabSelected(KeeplyTab.HOME) }
         )
 
         NavigationBarItem(
             icon = KeeplyTheme.icons.folderFilled,
             isSelected = selectedTab == KeeplyTab.FOLDER,
+            contentDescription = KeeplyTab.FOLDER.name,
             onClick = { onTabSelected(KeeplyTab.FOLDER) }
         )
 
@@ -62,12 +61,14 @@ fun NavigationBar(
         NavigationBarItem(
             icon = KeeplyTheme.icons.timer,
             isSelected = selectedTab == KeeplyTab.ALARM,
+            contentDescription = KeeplyTab.ALARM.name,
             onClick = { onTabSelected(KeeplyTab.ALARM) }
         )
 
         NavigationBarItem(
             icon = KeeplyTheme.icons.user,
             isSelected = selectedTab == KeeplyTab.MY,
+            contentDescription = KeeplyTab.MY.name,
             onClick = { onTabSelected(KeeplyTab.MY) }
         )
     }
@@ -98,6 +99,7 @@ private fun NavigationBarCenterItem(
 private fun NavigationBarItem(
     icon: Painter,
     isSelected: Boolean,
+    contentDescription: String,
     onClick: () -> Unit
 ) {
     Column(
@@ -119,7 +121,7 @@ private fun NavigationBarItem(
     ) {
         Icon(
             painter = icon,
-            contentDescription = null,
+            contentDescription = contentDescription,
             modifier = Modifier.size(24.dp),
             tint = if (isSelected) KeeplyTheme.colors.neutral100 else KeeplyTheme.colors.neutral700
         )
