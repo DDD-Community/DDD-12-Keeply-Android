@@ -43,6 +43,7 @@ fun KeeplyButton(
     buttonSize: KeeplyButtonSize = KeeplyButtonSize.MEDIUM,
     buttonStyle: KeeplyButtonStyle = KeeplyButtonStyle.PRIMARY
 ) {
+    // TODO: Button활용으로 변경
     Surface(
         onClick = onClick,
         modifier = modifier
@@ -50,7 +51,7 @@ fun KeeplyButton(
         enabled = enabled,
         shape = RoundedCornerShape(size = 4.dp),
         color = if (enabled) buttonStyle.containerColor else buttonStyle.disabledContainerColor,
-        contentColor = if (enabled) buttonStyle.contentColor else buttonStyle.disabledContentColor // 필요없으면 제거
+        contentColor = if (enabled) buttonStyle.contentColor else buttonStyle.disabledContentColor
     ) {
         ProvideTextStyle(value = textStyle) {
             Row(
