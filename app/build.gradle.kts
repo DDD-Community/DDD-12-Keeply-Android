@@ -18,6 +18,15 @@ android {
         applicationId = "com.keeply.kr"
         versionCode = 1
         versionName = "1.0"
+        
+        buildConfigField(
+            "String",
+            "KAKAO_NATIVE_APP_KEY",
+            getBuildConfigProperty("KAKAO_NATIVE_APP_KEY")
+        )
+
+        manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] =
+            project.getBuildConfigProperty("KAKAO_NATIVE_APP_KEY").trim('"')
     }
 
     setBuildType()
@@ -56,6 +65,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.kakao.user.sdk)
 
     hiltDependency()
 }
