@@ -6,5 +6,17 @@ sealed interface Route
 
 sealed interface HomeRoute: Route {
     @Serializable
-    data object Main: Route
+    data object Home: HomeRoute
+
+    @Serializable
+    data object Folder: HomeRoute
+
+    @Serializable
+    data object Scan: HomeRoute
+
+    @Serializable
+    data object Alarm: HomeRoute
+
+    @Serializable
+    data object My: HomeRoute
 }
