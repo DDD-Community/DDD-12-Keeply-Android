@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,7 +23,9 @@ import com.keeply.presentation.core.navigation.KeeplyNavHost
 import com.keeply.presentation.core.navigation.KeeplyTab
 import com.keeply.presentation.core.navigation.rememberKeeplyNavigator
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.ui.splash.SplashScreen
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -34,6 +37,12 @@ class MainActivity : ComponentActivity() {
             KeeplyTheme {
                 val keeplyNavigator = rememberKeeplyNavigator()
                 var selectedTab by remember { mutableStateOf(KeeplyTab.HOME) }
+                var isShowSplash by remember { mutableStateOf(true) }
+                
+                LaunchedEffect(Unit) {
+                    delay(2000)
+                    isShowSplash = false
+                }
                 
                 Scaffold(
                     modifier = Modifier
@@ -63,6 +72,10 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         )
+
+                        if(isShowSplash) {
+                            SplashScreen()
+                        }
                     }
                 }
             }
