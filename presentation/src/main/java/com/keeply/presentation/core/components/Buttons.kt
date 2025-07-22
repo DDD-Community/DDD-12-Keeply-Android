@@ -4,11 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ProvideTextStyle
@@ -27,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.keeply.presentation.core.theme.KeeplyTheme
-import com.keeply.presentation.core.theme.LocalTypography
 import com.keeply.presentation.core.theme.neutral300
 import com.keeply.presentation.core.theme.neutral400
 import com.keeply.presentation.core.theme.neutral500
@@ -70,10 +67,8 @@ fun KeeplyButton(
                     Icon(
                         painter = icon,
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp),
-                        tint = if (enabled) buttonStyle.iconTint else buttonStyle.disabledIconTint
+                        modifier = Modifier.size(20.dp)
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
                 }
 
                 Text(
@@ -88,25 +83,19 @@ enum class KeeplyButtonStyle(
     val containerColor: Color,
     val contentColor: Color,
     val disabledContainerColor: Color,
-    val disabledContentColor: Color,
-    val iconTint: Color,
-    val disabledIconTint: Color
+    val disabledContentColor: Color
 ) {
     PRIMARY(
         containerColor = neutralBlack,
         contentColor = neutralWhite,
         disabledContainerColor = neutral500,
-        disabledContentColor = neutral300,
-        iconTint = neutralWhite,
-        disabledIconTint = neutral300
+        disabledContentColor = neutral300
     ),
     SECONDARY(
         containerColor = Color.Transparent,
         contentColor = neutral800,
         disabledContainerColor = neutralWhite,
-        disabledContentColor = neutral400,
-        iconTint = neutral800,
-        disabledIconTint = neutral400
+        disabledContentColor = neutral400
     )
 }
 
