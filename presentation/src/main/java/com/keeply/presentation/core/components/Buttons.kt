@@ -63,7 +63,7 @@ fun KeeplyButton(
                         minHeight = buttonSize.defaultHeight
                     )
                     .padding(buttonSize.contentPadding),
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (icon != null) {
@@ -151,7 +151,7 @@ fun PreviewKeeplyPrimaryButtonTextOnly() {
         KeeplyButton(
             onClick = { },
             enabled = false,
-            text = "Primary Buton Small (Enabled)",
+            text = "Primary Button Small (Enabled)",
             buttonSize = KeeplyButtonSize.SMALL
         )
     }
@@ -168,14 +168,14 @@ fun PreviewKeeplyPrimaryButtonWithIcon() {
         ) {
             KeeplyButton(
                 onClick = { },
-                text = "Primary Button Medium",
+                text = "Primary Button Medium (Enabled)",
                 icon = KeeplyTheme.icons.add,
                 buttonSize = KeeplyButtonSize.MEDIUM
             )
             KeeplyButton(
                 onClick = { },
                 enabled = false,
-                text = "Primary Buton Small (Enabled)",
+                text = "Primary Button Small",
                 icon = KeeplyTheme.icons.add,
                 buttonSize = KeeplyButtonSize.SMALL
             )
@@ -193,13 +193,13 @@ fun PreviewKeeplySecondaryButtonTextOnly() {
     ) {
         KeeplyButton(
             onClick = { },
-            text = "Secondary Button Medium",
+            text = "Secondary Button Medium (Enabled)",
             buttonSize = KeeplyButtonSize.MEDIUM,
             buttonStyle = KeeplyButtonStyle.SECONDARY
         )
         KeeplyButton(
             onClick = { },
-            text = "Secondary Buton Small (Enabled)",
+            text = "Secondary Button Small",
             enabled = false,
             buttonSize = KeeplyButtonSize.SMALL,
             buttonStyle = KeeplyButtonStyle.SECONDARY
@@ -218,14 +218,14 @@ fun PreviewKeeplySecondaryButtonWithIcon() {
         ) {
             KeeplyButton(
                 onClick = { },
-                text = "Secondary Button Medium",
+                text = "Secondary Button Medium (Enabled)",
                 buttonSize = KeeplyButtonSize.MEDIUM,
                 icon = KeeplyTheme.icons.add,
                 buttonStyle = KeeplyButtonStyle.SECONDARY
             )
             KeeplyButton(
                 onClick = { },
-                text = "Secondary Buton Small (Enabled)",
+                text = "Secondary Button Small",
                 enabled = false,
                 buttonSize = KeeplyButtonSize.SMALL,
                 icon = KeeplyTheme.icons.add,
