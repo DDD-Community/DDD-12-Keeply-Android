@@ -20,3 +20,8 @@ sealed interface HomeRoute: Route {
     @Serializable
     data object My: HomeRoute
 }
+
+sealed interface OnboardingRoute: Route {
+    @Serializable
+    data object Onboarding: OnboardingRoute
+}
