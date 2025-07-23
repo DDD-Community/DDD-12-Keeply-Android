@@ -48,21 +48,23 @@ class MainActivity : ComponentActivity() {
                     ) {
                         KeeplyNavHost(keeplyNavigator)
 
-                        NavigationBar(
+                        if (selectedTab != KeeplyTab.SCAN) {
+                            NavigationBar(
                                 modifier = Modifier
                                     .padding(bottom = 16.dp)
                                     .align(Alignment.BottomCenter),
-                            selectedTab = selectedTab,
-                            onTabSelected = { tab ->
-                                selectedTab = tab
+                                selectedTab = selectedTab,
+                                onTabSelected = { tab ->
+                                    selectedTab = tab
 
-                                keeplyNavigator.navigate(
-                                    KeeplyTab.entries.find {
-                                        it == selectedTab
-                                    } ?: KeeplyTab.HOME
-                                )
-                            }
-                        )
+                                    keeplyNavigator.navigate(
+                                        KeeplyTab.entries.find {
+                                            it == selectedTab
+                                        } ?: KeeplyTab.HOME
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }
