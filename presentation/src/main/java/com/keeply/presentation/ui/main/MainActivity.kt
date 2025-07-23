@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 val keeplyNavigator = rememberKeeplyNavigator()
                 var selectedTab by remember { mutableStateOf(KeeplyTab.HOME) }
                 var isShowSplash by remember { mutableStateOf(true) }
-                
+
                 LaunchedEffect(Unit) {
                     delay(2000)
                     isShowSplash = false
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                         )
                     )
                 }
-                
+
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize()

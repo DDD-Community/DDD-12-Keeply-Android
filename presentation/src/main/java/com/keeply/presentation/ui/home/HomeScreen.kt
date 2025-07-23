@@ -20,6 +20,9 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.keeply.presentation.core.components.InsightTextField
+import com.keeply.presentation.core.components.KeeplyButton
+import com.keeply.presentation.core.components.KeeplyButtonSize
+import com.keeply.presentation.core.components.KeeplyButtonStyle
 import com.keeply.presentation.core.components.KeeplyTab
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.KeeplyTextField
@@ -95,6 +98,21 @@ fun HomeScreen(
             label = "Label",
             checked = isTagChecked,
             onCheckedChange = onCheckedChange
+        )
+
+        KeeplyButton(
+            onClick = { },
+            text = "Button",
+            icon = KeeplyTheme.icons.add,
+            buttonSize = KeeplyButtonSize.SMALL_FIXED_WIDTH
+        )
+
+        KeeplyButton(
+            onClick = { },
+            text = "Button",
+            textStyle = KeeplyTheme.typography.button01Suit,
+            buttonStyle = KeeplyButtonStyle.SECONDARY,
+            buttonSize = KeeplyButtonSize.XSMALL
         )
 
         KeeplyTextField(

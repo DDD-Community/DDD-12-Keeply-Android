@@ -18,7 +18,7 @@ android {
         applicationId = "com.keeply.kr"
         versionCode = 1
         versionName = "1.0.0"
-        
+
         buildConfigField(
             "String",
             "KAKAO_NATIVE_APP_KEY",

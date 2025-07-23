@@ -46,12 +46,14 @@ fun NavigationBar(
         NavigationBarItem(
             icon = KeeplyTheme.icons.home,
             isSelected = selectedTab == KeeplyTab.HOME,
+            contentDescription = KeeplyTab.HOME.name,
             onClick = { onTabSelected(KeeplyTab.HOME) }
         )
 
         NavigationBarItem(
             icon = KeeplyTheme.icons.folderFilled,
             isSelected = selectedTab == KeeplyTab.FOLDER,
+            contentDescription = KeeplyTab.FOLDER.name,
             onClick = { onTabSelected(KeeplyTab.FOLDER) }
         )
 
@@ -62,12 +64,14 @@ fun NavigationBar(
         NavigationBarItem(
             icon = KeeplyTheme.icons.timer,
             isSelected = selectedTab == KeeplyTab.ALARM,
+            contentDescription = KeeplyTab.ALARM.name,
             onClick = { onTabSelected(KeeplyTab.ALARM) }
         )
 
         NavigationBarItem(
             icon = KeeplyTheme.icons.user,
             isSelected = selectedTab == KeeplyTab.MY,
+            contentDescription = KeeplyTab.MY.name,
             onClick = { onTabSelected(KeeplyTab.MY) }
         )
     }
@@ -98,6 +102,7 @@ private fun NavigationBarCenterItem(
 private fun NavigationBarItem(
     icon: Painter,
     isSelected: Boolean,
+    contentDescription: String,
     onClick: () -> Unit
 ) {
     Column(
@@ -119,7 +124,7 @@ private fun NavigationBarItem(
     ) {
         Icon(
             painter = icon,
-            contentDescription = null,
+            contentDescription = contentDescription,
             modifier = Modifier.size(24.dp),
             tint = if (isSelected) KeeplyTheme.colors.neutral100 else KeeplyTheme.colors.neutral700
         )
