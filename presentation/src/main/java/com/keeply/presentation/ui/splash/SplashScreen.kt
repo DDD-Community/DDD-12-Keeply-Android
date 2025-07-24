@@ -37,7 +37,7 @@ fun SplashScreen() {
     val context = LocalContext.current
     val view = LocalView.current
     val backgroundColor = KeeplyTheme.colors.neutral100
-    
+
     DisposableEffect(backgroundColor) {
         val activity = view.context as? ComponentActivity
         activity?.enableEdgeToEdge(
@@ -50,17 +50,18 @@ fun SplashScreen() {
                 backgroundColor.toArgb()
             )
         )
-        
+
         onDispose {}
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .clickable(
-            enabled = false,
-            onClick = {}
-        )
-        .background(KeeplyTheme.colors.neutral100)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                enabled = false,
+                onClick = {}
+            )
+            .background(KeeplyTheme.colors.neutral100)
     ) {
         Row(
             modifier = Modifier
@@ -75,7 +76,8 @@ fun SplashScreen() {
                     .shadow03()
                     .background(
                         color = KeeplyTheme.colors.neutralWhite,
-                    ).padding(6.dp),
+                    )
+                    .padding(6.dp),
                 painter = painterResource(R.drawable.ic_keeply_splash_logo),
                 contentDescription = null
             )
