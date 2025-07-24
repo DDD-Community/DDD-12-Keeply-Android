@@ -1,12 +1,10 @@
 package com.keeply.presentation.ui.onboarding.component
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -31,20 +29,20 @@ fun KakaoLoginButton(
         colors = ButtonDefaults.buttonColors().copy(
             containerColor = Color(0xFFFFEB00)
         ),
-        onClick = { /* 카카오 로그인 구현 */ }
+        onClick = onClick
     ) {
         Icon(
             modifier = Modifier
-                .width(22.dp)
-                .height(20.dp),
-            painter = painterResource(R.drawable.ic_home),
+                .width(20.dp)
+                .height(18.dp),
+            painter = painterResource(R.drawable.ic_kakao_logo),
             contentDescription = stringResource(R.string.kakao_login),
             tint = Color(0xFF3C1E1E)
         )
 
         KeeplyText(
             modifier = Modifier
-                .padding(start = 16.dp),
+                .padding(start = 8.dp),
             text = stringResource(R.string.kakao_login),
             style = KeeplyTheme.typography.button02Suit,
             color = Color(0xFF3C1E1E)
