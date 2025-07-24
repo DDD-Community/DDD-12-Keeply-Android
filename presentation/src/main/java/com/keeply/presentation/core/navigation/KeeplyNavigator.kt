@@ -1,27 +1,24 @@
 package com.keeply.presentation.core.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.keeply.presentation.ui.alarm.navigation.navigateAlarm
 import com.keeply.presentation.ui.folder.navigation.navigateFolder
 import com.keeply.presentation.ui.home.navigation.navigateHome
 import com.keeply.presentation.ui.my.navigation.navigateMy
-import com.keeply.presentation.ui.onboarding.navigation.navigateOnboarding
 import com.keeply.presentation.ui.scan.navigation.navigateScan
 
 @Stable
 class KeeplyNavigator(
     val navController: NavHostController
 ) {
-    val startDestination = OnboardingRoute.Onboarding
+    val startDestination = HomeRoute.Home
 
     fun popBackStack() {
         navController.popBackStack()
@@ -44,13 +41,6 @@ class KeeplyNavigator(
             KeeplyTab.MY -> navController.navigateMy(navOptions)
         }
     }
-
-    fun navigateOnboarding() = navController.navigateOnboarding()
-
-    @Composable
-    fun shouldShowNavigationBar() = KeeplyTab.contains {
-        navController.currentDestination?.hasRoute(it::class) == true
-    }
 }
 
 enum class KeeplyTab(
@@ -70,14 +60,7 @@ enum class KeeplyTab(
     ),
     MY(
         route = HomeRoute.My
-    );
-
-    companion object {
-        @Composable
-        fun contains(predicate: @Composable (HomeRoute) -> Boolean): Boolean {
-            return KeeplyTab.entries.map { it.route }.any { predicate(it) }
-        }
-    }
+    )
 }
 
 @Composable
