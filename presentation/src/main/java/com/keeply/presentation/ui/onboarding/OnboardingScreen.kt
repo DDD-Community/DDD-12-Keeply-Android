@@ -10,11 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,6 +86,7 @@ fun OnboardingScreen(
                 bottom = 50.dp
             )
             .fillMaxWidth()
+            .height(50.dp)
             .align(Alignment.BottomCenter)
 
         if (onboardingPage != OnboardingPage.THIRD) {
@@ -119,7 +120,7 @@ private fun loginWithKakaoTalk(
             }
         }
     }
-    // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
+    // 카카오톡이 설치되어 있으면 앱으로 로그인, 아니면 웹으로 로그인
     if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
         UserApiClient.instance.loginWithKakaoTalk(
             context = context
