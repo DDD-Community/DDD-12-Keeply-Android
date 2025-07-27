@@ -29,6 +29,8 @@ firebase-bom = "34.0.0"
 firebase-messaging-ktx = "24.1.2"
 google-services = "4.4.3"
 
+datastorePreferences = "1.1.7"
+
 compose-navigation = "2.9.1"
 compose-lifecycle-viewmodel = "2.9.1"
 
@@ -83,6 +85,9 @@ compose-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-com
 ## firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebase-messaging-ktx" }
+
+## dataStore
+androidx-dataStore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 
 google-service = { module = "com.google.gms:google-services", version.ref = "google-services" }
 
