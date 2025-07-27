@@ -6,6 +6,7 @@ plugins {
     id(libs.plugins.kotlin.android.get().pluginId)
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.hilt.get().pluginId)
+    id(libs.plugins.kotlin.serialization.get().pluginId)
 }
 
 android {

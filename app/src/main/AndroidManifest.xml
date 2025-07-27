@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:name=".KeeplyApplication"
-        android:theme="@style/Theme.Keeply">
+        android:theme="@style/Theme.Keeply"
+        android:usesCleartextTraffic="true">
         <activity
             android:name="com.keeply.presentation.ui.main.MainActivity"
             android:exported="true"
