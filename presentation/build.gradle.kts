@@ -60,5 +60,8 @@ dependencies {
 
     implementation(libs.kakao.user.sdk)
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging.ktx)
+
     hiltDependency()
 }

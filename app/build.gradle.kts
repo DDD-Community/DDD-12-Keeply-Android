@@ -7,6 +7,7 @@ plugins {
     id(libs.plugins.kotlin.compose.get().pluginId)
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.hilt.get().pluginId)
+    id(libs.plugins.google.service.get().pluginId)
 }
 
 android {
@@ -67,6 +68,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.kakao.user.sdk)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging.ktx)
 
     hiltDependency()
 }

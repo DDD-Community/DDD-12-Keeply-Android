@@ -45,7 +45,7 @@ class OnboardingViewModel @Inject constructor(
                     ),
                     email = user.kakaoAccount?.email
                 ),
-                fcmToken = null
+                fcmToken = "ewaIq5mtQ8Ol-vXB7YERZX:APA91bHQTm9ZH6XreUVy9x2leXApUmSugZfOV__ILIxDn1cztZqzoAlKhaaE1cOgI5xyThpGOcq23zZn22WS9bhAWzTfeM5InEQ8LwOiNAFk_OpBoHMYTl8"
             )
         ).catch {
             it.stackTrace
