@@ -15,8 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.keeply.presentation.core.theme.KeeplyTheme
@@ -67,7 +67,6 @@ fun KeeplyAlertModal(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp, start = 12.dp, end = 12.dp, bottom = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             KeeplyText(
                 modifier = Modifier
@@ -80,6 +79,7 @@ fun KeeplyAlertModal(
 
             KeeplyText(
                 modifier = Modifier
+                    .padding(top = 8.dp)
                     .width(200.dp)
                     .align(Alignment.CenterHorizontally),
                 text = content,
