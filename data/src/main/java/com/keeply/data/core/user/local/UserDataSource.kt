@@ -42,9 +42,9 @@ class UserDataSource @Inject constructor(
         return flow.firstOrNull()
     }
 
-    suspend fun saveRefreshToken(accessToken: String) {
+    suspend fun saveRefreshToken(refreshToken: String) {
         userDataStore.edit { preferences ->
-            preferences[REFRESH_TOKEN] = accessToken
+            preferences[REFRESH_TOKEN] = refreshToken
         }
     }
 

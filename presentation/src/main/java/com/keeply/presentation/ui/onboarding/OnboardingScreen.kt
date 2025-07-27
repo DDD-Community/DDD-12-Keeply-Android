@@ -34,14 +34,20 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun OnboardingRoute(
-    viewModel: OnboardingViewModel = hiltViewModel()
+    viewModel: OnboardingViewModel = hiltViewModel(),
+    onEnterHome: () -> Unit
 ) {
     val uiState by viewModel.collectAsState()
 
     OnboardingScreen(
         onboardingPage = uiState.onboardingPage,
         updateOnboardingPage = viewModel::updateOnboardingPage,
-        callLogin = viewModel::loginKakao
+        callLogin = { user ->
+            viewModel.loginKakao(
+                user = user,
+                successCallback = onEnterHome
+            )
+        }
     )
 }
 

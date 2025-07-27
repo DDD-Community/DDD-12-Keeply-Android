@@ -35,6 +35,8 @@ internal fun KeeplyNavHost(
 
         myNavGraph()
 
-        onboardingNavGraph()
+        onboardingNavGraph(
+            onEnterHome = { navigator.navigate(KeeplyTab.HOME) }
+        )
     }
 }

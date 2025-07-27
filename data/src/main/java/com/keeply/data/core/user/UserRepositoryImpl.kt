@@ -19,8 +19,15 @@ class UserRepositoryImpl @Inject constructor(
         emit(
             userService.loginKakao(
                 loginKakao.copy(fcmToken = userDataSource.fetchFcmToken()).toRequest()
-            ).toDomain()
+            ).response.toDomain()
         )
     }
+
+    override suspend fun saveRefreshToken(refreshToken: String) =
+        userDataSource.saveRefreshToken(refreshToken)
+
+
+    override suspend fun saveAccessToken(accessToken: String) =
+        userDataSource.saveAccessToken(accessToken)
 
 }

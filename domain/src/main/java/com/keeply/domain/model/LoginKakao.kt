@@ -6,7 +6,7 @@ data class LoginKakao(
     val id: Long?,
     val connected_at: Date?,
     val kakao_account: Account?,
-    val fcmToken: String?
+    val fcmToken: String? = null
 ) {
     data class Account(
         val profile_needs_agreement : Boolean?,

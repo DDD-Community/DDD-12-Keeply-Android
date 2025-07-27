@@ -28,7 +28,10 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
-    fun loginKakao(user: User) = viewModelScope.launch {
+    fun loginKakao(
+        user: User,
+        successCallback: () -> Unit
+    ) = viewModelScope.launch {
         loginKakaoUseCase(
             LoginKakao(
                 id = user.id,
@@ -44,14 +47,13 @@ class OnboardingViewModel @Inject constructor(
                         profile_image_url = user.kakaoAccount?.profile?.profileImageUrl
                     ),
                     email = user.kakaoAccount?.email
-                ),
-                fcmToken = null
+                )
             )
         ).catch {
             it.stackTrace
             Log.e("ERROR", it.toString())
         }.collect {
-            Log.e("TEST", it.toString())
+            successCallback()
         }
     }
 }
