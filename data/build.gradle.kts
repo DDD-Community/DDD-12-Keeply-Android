@@ -47,5 +47,7 @@ dependencies {
     implementation(libs.bundles.retrofit)
     implementation(libs.serialization.json)
 
+    implementation(libs.androidx.dataStore)
+
     hiltDependency()
 }
