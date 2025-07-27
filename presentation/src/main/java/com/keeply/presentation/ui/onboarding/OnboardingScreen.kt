@@ -24,6 +24,7 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.kakao.sdk.user.model.User
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.theme.KeeplyTheme
@@ -39,14 +40,16 @@ fun OnboardingRoute(
 
     OnboardingScreen(
         onboardingPage = uiState.onboardingPage,
-        updateOnboardingPage = viewModel::updateOnboardingPage
+        updateOnboardingPage = viewModel::updateOnboardingPage,
+        callLogin = viewModel::loginKakao
     )
 }
 
 @Composable
 fun OnboardingScreen(
     onboardingPage: OnboardingPage,
-    updateOnboardingPage: (OnboardingPage) -> Unit = {}
+    updateOnboardingPage: (OnboardingPage) -> Unit = {},
+    callLogin: (User) -> Unit = {},
 ) {
     val context = LocalContext.current
 
@@ -99,7 +102,10 @@ fun OnboardingScreen(
             KakaoLoginButton(
                 modifier = bottomModifier,
                 onClick = {
-                    loginWithKakaoTalk(context)
+                    loginWithKakaoTalk(
+                        context = context,
+                        callLogin = callLogin
+                    )
                 }
             )
         }
@@ -108,6 +114,7 @@ fun OnboardingScreen(
 
 private fun loginWithKakaoTalk(
     context: Context,
+    callLogin: (User) -> Unit,
 ) {
     val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
@@ -115,8 +122,7 @@ private fun loginWithKakaoTalk(
             Log.e("user", "실패")
         } else if (token != null) {
             UserApiClient.instance.me { user, _ ->
-                Log.e("token", token.toString())
-                Log.e("user", user.toString())
+                user?.let { callLogin(user) }
             }
         }
     }
@@ -139,7 +145,7 @@ private fun loginWithKakaoTalk(
                 )
             } else if (token != null) {
                 UserApiClient.instance.me { user, _ ->
-                    Log.e("user", "카카오 앱 로그인 성공")
+                    user?.let { callLogin(user) }
                 }
             }
         }
@@ -156,7 +162,7 @@ private fun loginWithKakaoTalk(
 fun OnboardingScreenPreview() {
     KeeplyTheme {
         OnboardingScreen(
-            onboardingPage = OnboardingPage.FIRST
+            onboardingPage = OnboardingPage.FIRST,
         )
     }
 }

@@ -2,10 +2,17 @@ package com.keeply.data.core.user.mapper
 
 import com.keeply.data.core.user.model.LoginKakaoRequest
 import com.keeply.domain.model.LoginKakao
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
 
 fun LoginKakao.toRequest() = LoginKakaoRequest(
     id = id,
-    connected_at = connected_at,
+    connected_at = connected_at?.let { date ->
+        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }.format(date)
+    },
     kakao_account = kakao_account?.toRequest(),
     fcmToken = fcmToken
 )
