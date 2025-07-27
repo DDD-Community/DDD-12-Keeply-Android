@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TokenResponse(
-    val success: Boolean,
-    val reason: String,
-    val response: Response
+    val success: Boolean?,
+    val reason: String?,
+    val response: Response?
 ) {
     @Serializable
     data class Response(

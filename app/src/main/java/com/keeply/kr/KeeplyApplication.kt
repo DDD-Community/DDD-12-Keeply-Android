@@ -5,10 +5,18 @@ import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.common.KakaoSdk
+import com.keeply.data.core.user.local.UserDataSource
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltAndroidApp
 class KeeplyApplication: Application() {
+    @Inject
+    lateinit var userDataSource: UserDataSource
+
     override fun onCreate() {
         super.onCreate()
         
@@ -25,7 +33,9 @@ class KeeplyApplication: Application() {
             }
 
             val token = task.result
-            Log.e("TEST", token)
+            CoroutineScope(Dispatchers.IO).launch {
+                userDataSource.refreshFcmToken(token)
+            }
         })
     }
 }

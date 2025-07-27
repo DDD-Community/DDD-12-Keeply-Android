@@ -1,7 +1,9 @@
 package com.keeply.data.core.user
 
+import com.keeply.data.core.user.local.UserDataSource
 import com.keeply.data.core.user.mapper.toDomain
 import com.keeply.data.core.user.mapper.toRequest
+import com.keeply.data.core.user.remote.UserService
 import com.keeply.domain.model.LoginKakao
 import com.keeply.domain.model.Token
 import com.keeply.domain.repository.UserRepository
@@ -11,9 +13,14 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     val userService: UserService,
+    val userDataSource: UserDataSource,
 ) : UserRepository {
     override suspend fun loginKakao(loginKakao: LoginKakao): Flow<Token> = flow {
-        emit(userService.loginKakao(loginKakao.toRequest()).toDomain())
+        emit(
+            userService.loginKakao(
+                loginKakao.copy(fcmToken = userDataSource.fetchFcmToken()).toRequest()
+            ).toDomain()
+        )
     }
 
 }

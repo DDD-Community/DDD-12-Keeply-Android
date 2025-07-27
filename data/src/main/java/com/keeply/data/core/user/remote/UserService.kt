@@ -1,4 +1,4 @@
-package com.keeply.data.core.user
+package com.keeply.data.core.user.remote
 
 import com.keeply.data.core.user.model.LoginKakaoRequest
 import com.keeply.data.core.user.model.TokenResponse
