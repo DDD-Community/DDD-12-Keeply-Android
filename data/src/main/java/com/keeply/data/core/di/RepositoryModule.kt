@@ -1,6 +1,6 @@
 package com.keeply.data.core.di
 
-import com.keeply.data.core.user.UserRepositoryImpl
+import com.keeply.data.user.UserRepositoryImpl
 import com.keeply.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module

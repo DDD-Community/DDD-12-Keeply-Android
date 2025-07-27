@@ -1,4 +1,4 @@
-package com.keeply.data.core.user.model
+package com.keeply.data.user.model
 
 import kotlinx.serialization.Serializable
 

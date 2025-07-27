@@ -1,6 +1,6 @@
 package com.keeply.data.core.di
 
-import com.keeply.data.core.user.remote.UserService
+import com.keeply.data.user.remote.UserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

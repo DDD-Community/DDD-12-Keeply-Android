@@ -1,6 +1,6 @@
-package com.keeply.data.core.user.mapper
+package com.keeply.data.user.mapper
 
-import com.keeply.data.core.user.model.LoginKakaoRequest
+import com.keeply.data.user.model.LoginKakaoRequest
 import com.keeply.domain.model.LoginKakao
 import java.text.SimpleDateFormat
 import java.util.Locale

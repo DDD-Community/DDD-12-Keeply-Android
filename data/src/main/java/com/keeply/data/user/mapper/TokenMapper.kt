@@ -1,6 +1,6 @@
-package com.keeply.data.core.user.mapper
+package com.keeply.data.user.mapper
 
-import com.keeply.data.core.user.model.TokenResponse
+import com.keeply.data.user.model.TokenResponse
 import com.keeply.domain.extend.default
 import com.keeply.domain.model.Token
 

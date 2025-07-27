@@ -1,4 +1,4 @@
-package com.keeply.data.core.user.local
+package com.keeply.data.user.local
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
@@ -6,9 +6,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.keeply.data.core.user.local.UserDataSource.PreferencesKey.ACCESS_TOKEN
-import com.keeply.data.core.user.local.UserDataSource.PreferencesKey.FCM_TOKEN
-import com.keeply.data.core.user.local.UserDataSource.PreferencesKey.REFRESH_TOKEN
+import com.keeply.data.user.local.UserDataSource.PreferencesKey.ACCESS_TOKEN
+import com.keeply.data.user.local.UserDataSource.PreferencesKey.FCM_TOKEN
+import com.keeply.data.user.local.UserDataSource.PreferencesKey.REFRESH_TOKEN
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map

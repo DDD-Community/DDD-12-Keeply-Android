@@ -1,8 +1,8 @@
-package com.keeply.data.core.user.remote
+package com.keeply.data.user.remote
 
 import com.keeply.data.core.base.BaseResponse
-import com.keeply.data.core.user.model.LoginKakaoRequest
-import com.keeply.data.core.user.model.TokenResponse
+import com.keeply.data.user.model.LoginKakaoRequest
+import com.keeply.data.user.model.TokenResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
 

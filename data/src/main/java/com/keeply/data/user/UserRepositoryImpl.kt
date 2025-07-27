@@ -1,9 +1,9 @@
-package com.keeply.data.core.user
+package com.keeply.data.user
 
-import com.keeply.data.core.user.local.UserDataSource
-import com.keeply.data.core.user.mapper.toDomain
-import com.keeply.data.core.user.mapper.toRequest
-import com.keeply.data.core.user.remote.UserService
+import com.keeply.data.user.local.UserDataSource
+import com.keeply.data.user.mapper.toDomain
+import com.keeply.data.user.mapper.toRequest
+import com.keeply.data.user.remote.UserService
 import com.keeply.domain.model.LoginKakao
 import com.keeply.domain.model.Token
 import com.keeply.domain.repository.UserRepository
