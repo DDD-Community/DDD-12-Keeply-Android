@@ -3,11 +3,9 @@ package com.keeply.presentation.core.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
-import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.keeply.presentation.ui.alarm.navigation.navigateAlarm
@@ -21,7 +19,7 @@ import com.keeply.presentation.ui.scan.navigation.navigateScan
 class KeeplyNavigator(
     val navController: NavHostController
 ) {
-    val startDestination = OnboardingRoute.Onboarding
+    val startDestination = HomeRoute.Home
 
     fun popBackStack() {
         navController.popBackStack()
