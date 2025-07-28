@@ -52,6 +52,7 @@ fun ScreenshotScreen(viewModel: LocalScreenshotViewModel = hiltViewModel()) {
             items(lazyPagingItems.itemCount) { index ->
                 lazyPagingItems[index]?.let { screenshot ->
                     // TODO: imageFrame 사용으로 변환
+                    // TODO: 스크린샷 선택, 뒤로가기 버튼 활성화
                     Image(
                         painter = rememberAsyncImagePainter(screenshot.uri),
                         contentDescription = null,
