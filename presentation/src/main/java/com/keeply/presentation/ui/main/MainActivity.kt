@@ -2,6 +2,7 @@ package com.keeply.presentation.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
@@ -34,7 +35,17 @@ class MainActivity : ComponentActivity() {
             KeeplyTheme {
                 val keeplyNavigator = rememberKeeplyNavigator()
                 var selectedTab by remember { mutableStateOf(KeeplyTab.HOME) }
-                
+                var previousSelectedTab by remember { mutableStateOf(KeeplyTab.HOME) }
+
+                if (selectedTab == KeeplyTab.SCAN) {
+                    BackHandler {
+                        selectedTab = previousSelectedTab
+                        keeplyNavigator.navigate(previousSelectedTab)
+                    }
+                }
+
+                val isNavigationBarVisible = selectedTab != KeeplyTab.SCAN
+
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize()
@@ -48,14 +59,17 @@ class MainActivity : ComponentActivity() {
                     ) {
                         KeeplyNavHost(keeplyNavigator)
 
-                        if (selectedTab != KeeplyTab.SCAN) {
+                        if (isNavigationBarVisible) {
                             NavigationBar(
                                 modifier = Modifier
                                     .padding(bottom = 16.dp)
                                     .align(Alignment.BottomCenter),
                                 selectedTab = selectedTab,
                                 onTabSelected = { tab ->
-                                    selectedTab = tab
+                                    if (tab != selectedTab) {
+                                        previousSelectedTab = selectedTab
+                                        selectedTab = tab
+                                    }
 
                                     keeplyNavigator.navigate(
                                         KeeplyTab.entries.find {
