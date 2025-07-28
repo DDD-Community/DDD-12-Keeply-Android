@@ -24,6 +24,7 @@ import com.keeply.presentation.core.components.KeeplyCheckBox
 import com.keeply.presentation.core.components.KeeplyTab
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.KeeplyTextField
+import com.keeply.presentation.core.components.ScanBar
 import com.keeply.presentation.core.components.Tag
 import com.keeply.presentation.core.theme.KeeplyTheme
 import kotlinx.collections.immutable.ImmutableList
@@ -137,6 +138,8 @@ fun HomeScreen(
             text = "체크박스",
             onClick = { isChecked = it }
         )
+
+        ScanBar()
     }
 
     if (isShowModal) {
