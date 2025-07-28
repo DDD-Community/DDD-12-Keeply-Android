@@ -1,31 +1,31 @@
 package com.keeply.presentation.ui.home
 
-import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
+import com.keeply.presentation.core.components.ImageFrameList
 import com.keeply.presentation.core.components.InsightTextField
+import com.keeply.presentation.core.components.KeeplyAlertModal
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyButtonStyle
+import com.keeply.presentation.core.components.KeeplyCheckBox
 import com.keeply.presentation.core.components.KeeplyTab
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.KeeplyTextField
+import com.keeply.presentation.core.components.ScanBar
 import com.keeply.presentation.core.components.Tag
 import com.keeply.presentation.core.theme.KeeplyTheme
 import kotlinx.collections.immutable.ImmutableList
@@ -62,6 +62,8 @@ fun HomeScreen(
     onValueChange: (String) -> Unit,
 ) {
     val context = LocalContext.current
+
+    var isShowModal by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -124,60 +126,40 @@ fun HomeScreen(
             showClearButton = true
         )
 
-        Button(
+        KeeplyButton(
+            text = "모달~ 열려라~",
             onClick = {
-                loginWithKakaoTalk(context = context)
+                isShowModal = true
             }
-        ) {
-            KeeplyText(
-                text = "카카오 로그인",
-                style = KeeplyTheme.typography.header01
-            )
-        }
-    }
-}
+        )
 
-private fun loginWithKakaoTalk(
-    context: Context,
-) {
-    val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error != null) {
-            error.printStackTrace()
-            Log.e("user", "실패")
-        } else if (token != null) {
-            UserApiClient.instance.me { user, _ ->
-                Log.e("token", token.toString())
-                Log.e("user", user.toString())
-            }
-        }
+        var isChecked by remember { mutableStateOf(false) }
+        KeeplyCheckBox(
+            checked = isChecked,
+            text = "체크박스",
+            onClick = { isChecked = it }
+        )
+
+        ScanBar()
+
+        ImageFrameList()
     }
-    // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-    if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-        UserApiClient.instance.loginWithKakaoTalk(
-            context = context
-        ) { token, error ->
-            if (error != null) {
-                // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
-                // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
-                if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                    Log.e("user", "실패")
-                    return@loginWithKakaoTalk
-                }
-                // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                UserApiClient.instance.loginWithKakaoAccount(
-                    context = context,
-                    callback = callback
-                )
-            } else if (token != null) {
-                UserApiClient.instance.me { user, _ ->
-                    Log.e("user", "카카오 앱 로그인 성공")
-                }
+
+    if (isShowModal) {
+        KeeplyAlertModal(
+            title = "Keeply",
+            content = "가즈아아아아아",
+            confirmButtonText = "확인",
+            cancelButtonText = "취소",
+            confirmButtonCallback = {
+                isShowModal = false
+            },
+            cancelButtonCallback = {
+                isShowModal = false
+            },
+            onDismissCallback = {
+                isShowModal = false
             }
-        }
-    } else {
-        UserApiClient.instance.loginWithKakaoAccount(
-            context = context,
-            callback = callback
         )
     }
 }
