@@ -6,6 +6,9 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.common.KakaoSdk
 import com.keeply.data.user.local.UserDataSource
+import com.microsoft.clarity.Clarity
+import com.microsoft.clarity.ClarityConfig
+import com.microsoft.clarity.models.LogLevel
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +26,7 @@ class KeeplyApplication: Application() {
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
 
         initFcmToken()
+        initClarity()
     }
 
     private fun initFcmToken() {
@@ -37,5 +41,13 @@ class KeeplyApplication: Application() {
                 userDataSource.refreshFcmToken(token)
             }
         })
+    }
+
+    private fun initClarity() {
+        val config = ClarityConfig(
+            projectId = "sm0fgc4838",
+            logLevel = LogLevel.None
+        )
+        Clarity.initialize(applicationContext, config)
     }
 }

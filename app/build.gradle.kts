@@ -71,6 +71,7 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging.ktx)
+    implementation(libs.library.clarity.compose)
 
     hiltDependency()
 }
