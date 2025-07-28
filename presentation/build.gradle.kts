@@ -60,5 +60,10 @@ dependencies {
 
     implementation(libs.kakao.user.sdk)
 
+    implementation(libs.coil.compose)
+
+    implementation(libs.paging.runtime)
+    implementation(libs.paging.compose)
+
     hiltDependency()
 }
