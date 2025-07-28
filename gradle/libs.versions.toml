@@ -34,6 +34,8 @@ datastorePreferences = "1.1.7"
 compose-navigation = "2.9.1"
 compose-lifecycle-viewmodel = "2.9.1"
 
+clarity = "3.4.3"
+
 kakaoSdk = "2.21.4"
 
 [libraries]
@@ -88,6 +90,9 @@ firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx"
 
 ## dataStore
 androidx-dataStore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+
+## Clarity
+library-clarity-compose = { module = "com.microsoft.clarity:clarity-compose", version.ref = "clarity" }
 
 google-service = { module = "com.google.gms:google-services", version.ref = "google-services" }
 
