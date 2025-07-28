@@ -20,6 +20,7 @@ import com.keeply.presentation.core.components.KeeplyAlertModal
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyButtonStyle
+import com.keeply.presentation.core.components.KeeplyCheckBox
 import com.keeply.presentation.core.components.KeeplyTab
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.KeeplyTextField
@@ -128,6 +129,13 @@ fun HomeScreen(
             onClick = {
                 isShowModal = true
             }
+        )
+
+        var isChecked by remember { mutableStateOf(false) }
+        KeeplyCheckBox(
+            checked = isChecked,
+            text = "체크박스",
+            onClick = { isChecked = it }
         )
     }
 
