@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.keeply.presentation.core.components.ImageFrameList
 import com.keeply.presentation.core.components.InsightTextField
 import com.keeply.presentation.core.components.KeeplyAlertModal
 import com.keeply.presentation.core.components.KeeplyButton
@@ -140,6 +141,8 @@ fun HomeScreen(
         )
 
         ScanBar()
+
+        ImageFrameList()
     }
 
     if (isShowModal) {
