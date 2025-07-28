@@ -54,14 +54,13 @@ fun SplashScreen() {
         onDispose {}
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .clickable(
-                enabled = false,
-                onClick = {}
-            )
-            .background(KeeplyTheme.colors.neutral100)
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .clickable(
+            enabled = false,
+            onClick = {}
+        )
+        .background(KeeplyTheme.colors.neutral100)
     ) {
         Row(
             modifier = Modifier

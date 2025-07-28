@@ -25,6 +25,12 @@ retrofit = "2.11.0"
 okhttp = "4.12.0"
 serialization-json = "1.8.1"
 
+firebase-bom = "34.0.0"
+firebase-messaging-ktx = "24.1.2"
+google-services = "4.4.3"
+
+datastorePreferences = "1.1.7"
+
 compose-navigation = "2.9.1"
 compose-lifecycle-viewmodel = "2.9.1"
 
@@ -76,6 +82,15 @@ compose-navigation = { module = "androidx.navigation:navigation-compose", versio
 compose-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-lifecycle-viewmodel" }
 compose-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle-viewmodel" }
 
+## firebase
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebase-messaging-ktx" }
+
+## dataStore
+androidx-dataStore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+
+google-service = { module = "com.google.gms:google-services", version.ref = "google-services" }
+
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json" }
 
 ## 카카오
@@ -89,6 +104,7 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-android-gradle-plugin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-service = { id = "com.google.gms.google-services", version.ref = "google-services" }
 
 [bundles]
 retrofit = [

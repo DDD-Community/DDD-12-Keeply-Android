@@ -8,6 +8,7 @@ import com.keeply.presentation.ui.alarm.navigation.alarmNavGraph
 import com.keeply.presentation.ui.folder.navigation.folderNavGraph
 import com.keeply.presentation.ui.home.navigation.homeNavGraph
 import com.keeply.presentation.ui.my.navigation.myNavGraph
+import com.keeply.presentation.ui.onboarding.navigation.onboardingNavGraph
 import com.keeply.presentation.ui.scan.navigation.scanNavGraph
 
 @Composable
@@ -33,5 +34,9 @@ internal fun KeeplyNavHost(
         alarmNavGraph()
 
         myNavGraph()
+
+        onboardingNavGraph(
+            onEnterHome = { navigator.navigate(KeeplyTab.HOME) }
+        )
     }
 }
