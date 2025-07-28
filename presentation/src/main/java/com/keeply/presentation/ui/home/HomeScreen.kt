@@ -7,12 +7,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.keeply.presentation.core.components.InsightTextField
+import com.keeply.presentation.core.components.KeeplyAlertModal
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyButtonStyle
@@ -55,6 +59,8 @@ fun HomeScreen(
     onValueChange: (String) -> Unit,
 ) {
     val context = LocalContext.current
+
+    var isShowModal by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -115,6 +121,31 @@ fun HomeScreen(
             helpIcon = KeeplyTheme.icons.error,
             helpText = "에러메세지 입니다.",
             showClearButton = true
+        )
+
+        KeeplyButton(
+            text = "모달~ 열려라~",
+            onClick = {
+                isShowModal = true
+            }
+        )
+    }
+
+    if (isShowModal) {
+        KeeplyAlertModal(
+            title = "Keeply",
+            content = "가즈아아아아아",
+            confirmButtonText = "확인",
+            cancelButtonText = "취소",
+            confirmButtonCallback = {
+                isShowModal = false
+            },
+            cancelButtonCallback = {
+                isShowModal = false
+            },
+            onDismissCallback = {
+                isShowModal = false
+            }
         )
     }
 }
