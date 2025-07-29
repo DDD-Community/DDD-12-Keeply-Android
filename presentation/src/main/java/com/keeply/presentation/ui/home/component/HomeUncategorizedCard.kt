@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,17 +14,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.keeply.presentation.core.components.ImageFrameList
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun HomeUncategorizedCard(
     modifier: Modifier = Modifier,
     title: String,
-    count: Int
+    count: Int,
+    images: ImmutableList<Painter> = persistentListOf(),
 ) {
     Column(
         modifier = modifier
@@ -39,13 +44,17 @@ fun HomeUncategorizedCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .aspectRatio(14/12f)
                 .clip(RoundedCornerShape(8.dp))
                 .background(KeeplyTheme.colors.neutral100)
                 .padding(12.dp),
             contentAlignment = Alignment.Center
         ) {
             ImageFrameList(
-                cardWidth = 69.dp
+                cardWidth =
+                    if (images.isNotEmpty()) 69.dp
+                    else 45.dp,
+                images = images
             )
         }
 

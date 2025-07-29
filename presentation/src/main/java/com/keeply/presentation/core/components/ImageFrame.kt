@@ -17,13 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.keeply.presentation.R
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.extend.shadow01
 import kotlinx.collections.immutable.ImmutableList
@@ -75,25 +74,32 @@ fun ImageFrameList(
         else -> images.size.coerceIn(0, 3) // 최대 3개까지만 표시
     }
     
+    // cardWidth에 비례한 offset 계산 (비율 기반)
+    val secondCardOffset = cardWidth * 0.304f // 28dp / 92dp ≈ 0.304
+    val thirdCardOffset = cardWidth * 0.739f  // 68dp / 92dp ≈ 0.739
+    
     // 이미지 개수에 따른 전체 너비 계산
     val totalWidth = when (imageCount) {
         1 -> cardWidth
-        2 -> cardWidth + 28.dp // 두 번째 카드의 offset
-        3 -> cardWidth + 68.dp // 세 번째 카드의 offset
+        2 -> cardWidth + secondCardOffset
+        3 -> cardWidth + thirdCardOffset
         else -> cardWidth
     }
     
+    // 카드의 높이 (aspect ratio 0.75 -> height = width * 1.33)
+    val cardHeight = cardWidth * 1.33f
+    
     Box(
         modifier = modifier
-            .size(width = totalWidth, height = cardWidth * 1.33f)// aspectRatio 0.75의 역수
+            .size(width = totalWidth, height = cardHeight)
     ) {
         // 세 번째 카드 (맨 뒤)
         if(imageCount >= 3) {
             ImageFrame(
                 modifier = Modifier
                     .width(cardWidth)
-                    .offset(x = 68.dp),
-                painter = if (images.isEmpty()) painterResource(R.drawable.img_onboarding_03)
+                    .offset(x = thirdCardOffset),
+                painter = if (images.isEmpty()) ColorPainter(KeeplyTheme.colors.neutral300)
                         else images[2],
                 rotate = -1f
             )
@@ -104,8 +110,8 @@ fun ImageFrameList(
             ImageFrame(
                 modifier = Modifier
                     .width(cardWidth)
-                    .offset(x = if (imageCount == 2) 28.dp else 28.dp),
-                painter = if (images.isEmpty()) painterResource(R.drawable.img_onboarding_02)
+                    .offset(x = secondCardOffset),
+                painter = if (images.isEmpty()) ColorPainter(KeeplyTheme.colors.neutral300)
                         else images[1],
                 rotate = 5f
             )
@@ -116,7 +122,7 @@ fun ImageFrameList(
             ImageFrame(
                 modifier = Modifier
                     .width(cardWidth),
-                painter = if (images.isEmpty()) painterResource(R.drawable.img_onboarding_01)
+                painter = if (images.isEmpty()) ColorPainter(KeeplyTheme.colors.neutral300)
                         else images[0],
                 rotate = -2f
             )

@@ -25,6 +25,7 @@ import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.home.component.HomeUncategorizedCard
 import com.keeply.presentation.ui.home.component.KeeplyProgressBar
+import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -86,15 +87,20 @@ fun HomeScreen() {
                 HomeUncategorizedCard(
                     modifier = Modifier
                         .weight(1f),
-                    "미분류",
-                    7
+                    title = "미분류",
+                    count = 7,
+                    images = persistentListOf(
+                        painterResource(R.drawable.img_onboarding_01),
+                        painterResource(R.drawable.img_onboarding_02),
+                        painterResource(R.drawable.img_onboarding_03),
+                    )
                 )
 
                 HomeUncategorizedCard(
                     modifier = Modifier
                         .weight(1f),
-                    "만료예정",
-                    0
+                    title = "만료예정",
+                    count = 0
                 )
             }
         }
