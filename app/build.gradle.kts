@@ -7,6 +7,7 @@ plugins {
     id(libs.plugins.kotlin.compose.get().pluginId)
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.hilt.get().pluginId)
+    id(libs.plugins.google.service.get().pluginId)
 }
 
 android {
@@ -17,8 +18,8 @@ android {
     defaultConfig {
         applicationId = "com.keeply.kr"
         versionCode = 1
-        versionName = "1.0"
-        
+        versionName = "1.0.0"
+
         buildConfigField(
             "String",
             "KAKAO_NATIVE_APP_KEY",
@@ -68,6 +69,10 @@ dependencies {
     implementation(libs.paging.runtime)
 
     implementation(libs.kakao.user.sdk)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging.ktx)
+    implementation(libs.library.clarity.compose)
 
     hiltDependency()
 }

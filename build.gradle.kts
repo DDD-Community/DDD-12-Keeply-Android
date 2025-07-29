@@ -11,6 +11,7 @@ buildscript {
         classpath(libs.kotlin.gradle.plugin)
         classpath(libs.compose.compiler.gradle.plugin)
         classpath(libs.hilt.android.gradle.plugin)
+        classpath(libs.google.service)
     }
 }
 plugins {

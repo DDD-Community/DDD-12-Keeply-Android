@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1057187519846",
+    "project_id": "keeply-b8f08",
+    "storage_bucket": "keeply-b8f08.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057187519846:android:3db1d4a75d3d5cd4f5bca7",
+        "android_client_info": {
+          "package_name": "com.keeply.kr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3gdxsOXj0KtsM-_SC6Aag8siUskGbYp0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
