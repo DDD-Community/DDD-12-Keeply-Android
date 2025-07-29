@@ -1,4 +1,4 @@
-package com.keeply.presentation.ui.scan
+package com.keeply.presentation.ui.scan.screenshot
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

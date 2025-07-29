@@ -1,4 +1,4 @@
-package com.keeply.presentation.ui.scan
+package com.keeply.presentation.ui.scan.scanbefore
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -24,6 +24,8 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.KeeplyAppBar
@@ -31,6 +33,21 @@ import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.ScanBar
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral900
+import org.orbitmvi.orbit.compose.collectAsState
+
+@Composable
+fun ScanBeforeRoute(
+    onBack: () -> Unit,
+    viewModel: ScanBeforeViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.collectAsState()
+
+    ScanBeforeScreen(
+        uri = uiState.uri.toUri(),
+        onBack = onBack,
+        onNavigateToDetail = {}
+    )
+}
 
 @Composable
 fun ScanBeforeScreen(

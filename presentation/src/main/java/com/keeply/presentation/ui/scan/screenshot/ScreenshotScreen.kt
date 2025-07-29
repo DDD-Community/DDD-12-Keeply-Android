@@ -1,4 +1,4 @@
-package com.keeply.presentation.ui.scan
+package com.keeply.presentation.ui.scan.screenshot
 
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -20,23 +20,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
+import com.keeply.domain.model.Screenshot
 import com.keeply.presentation.core.components.ImageFrame
 import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral100
 
-
 @Composable
-fun ScreenshotScreen(
+fun ScreenshotRoute(
     onBack: () -> Unit,
     onNavigateToDetail: (Uri) -> Unit,
     viewModel: LocalScreenshotViewModel = hiltViewModel()
 ) {
     val lazyPagingItems = viewModel.screenshots.collectAsLazyPagingItems()
 
+    ScreenshotScreen(
+        lazyPagingItems = lazyPagingItems,
+        onBack = onBack,
+        onNavigateToDetail = onNavigateToDetail,
+    )
+}
+
+@Composable
+fun ScreenshotScreen(
+    lazyPagingItems: LazyPagingItems<Screenshot>,
+    onBack: () -> Unit,
+    onNavigateToDetail: (Uri) -> Unit,
+) {
     // TODO: 화면 재진입 시 스샷목록 새로고침
 
     ScreenshotFrame(
