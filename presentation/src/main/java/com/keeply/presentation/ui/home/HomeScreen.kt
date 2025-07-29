@@ -4,7 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.ui.home.component.KeeplyProgressBar
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -54,6 +58,22 @@ fun HomeScreen() {
             },
             onClickTrailing = {}
         )
+
+        Column(
+            modifier = Modifier
+                .padding(
+                    top = 20.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = 112.dp
+                ).verticalScroll(rememberScrollState())
+                .weight(1f)
+        ) {
+            KeeplyProgressBar(
+                currentLength = 60
+            )
+        }
+
     }
 }
 
