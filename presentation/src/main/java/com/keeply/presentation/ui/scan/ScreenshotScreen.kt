@@ -1,14 +1,13 @@
 package com.keeply.presentation.ui.scan
 
 import android.net.Uri
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
+import com.keeply.presentation.core.components.ImageFrame
 import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
@@ -31,9 +31,9 @@ import com.keeply.presentation.core.theme.neutral100
 
 @Composable
 fun ScreenshotScreen(
-    viewModel: LocalScreenshotViewModel = hiltViewModel(),
     onBack: () -> Unit,
-    onNavigateToDetail: (Uri) -> Unit
+    onNavigateToDetail: (Uri) -> Unit,
+    viewModel: LocalScreenshotViewModel = hiltViewModel()
 ) {
     val lazyPagingItems = viewModel.screenshots.collectAsLazyPagingItems()
 
@@ -45,17 +45,19 @@ fun ScreenshotScreen(
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(7.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             items(lazyPagingItems.itemCount) { index ->
+                val isFirstRow = index < 3
+
                 lazyPagingItems[index]?.let { screenshot ->
-                    // TODO: imageFrame 사용으로 변환
-                    Image(
+                    ImageFrame(
                         painter = rememberAsyncImagePainter(screenshot.uri),
-                        contentDescription = null,
                         modifier = Modifier
-                            .aspectRatio(1f)
-                            .padding(1.dp)
+                            .padding(top = if (isFirstRow) 28.dp else 0.dp)
                             .clickable { onNavigateToDetail(screenshot.uri) }
                     )
                 }
@@ -67,8 +69,8 @@ fun ScreenshotScreen(
 @Composable
 fun ScreenshotFrame(
     modifier: Modifier = Modifier,
-    count: Int = 0,
     onBack: () -> Unit,
+    count: Int = 0,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
