@@ -2,8 +2,11 @@ package com.keeply.presentation.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.ui.home.component.HomeUncategorizedCard
 import com.keeply.presentation.ui.home.component.KeeplyProgressBar
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -72,8 +76,28 @@ fun HomeScreen() {
             KeeplyProgressBar(
                 currentLength = 60
             )
-        }
 
+            Row(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                HomeUncategorizedCard(
+                    modifier = Modifier
+                        .weight(1f),
+                    "미분류",
+                    7
+                )
+
+                HomeUncategorizedCard(
+                    modifier = Modifier
+                        .weight(1f),
+                    "만료예정",
+                    0
+                )
+            }
+        }
     }
 }
 

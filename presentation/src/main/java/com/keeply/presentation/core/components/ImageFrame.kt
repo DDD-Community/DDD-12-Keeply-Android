@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -69,10 +70,25 @@ fun ImageFrameList(
     cardWidth: Dp = 92.dp,
     images: ImmutableList<Painter> = persistentListOf(),
 ) {
+    val imageCount = when {
+        images.isEmpty() -> 3 // 기본 이미지 사용시
+        else -> images.size.coerceIn(0, 3) // 최대 3개까지만 표시
+    }
+    
+    // 이미지 개수에 따른 전체 너비 계산
+    val totalWidth = when (imageCount) {
+        1 -> cardWidth
+        2 -> cardWidth + 28.dp // 두 번째 카드의 offset
+        3 -> cardWidth + 68.dp // 세 번째 카드의 offset
+        else -> cardWidth
+    }
+    
     Box(
         modifier = modifier
+            .size(width = totalWidth, height = cardWidth * 1.33f)// aspectRatio 0.75의 역수
     ) {
-        if(images.getOrNull(2) != null || images.isEmpty()) {
+        // 세 번째 카드 (맨 뒤)
+        if(imageCount >= 3) {
             ImageFrame(
                 modifier = Modifier
                     .width(cardWidth)
@@ -83,18 +99,20 @@ fun ImageFrameList(
             )
         }
 
-        if(images.getOrNull(1) != null || images.isEmpty()) {
+        // 두 번째 카드 (중간)
+        if(imageCount >= 2) {
             ImageFrame(
                 modifier = Modifier
                     .width(cardWidth)
-                    .offset(x = 28.dp),
+                    .offset(x = if (imageCount == 2) 28.dp else 28.dp),
                 painter = if (images.isEmpty()) painterResource(R.drawable.img_onboarding_02)
                         else images[1],
                 rotate = 5f
             )
         }
 
-        if(images.getOrNull(0) != null || images.isEmpty()) {
+        // 첫 번째 카드 (맨 앞)
+        if(imageCount >= 1) {
             ImageFrame(
                 modifier = Modifier
                     .width(cardWidth),
