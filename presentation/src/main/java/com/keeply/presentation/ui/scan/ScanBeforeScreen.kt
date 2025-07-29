@@ -63,11 +63,12 @@ fun ScanBeforeScreen(
             .fillMaxSize()
             .background(neutral900)
     ) {
-        ScanOnBoardingModal(
-            showDialog = neverShowDialog && isShowDialog,
-            confirmButtonCallback = { isShowDialog = !isShowDialog },
-            doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() }
-        )
+        if (isShowDialog) {
+            ScanOnBoardingModal(
+                confirmButtonCallback = { isShowDialog = !isShowDialog },
+                doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() }
+            )
+        }
 
         val painter = if (LocalInspectionMode.current || uri == null) {
             painterResource(id = R.drawable.img_onboarding_02)
@@ -149,77 +150,74 @@ fun ScanBeforeScreen(
 
 @Composable
 fun ScanOnBoardingModal(
-    showDialog: Boolean,
     confirmButtonCallback: () -> Unit,
     doNotRepeatButtonCallback: () -> Unit
 ) {
-    if (showDialog) {
-        BaseAlertModal(
-            content = {
-                Column(
-                    modifier = Modifier
-                        .width(283.dp)
-                        .padding(top = 32.dp, start = 12.dp, end = 12.dp, bottom = 12.dp),
-                ) {
-                    GifImage(
-                        modifier = Modifier
-                            .width(163.dp)
-                            .padding(bottom = 10.dp)
-                            .align(Alignment.CenterHorizontally),
-                        videoId = R.drawable.vid_scan_onboarding
-                    )
-
-                    KeeplyText(
-                        modifier = Modifier
-                            .width(200.dp)
-                            .align(Alignment.CenterHorizontally),
-                        text = stringResource(R.string.scan_onboarding_title),
-                        style = KeeplyTheme.typography.header02,
-                        textAlign = TextAlign.Center
-                    )
-
-                    KeeplyText(
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .width(200.dp)
-                            .align(Alignment.CenterHorizontally),
-                        text = stringResource(R.string.scan_onboarding_content),
-                        style = KeeplyTheme.typography.body,
-                        color = KeeplyTheme.colors.neutral800,
-                        textAlign = TextAlign.Center
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 28.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        KeeplyButton(
-                            modifier = Modifier
-                                .weight(1f),
-                            text = stringResource(R.string.scan_onboarding_confirm),
-                            onClick = confirmButtonCallback
-                        )
+    BaseAlertModal(
+        onDismissCallback = confirmButtonCallback,
+        underContent = {
+            KeeplyText(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 12.dp)
+                    .clickable { doNotRepeatButtonCallback() },
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
+                        append("다시 보지 않기")
                     }
-                }
-            },
-            underContent = {
-                KeeplyText(
+                },
+                style = KeeplyTheme.typography.caption02,
+                color = KeeplyTheme.colors.neutralWhite
+            )
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .width(283.dp)
+                .padding(top = 32.dp, start = 12.dp, end = 12.dp, bottom = 12.dp),
+        ) {
+            GifImage(
+                modifier = Modifier
+                    .width(163.dp)
+                    .padding(bottom = 10.dp)
+                    .align(Alignment.CenterHorizontally),
+                videoId = R.drawable.vid_scan_onboarding
+            )
+
+            KeeplyText(
+                modifier = Modifier
+                    .width(200.dp)
+                    .align(Alignment.CenterHorizontally),
+                text = stringResource(R.string.scan_onboarding_title),
+                style = KeeplyTheme.typography.header02,
+                textAlign = TextAlign.Center
+            )
+
+            KeeplyText(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .width(200.dp)
+                    .align(Alignment.CenterHorizontally),
+                text = stringResource(R.string.scan_onboarding_content),
+                style = KeeplyTheme.typography.body,
+                color = KeeplyTheme.colors.neutral800,
+                textAlign = TextAlign.Center
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 28.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                KeeplyButton(
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 12.dp)
-                        .clickable { doNotRepeatButtonCallback() },
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
-                            append("다시 보지 않기")
-                        }
-                    },
-                    style = KeeplyTheme.typography.caption02,
-                    color = KeeplyTheme.colors.neutralWhite
+                        .weight(1f),
+                    text = stringResource(R.string.scan_onboarding_confirm),
+                    onClick = confirmButtonCallback
                 )
             }
-        )
+        }
     }
 }
 
@@ -240,6 +238,6 @@ private fun ScanScreenPreview() {
 @Composable
 private fun ScanOnBoardingPreview() {
     KeeplyTheme {
-        ScanOnBoardingModal(true, { }, { })
+        ScanOnBoardingModal({ }, { })
     }
 }
