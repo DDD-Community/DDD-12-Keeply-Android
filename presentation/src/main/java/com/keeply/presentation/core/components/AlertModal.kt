@@ -1,8 +1,8 @@
 package com.keeply.presentation.core.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,10 +26,12 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 // TODO: 기본 배경색 제거
 @Composable
 fun BaseAlertModal(
-    onDismissCallback: () -> Unit = {},
+    backgroundColor: Color = KeeplyTheme.colors.neutralWhite,
     dismissOnBackPress: Boolean = true,
     dismissOnClickOutside: Boolean = true,
-    content: @Composable () -> Unit,
+    onDismissCallback: () -> Unit = {},
+    underContent: @Composable ColumnScope.() -> Unit = {},
+    content: @Composable () -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismissCallback,
@@ -37,13 +40,17 @@ fun BaseAlertModal(
             dismissOnClickOutside = dismissOnClickOutside
         )
     ) {
-        Surface(
-            modifier = Modifier
-                .wrapContentSize()
-                .clip(RoundedCornerShape(4.dp))
-                .background(KeeplyTheme.colors.neutralWhite)
-        ) {
-            content()
+        Column {
+            Surface(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .clip(RoundedCornerShape(4.dp)),
+                color = backgroundColor,
+            ) {
+                content()
+            }
+
+            underContent()
         }
     }
 }
@@ -63,7 +70,7 @@ fun KeeplyAlertModal(
     BaseAlertModal(
         onDismissCallback = onDismissCallback,
         dismissOnBackPress = dismissOnBackPress,
-        dismissOnClickOutside = dismissOnClickOutside,
+        dismissOnClickOutside = dismissOnClickOutside
     ) {
         Column(
             modifier = Modifier

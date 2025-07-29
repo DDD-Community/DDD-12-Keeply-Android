@@ -28,7 +28,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -150,55 +154,72 @@ fun ScanOnBoardingModal(
     doNotRepeatButtonCallback: () -> Unit
 ) {
     if (showDialog) {
-        BaseAlertModal {
-            Column(
-                modifier = Modifier
-                    .width(283.dp)
-                    .padding(top = 32.dp, start = 12.dp, end = 12.dp, bottom = 12.dp),
-            ) {
-                GifImage(
+        BaseAlertModal(
+            content = {
+                Column(
                     modifier = Modifier
-                        .width(163.dp)
-                        .padding(bottom = 10.dp)
-                        .align(Alignment.CenterHorizontally),
-                    videoId = R.drawable.vid_scan_onboarding
-                )
-
-                KeeplyText(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .align(Alignment.CenterHorizontally),
-                    text = stringResource(R.string.scan_onboarding_title),
-                    style = KeeplyTheme.typography.header02,
-                    textAlign = TextAlign.Center
-                )
-
-                KeeplyText(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .width(200.dp)
-                        .align(Alignment.CenterHorizontally),
-                    text = stringResource(R.string.scan_onboarding_content),
-                    style = KeeplyTheme.typography.body,
-                    color = KeeplyTheme.colors.neutral800,
-                    textAlign = TextAlign.Center
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 28.dp),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        .width(283.dp)
+                        .padding(top = 32.dp, start = 12.dp, end = 12.dp, bottom = 12.dp),
                 ) {
-                    KeeplyButton(
+                    GifImage(
                         modifier = Modifier
-                            .weight(1f),
-                        text = stringResource(R.string.scan_onboarding_confirm),
-                        onClick = confirmButtonCallback
+                            .width(163.dp)
+                            .padding(bottom = 10.dp)
+                            .align(Alignment.CenterHorizontally),
+                        videoId = R.drawable.vid_scan_onboarding
                     )
+
+                    KeeplyText(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .align(Alignment.CenterHorizontally),
+                        text = stringResource(R.string.scan_onboarding_title),
+                        style = KeeplyTheme.typography.header02,
+                        textAlign = TextAlign.Center
+                    )
+
+                    KeeplyText(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .width(200.dp)
+                            .align(Alignment.CenterHorizontally),
+                        text = stringResource(R.string.scan_onboarding_content),
+                        style = KeeplyTheme.typography.body,
+                        color = KeeplyTheme.colors.neutral800,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 28.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        KeeplyButton(
+                            modifier = Modifier
+                                .weight(1f),
+                            text = stringResource(R.string.scan_onboarding_confirm),
+                            onClick = confirmButtonCallback
+                        )
+                    }
                 }
+            },
+            underContent = {
+                KeeplyText(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 12.dp)
+                        .clickable {},
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
+                            append("다시 보지 않기")
+                        }
+                    },
+                    style = KeeplyTheme.typography.caption02,
+                    color = KeeplyTheme.colors.neutralWhite
+                )
             }
-        }
+        )
     }
 }
 
