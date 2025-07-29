@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.BaseAlertModal
+import com.keeply.presentation.core.components.GifImage
 import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyText
@@ -155,14 +156,12 @@ fun ScanOnBoardingModal(
                     .width(283.dp)
                     .padding(top = 32.dp, start = 12.dp, end = 12.dp, bottom = 12.dp),
             ) {
-                Image(
+                GifImage(
                     modifier = Modifier
                         .width(163.dp)
                         .padding(bottom = 10.dp)
                         .align(Alignment.CenterHorizontally),
-                    painter = painterResource(R.drawable.img_scan_onboarding),
-                    contentDescription = "",
-                    contentScale = ContentScale.FillWidth,
+                    videoId = R.drawable.vid_scan_onboarding
                 )
 
                 KeeplyText(
