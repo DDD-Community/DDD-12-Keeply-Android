@@ -52,6 +52,8 @@ class MainActivity : ComponentActivity() {
                 var selectedTab by remember { mutableStateOf(KeeplyTab.HOME) }
                 var isShowSplash by remember { mutableStateOf(true) }
 
+                // TODO: 시스템 뒤로가기버튼 사용시 selectedTab 갱신안됨
+
                 LaunchedEffect(Unit) {
                     delay(2000)
                     isShowSplash = false
@@ -83,7 +85,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         KeeplyNavHost(keeplyNavigator)
 
-                        if (keeplyNavigator.shouldShowNavigationBar()) {
+                        if (keeplyNavigator.shouldShowNavigationBar() && selectedTab != KeeplyTab.SCAN) {
                             NavigationBar(
                                 modifier = Modifier
                                     .padding(bottom = 16.dp)

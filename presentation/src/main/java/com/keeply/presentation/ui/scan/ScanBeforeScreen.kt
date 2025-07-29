@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -17,18 +16,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
+import com.keeply.presentation.R
 import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.components.KeeplyText
+import com.keeply.presentation.core.components.ScanBar
 import com.keeply.presentation.core.theme.KeeplyTheme
-import com.keeply.presentation.core.theme.orange200
+import com.keeply.presentation.core.theme.neutral900
 
 @Composable
 fun ScanBeforeScreen(
-    uri: Uri,
+    uri: Uri? = null,
     onBack: () -> Unit,
     onNavigateToDetail: () -> Unit
 ) {
@@ -37,16 +39,23 @@ fun ScanBeforeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .clickable { isMenuVisible = !isMenuVisible }
-            .background(orange200) // TODO: 삭제해야됨 isMenuVisible 확인용
+            .background(neutral900)
     ) {
+
+        val painter = if (LocalInspectionMode.current || uri == null) {
+            painterResource(id = R.drawable.img_onboarding_02)
+        } else {
+            rememberAsyncImagePainter(uri)
+        }
+
         Image(
-            painter = rememberAsyncImagePainter(uri),
+            painter = painter,
             contentDescription = null,
             modifier = Modifier
-                .aspectRatio(1f)
-                .clickable { },
-            contentScale = ContentScale.Crop
+                .fillMaxSize()
+                .align(Alignment.Center)
+                .clickable { isMenuVisible = !isMenuVisible },
+            contentScale = ContentScale.Fit
         )
 
         if (isMenuVisible) {
@@ -74,6 +83,14 @@ fun ScanBeforeScreen(
                 backgroundColor = KeeplyTheme.colors.neutralBlack,
                 contentColor = KeeplyTheme.colors.neutralWhite
             )
+
+            ScanBar(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 32.dp),
+                onClickCrop = { },
+                onClickScan = { }
+            )
         }
     }
 }
@@ -83,7 +100,6 @@ fun ScanBeforeScreen(
 private fun ScanScreenPreview() {
     KeeplyTheme {
         ScanBeforeScreen(
-            uri = "android.resource://com.your.package.name/drawable/ic_alarm_state_on".toUri(),
             onBack = { },
             onNavigateToDetail = { }
         )
