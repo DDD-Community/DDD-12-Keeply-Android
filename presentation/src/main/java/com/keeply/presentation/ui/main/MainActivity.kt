@@ -34,7 +34,6 @@ class MainActivity : ComponentActivity() {
             KeeplyTheme {
                 val keeplyNavigator = rememberKeeplyNavigator()
                 var selectedTab by remember { mutableStateOf(KeeplyTab.HOME) }
-                var previousSelectedTab by remember { mutableStateOf(KeeplyTab.HOME) }
 
                 val isNavigationBarVisible = selectedTab != KeeplyTab.SCAN
 
@@ -49,10 +48,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(padding)
                     ) {
-                        KeeplyNavHost(
-                            navigator = keeplyNavigator,
-                            onScanBack = { keeplyNavigator.popBackStack() }
-                        )
+                        KeeplyNavHost(keeplyNavigator)
 
                         if (isNavigationBarVisible) {
                             NavigationBar(
@@ -62,7 +58,6 @@ class MainActivity : ComponentActivity() {
                                 selectedTab = selectedTab,
                                 onTabSelected = { tab ->
                                     if (tab != selectedTab) {
-                                        previousSelectedTab = selectedTab
                                         selectedTab = tab
                                     }
 

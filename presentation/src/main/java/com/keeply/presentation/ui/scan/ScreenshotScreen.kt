@@ -1,7 +1,9 @@
 package com.keeply.presentation.ui.scan
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -18,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.keeply.presentation.core.components.KeeplyAppBar
@@ -28,8 +31,9 @@ import com.keeply.presentation.core.theme.neutral100
 
 @Composable
 fun ScreenshotScreen(
-    viewModel: LocalScreenshotViewModel,
-    onBack: () -> Unit
+    viewModel: LocalScreenshotViewModel = hiltViewModel(),
+    onBack: () -> Unit,
+    onNavigateToDetail: (Uri) -> Unit
 ) {
     val lazyPagingItems = viewModel.screenshots.collectAsLazyPagingItems()
 
@@ -46,13 +50,13 @@ fun ScreenshotScreen(
             items(lazyPagingItems.itemCount) { index ->
                 lazyPagingItems[index]?.let { screenshot ->
                     // TODO: imageFrame 사용으로 변환
-                    // TODO: 스크린샷 선택
                     Image(
                         painter = rememberAsyncImagePainter(screenshot.uri),
                         contentDescription = null,
                         modifier = Modifier
                             .aspectRatio(1f)
                             .padding(1.dp)
+                            .clickable { onNavigateToDetail(screenshot.uri) }
                     )
                 }
             }
