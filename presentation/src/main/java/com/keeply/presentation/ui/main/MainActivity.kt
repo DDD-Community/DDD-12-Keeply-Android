@@ -2,7 +2,6 @@ package com.keeply.presentation.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
@@ -37,13 +36,6 @@ class MainActivity : ComponentActivity() {
                 var selectedTab by remember { mutableStateOf(KeeplyTab.HOME) }
                 var previousSelectedTab by remember { mutableStateOf(KeeplyTab.HOME) }
 
-                if (selectedTab == KeeplyTab.SCAN) {
-                    BackHandler {
-                        selectedTab = previousSelectedTab
-                        keeplyNavigator.navigate(previousSelectedTab)
-                    }
-                }
-
                 val isNavigationBarVisible = selectedTab != KeeplyTab.SCAN
 
                 Scaffold(
@@ -57,7 +49,10 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(padding)
                     ) {
-                        KeeplyNavHost(keeplyNavigator)
+                        KeeplyNavHost(
+                            navigator = keeplyNavigator,
+                            onScanBack = { keeplyNavigator.popBackStack() }
+                        )
 
                         if (isNavigationBarVisible) {
                             NavigationBar(

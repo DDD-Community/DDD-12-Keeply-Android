@@ -12,7 +12,8 @@ import com.keeply.presentation.ui.scan.navigation.scanNavGraph
 
 @Composable
 internal fun KeeplyNavHost(
-    navigator: KeeplyNavigator
+    navigator: KeeplyNavigator,
+    onScanBack: () -> Unit
 ) {
     NavHost(
         navController = navigator.navController,
@@ -28,7 +29,7 @@ internal fun KeeplyNavHost(
 
         folderNavGraph()
 
-        scanNavGraph()
+        scanNavGraph(onScanBack)
 
         alarmNavGraph()
 

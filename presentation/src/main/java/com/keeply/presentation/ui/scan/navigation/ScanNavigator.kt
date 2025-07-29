@@ -12,8 +12,10 @@ fun NavController.navigateScan(navOptions: NavOptions) {
     navigate(HomeRoute.Scan, navOptions)
 }
 
-fun NavGraphBuilder.scanNavGraph() {
+fun NavGraphBuilder.scanNavGraph(
+    onBack: () -> Unit
+) {
     composable<HomeRoute.Scan> {
-        ScanRoute()
+        ScanRoute(onBack)
     }
 }
