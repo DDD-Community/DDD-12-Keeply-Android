@@ -1,4 +1,4 @@
-package com.keeply.domain.usecase.screenshot
+package com.keeply.domain.usecase.scan
 
 import androidx.paging.Pager
 import com.keeply.domain.model.Screenshot

@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.keeply.presentation.core.components.KeeplyAppBar
@@ -31,7 +30,7 @@ import com.keeply.presentation.core.theme.neutral100
 
 @Composable
 fun ScreenshotScreen(
-    viewModel: LocalScreenshotViewModel = hiltViewModel(),
+    viewModel: ScanViewModel,
     onBack: () -> Unit,
     onNavigateToDetail: (Uri) -> Unit
 ) {

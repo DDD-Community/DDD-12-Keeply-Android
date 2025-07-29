@@ -21,6 +21,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.keeply.presentation.core.theme.KeeplyTheme
 
+// TODO: '다시보지않기' 를 위한 텍스트 영역 추가 필요
+// TODO: 기본 배경색 제거
 @Composable
 fun BaseAlertModal(
     onDismissCallback: () -> Unit = {},
