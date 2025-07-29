@@ -209,7 +209,7 @@ fun ScanOnBoardingModal(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 12.dp)
-                        .clickable {},
+                        .clickable { doNotRepeatButtonCallback() },
                     text = buildAnnotatedString {
                         withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
                             append("다시 보지 않기")

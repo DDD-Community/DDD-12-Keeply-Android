@@ -33,7 +33,7 @@ import com.keeply.presentation.core.theme.neutral100
 fun ScreenshotScreen(
     onBack: () -> Unit,
     onNavigateToDetail: (Uri) -> Unit,
-    viewModel: LocalScreenshotViewModel = hiltViewModel()
+    viewModel: ScanViewModel = hiltViewModel()
 ) {
     val lazyPagingItems = viewModel.screenshots.collectAsLazyPagingItems()
 
