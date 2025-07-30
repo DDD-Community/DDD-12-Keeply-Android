@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
 
     implementation(libs.coil.compose)
+    implementation(libs.compose.lottie)
 
     implementation(libs.paging.runtime)
     implementation(libs.paging.compose)
