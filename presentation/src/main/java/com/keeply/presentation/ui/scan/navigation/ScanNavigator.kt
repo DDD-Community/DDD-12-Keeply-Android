@@ -1,19 +1,19 @@
 package com.keeply.presentation.ui.scan.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
-import com.keeply.presentation.core.navigation.HomeRoute
-import com.keeply.presentation.ui.home.HomeRoute
-import com.keeply.presentation.ui.scan.ScanRoute
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 
-fun NavController.navigateScan(navOptions: NavOptions) {
-    navigate(HomeRoute.Scan, navOptions)
+class ScanNavigator(
+    val navController: NavHostController
+) {
+    val startDestination = ScanRoute.ScanScreenShot
 }
 
-fun NavGraphBuilder.scanNavGraph() {
-    composable<HomeRoute.Scan> {
-        ScanRoute()
-    }
+@Composable
+fun rememberScanNavigator(
+    navController: NavHostController = rememberNavController()
+): ScanNavigator = remember(navController) {
+    ScanNavigator(navController)
 }

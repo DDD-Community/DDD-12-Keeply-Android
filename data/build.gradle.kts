@@ -46,8 +46,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.bundles.retrofit)
     implementation(libs.serialization.json)
-
     implementation(libs.androidx.dataStore)
+    implementation(libs.paging.runtime)
 
     hiltDependency()
 }

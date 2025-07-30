@@ -34,6 +34,12 @@ datastorePreferences = "1.1.7"
 compose-navigation = "2.9.1"
 compose-lifecycle-viewmodel = "2.9.1"
 
+paging = "3.2.1"
+paging-compose = "3.2.0"
+paging-common-android = "3.3.6"
+
+coil = "2.4.0"
+
 clarity = "3.4.3"
 
 kakaoSdk = "2.21.4"
@@ -62,6 +68,14 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollections" }
+
+## coil
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+
+## paing
+paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
+paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging-compose" }
+paging-common-android = { group = "androidx.paging", name = "paging-common-android", version.ref = "paging-common-android" }
 
 ## orbit
 orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbit" }

@@ -2,9 +2,9 @@ package com.keeply.presentation.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.SystemBarStyle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -13,13 +13,13 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.keeply.presentation.core.components.NavigationBar
 import com.keeply.presentation.core.navigation.KeeplyNavHost
@@ -49,7 +49,6 @@ class MainActivity : ComponentActivity() {
             KeeplyTheme {
                 val backgroundColor = KeeplyTheme.colors.neutral100
                 val keeplyNavigator = rememberKeeplyNavigator()
-                var selectedTab by remember { mutableStateOf(KeeplyTab.HOME) }
                 var isShowSplash by remember { mutableStateOf(true) }
 
                 LaunchedEffect(Unit) {
@@ -81,20 +80,20 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(padding)
                     ) {
+                        val currentTab = keeplyNavigator.currentTab ?: KeeplyTab.HOME
+
                         KeeplyNavHost(keeplyNavigator)
 
-                        if (keeplyNavigator.shouldShowNavigationBar()) {
+                        if (keeplyNavigator.shouldShowNavigationBar() && currentTab != KeeplyTab.SCAN) {
                             NavigationBar(
                                 modifier = Modifier
                                     .padding(bottom = 16.dp)
                                     .align(Alignment.BottomCenter),
-                                selectedTab = selectedTab,
+                                selectedTab = currentTab,
                                 onTabSelected = { tab ->
-                                    selectedTab = tab
-
                                     keeplyNavigator.navigate(
                                         KeeplyTab.entries.find {
-                                            it == selectedTab
+                                            it == tab
                                         } ?: KeeplyTab.HOME
                                     )
                                 }
