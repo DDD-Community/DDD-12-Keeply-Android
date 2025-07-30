@@ -63,5 +63,10 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging.ktx)
 
+    implementation(libs.coil.compose)
+
+    implementation(libs.paging.runtime)
+    implementation(libs.paging.compose)
+
     hiltDependency()
 }
