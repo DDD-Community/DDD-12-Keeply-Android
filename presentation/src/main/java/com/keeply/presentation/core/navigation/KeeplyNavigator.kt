@@ -3,11 +3,14 @@ package com.keeply.presentation.core.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.keeply.domain.extend.default
 import com.keeply.presentation.ui.alarm.navigation.navigateAlarm
 import com.keeply.presentation.ui.folder.navigation.navigateFolder
 import com.keeply.presentation.ui.home.navigation.navigateHome
@@ -24,6 +27,15 @@ class KeeplyNavigator(
     fun popBackStack() {
         navController.popBackStack()
     }
+
+    private val currentDestination: NavDestination?
+        @Composable get() = navController
+            .currentBackStackEntryAsState().value?.destination
+
+    val currentTab: KeeplyTab?
+        @Composable get() = KeeplyTab.find { tab ->
+            (currentDestination ?: navController.currentDestination)?.hasRoute(tab::class).default()
+        }
 
     fun navigate(tab: KeeplyTab) {
         val navOptions = navOptions {
@@ -74,6 +86,11 @@ enum class KeeplyTab(
         @Composable
         fun contains(predicate: @Composable (HomeRoute) -> Boolean): Boolean {
             return KeeplyTab.entries.map { it.route }.any { predicate(it) }
+        }
+
+        @Composable
+        fun find(predicate: @Composable (HomeRoute) -> Boolean): KeeplyTab? {
+            return KeeplyTab.entries.find { predicate(it.route) }
         }
     }
 }
