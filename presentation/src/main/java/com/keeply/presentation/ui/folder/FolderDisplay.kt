@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -63,6 +64,9 @@ fun FolderDisplay() {
                 )
             }
 
+            val folderList = List(11) { it } // 예시 리스트
+            val chunkedList = folderList.chunked(2)
+            
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -73,23 +77,28 @@ fun FolderDisplay() {
                     bottom = 112.dp
                 )
             ) {
-                items(6) {
+                items(chunkedList.size) { index ->
+                    val rowItems = chunkedList[index]
+                    
                     Row(
                         modifier = Modifier
+                            .padding(bottom = 12.dp)
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        FolderCardItem(
-                            modifier = Modifier
-                                .padding(bottom = 12.dp)
-                                .weight(1f)
-                        )
-
-                        FolderCardItem(
-                            modifier = Modifier
-                                .padding(bottom = 12.dp)
-                                .weight(1f)
-                        )
+                        rowItems.forEach { item ->
+                            FolderCardItem(
+                                modifier = Modifier
+                                    .weight(1f)
+                            )
+                        }
+                        
+                        if (rowItems.size == 1) {
+                            Spacer(
+                                modifier = Modifier
+                                    .weight(1f)
+                            )
+                        }
                     }
                 }
             }
