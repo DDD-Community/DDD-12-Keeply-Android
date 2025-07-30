@@ -99,7 +99,7 @@ fun ImageFrameList(
                 modifier = Modifier
                     .width(cardWidth)
                     .offset(x = thirdCardOffset),
-                painter = if (images.isEmpty()) ColorPainter(KeeplyTheme.colors.neutral300)
+                painter = if (images.isEmpty()) ColorPainter(KeeplyTheme.colors.neutral200)
                         else images[2],
                 rotate = -1f
             )
@@ -111,7 +111,7 @@ fun ImageFrameList(
                 modifier = Modifier
                     .width(cardWidth)
                     .offset(x = secondCardOffset),
-                painter = if (images.isEmpty()) ColorPainter(KeeplyTheme.colors.neutral300)
+                painter = if (images.isEmpty()) ColorPainter(KeeplyTheme.colors.neutral200)
                         else images[1],
                 rotate = 5f
             )
@@ -122,7 +122,7 @@ fun ImageFrameList(
             ImageFrame(
                 modifier = Modifier
                     .width(cardWidth),
-                painter = if (images.isEmpty()) ColorPainter(KeeplyTheme.colors.neutral300)
+                painter = if (images.isEmpty()) ColorPainter(KeeplyTheme.colors.neutral200)
                         else images[0],
                 rotate = -2f
             )
