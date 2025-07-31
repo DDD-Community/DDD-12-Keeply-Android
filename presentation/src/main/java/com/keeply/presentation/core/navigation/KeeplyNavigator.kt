@@ -56,6 +56,12 @@ class KeeplyNavigator(
     }
 
     fun navigateOnboarding() = navController.navigateOnboarding()
+    
+    fun navigateHome() = navController.navigateHome(navOptions {
+        popUpTo(navController.graph.id) {
+            inclusive = true
+        }
+    })
 
     @Composable
     fun shouldShowNavigationBar() = KeeplyTab.contains {
