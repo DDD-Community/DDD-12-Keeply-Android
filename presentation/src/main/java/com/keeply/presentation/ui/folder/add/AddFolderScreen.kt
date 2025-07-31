@@ -72,9 +72,11 @@ fun AddFolderScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(40.dp),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.CenterHorizontally
         ) {
             Column(
+                modifier = Modifier
+                    .padding(top = 166.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 FolderIcon(

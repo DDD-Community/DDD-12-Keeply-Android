@@ -27,7 +27,7 @@ fun HomeKeeplyFolderItem(
         modifier = modifier
     ) {
         FolderIcon(
-            modifier = Modifier
+            iconModifier = Modifier
                 .width(56.dp)
                 .height(42.dp),
             tint = KeeplyTheme.colors.orange400

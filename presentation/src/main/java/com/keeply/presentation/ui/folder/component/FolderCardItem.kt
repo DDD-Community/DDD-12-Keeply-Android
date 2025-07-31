@@ -30,8 +30,9 @@ fun FolderCardItem(
             .padding(12.dp)
     ) {
         FolderIcon(
-            modifier = Modifier
-                .width(56.dp),
+            iconModifier = Modifier
+                .width(56.dp)
+                .height(42.dp),
             tint = KeeplyTheme.colors.orange400
         )
 
