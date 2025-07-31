@@ -1,19 +1,20 @@
 package com.keeply.presentation.ui.folder.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
-import com.keeply.presentation.core.navigation.HomeRoute
-import com.keeply.presentation.ui.folder.FolderRoute
-import com.keeply.presentation.ui.home.HomeRoute
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.keeply.presentation.ui.scan.navigation.ScanRoute
 
-fun NavController.navigateFolder(navOptions: NavOptions) {
-    navigate(HomeRoute.Folder, navOptions)
+class FolderNavigator(
+    val navController: NavHostController
+) {
+    val startDestination = FolderRoute.Folder
 }
 
-fun NavGraphBuilder.folderNavGraph() {
-    composable<HomeRoute.Folder> {
-        FolderRoute()
-    }
+@Composable
+fun rememberFolderNavigator(
+    navController: NavHostController = rememberNavController()
+): FolderNavigator = remember(navController) {
+    FolderNavigator(navController)
 }
