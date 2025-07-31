@@ -1,12 +1,15 @@
 package com.keeply.presentation.ui.folder.add
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.graphics.Color
-import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.core.components.colorBar.FolderColor
 
 @Immutable
 data class AddFolderState(
     val folderName: String = "",
+    val folderColor: FolderColor = FolderColor.ORANGE
 )
 
-sealed interface AddFolderSideEffect
+sealed interface AddFolderSideEffect {
+    data object NavigateBack : AddFolderSideEffect
+    data object ShowCreateSuccess : AddFolderSideEffect
+}
