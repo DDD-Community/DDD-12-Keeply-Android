@@ -3,8 +3,8 @@ package com.keeply.data.core.di
 import android.content.Context
 import com.keeply.data.screenshot.ScreenshotRepositoryImpl
 import com.keeply.domain.repository.LocalScreenshotRepository
-import com.keeply.domain.usecase.screenshot.GetLocalScreenshotsUseCase
-import com.keeply.domain.usecase.screenshot.GetLocalScreenshotsUseCaseImpl
+import com.keeply.domain.usecase.scan.GetLocalScreenshotsUseCase
+import com.keeply.domain.usecase.scan.GetLocalScreenshotsUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
