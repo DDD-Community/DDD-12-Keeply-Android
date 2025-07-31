@@ -1,7 +1,9 @@
 package com.keeply.data.core.di
 
+import com.keeply.data.screenshot.OcrRepositoryImpl
 import com.keeply.data.folder.FolderRepositoryImpl
 import com.keeply.data.user.UserRepositoryImpl
+import com.keeply.domain.repository.OcrRepository
 import com.keeply.domain.folder.repository.FolderRepository
 import com.keeply.domain.repository.UserRepository
 import dagger.Binds
@@ -17,7 +19,13 @@ abstract class RepositoryModule {
     abstract fun bindUserRepository(
         userRepositoryImpl: UserRepositoryImpl
     ): UserRepository
-    
+
+    @Binds
+    abstract fun bindOcrRepository(
+        ocrRepositoryImpl: OcrRepositoryImpl
+    ): OcrRepository
+
+
     @Binds
     abstract fun bindFolderRepository(
         folderRepositoryImpl: FolderRepositoryImpl

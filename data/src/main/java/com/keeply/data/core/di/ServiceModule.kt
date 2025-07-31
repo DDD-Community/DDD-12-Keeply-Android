@@ -1,5 +1,6 @@
 package com.keeply.data.core.di
 
+import com.keeply.data.screenshot.remote.OcrService
 import com.keeply.data.folder.remote.FolderService
 import com.keeply.data.user.remote.UserService
 import dagger.Module
@@ -18,7 +19,14 @@ object ServiceModule {
     fun provideUserService(retrofit: Retrofit): UserService {
         return retrofit.create(UserService::class.java)
     }
-    
+
+    @Provides
+    @Singleton
+    fun provideOcrService(retrofit: Retrofit): OcrService {
+        return retrofit.create(OcrService::class.java)
+    }
+
+
     @Provides
     @Singleton
     fun provideFolderService(retrofit: Retrofit): FolderService {

@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -58,6 +59,7 @@ import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.ScanBar
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral900
+import com.keeply.presentation.util.uriToBase64
 import com.keeply.presentation.core.theme.orange400
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -67,6 +69,8 @@ fun ScanBeforeRoute(
     onNavigateToCrop: (Uri) -> Unit,
     viewModel: ScanBeforeViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     val uiState by viewModel.collectAsState()
     val isShowOnBoarding by viewModel.showOnBoardingModal.collectAsState()
 
@@ -75,7 +79,18 @@ fun ScanBeforeRoute(
         isShowOnBoarding = isShowOnBoarding,
         onBack = onBack,
         onNavigateToCrop = onNavigateToCrop,
-        doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() }
+        doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() },
+        callScan = {
+            viewModel.scanImage(
+                image = uriToBase64(
+                    context = context,
+                    uri = uiState.uri.toUri()
+                ),
+                successCallback = {
+
+                }
+            )
+        }
     )
 }
 
@@ -85,7 +100,8 @@ fun ScanBeforeScreen(
     isShowOnBoarding: Boolean = false,
     onBack: () -> Unit,
     onNavigateToCrop: (Uri) -> Unit,
-    doNotRepeatButtonCallback: () -> Unit
+    doNotRepeatButtonCallback: () -> Unit,
+    callScan: () -> Unit = {}
 ) {
     if (uri == null) return // 모달을 띄우거나 ~
 
@@ -209,8 +225,11 @@ fun ScanBeforeScreen(
                     ScanBar(
                         modifier = Modifier
                             .align(Alignment.Center),
-                        onClickCrop = { onNavigateToCrop(uri) },
-                        onClickScan = { isScanLoading = true }
+                        onClickCrop = { },
+                        onClickScan = {
+                            isScanLoading = true
+                            callScan()
+                        }
                     )
 
                     Icon(
