@@ -29,5 +29,8 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun saveAccessToken(accessToken: String) =
         userDataSource.saveAccessToken(accessToken)
+    
+    override suspend fun fetchAccessToken(): String? = 
+        userDataSource.fetchAccessToken()
 
 }

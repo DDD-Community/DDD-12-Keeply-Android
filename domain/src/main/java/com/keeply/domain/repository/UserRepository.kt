@@ -10,4 +10,6 @@ interface UserRepository {
     suspend fun saveRefreshToken(refreshToken: String)
 
     suspend fun saveAccessToken(accessToken: String)
+    
+    suspend fun fetchAccessToken(): String?
 }
