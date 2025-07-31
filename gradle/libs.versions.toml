@@ -78,12 +78,6 @@ coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coil" }
 ##lottie
 compose-lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "composeLottie" }
 
-##lottie
-compose-lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "composeLottie" }
-
-##lottie
-compose-lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "composeLottie" }
-
 ## paing
 paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging-compose" }
