@@ -40,6 +40,8 @@ paging-common-android = "3.3.6"
 
 coil = "2.4.0"
 
+composeLottie = "6.6.7"
+
 clarity = "3.4.3"
 
 kakaoSdk = "2.21.4"
@@ -72,6 +74,9 @@ kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collectio
 ## coil
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coil" }
+
+##lottie
+compose-lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "composeLottie" }
 
 ## paing
 paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }

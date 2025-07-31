@@ -65,6 +65,7 @@ dependencies {
 
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
+    implementation(libs.compose.lottie)
 
     implementation(libs.paging.runtime)
     implementation(libs.paging.compose)

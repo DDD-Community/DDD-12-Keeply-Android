@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.ImageFrame
 import com.keeply.presentation.core.components.KeeplyAppBar
+import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.home.component.HomeKeeplyFolderItem
@@ -69,7 +70,7 @@ fun HomeScreen() {
             },
             leadingIcon = null,
             trailingIcon = {
-                Icon(
+                Image(
                     painter = KeeplyTheme.icons.alarmStateOn,
                     contentDescription = "Notification"
                 )
@@ -161,27 +162,9 @@ fun HomeScreen() {
                         style = KeeplyTheme.typography.subtitle01,
                     )
 
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(2.dp))
-                            .clickable {
-
-                            }
-                            .background(KeeplyTheme.colors.neutralBlack)
-                            .padding(
-                                vertical = 4.dp,
-                                horizontal = 12.dp
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .size(18.dp),
-                            painter = KeeplyTheme.icons.arrowRight,
-                            contentDescription = "최근 업데이트된 폴더",
-                            tint = KeeplyTheme.colors.neutralWhite
-                        )
-                    }
+                    KeeplyIconButton(
+                        painter = KeeplyTheme.icons.arrowRight
+                    )
                 }
 
                 Column(
