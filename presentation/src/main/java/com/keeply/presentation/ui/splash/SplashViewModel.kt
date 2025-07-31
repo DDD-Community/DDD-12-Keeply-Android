@@ -30,7 +30,7 @@ class SplashViewModel @Inject constructor(
         
         reduce { state.copy(isUserLoggedIn = isLoggedIn) }
         
-        delay(1500)
+        delay(2000)
         
         if (isLoggedIn) {
             postSideEffect(SplashSideEffect.NavigateToHome)
