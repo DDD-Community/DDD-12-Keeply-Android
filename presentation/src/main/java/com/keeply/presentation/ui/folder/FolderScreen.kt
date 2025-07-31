@@ -21,20 +21,23 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun FolderRoute(
-    viewModel: FolderViewModel = hiltViewModel()
+    viewModel: FolderViewModel = hiltViewModel(),
+    onNavigateToAddFolder: () -> Unit
 ) {
     val uiState by viewModel.collectAsState()
 
     FolderScreen(
         uiState = uiState,
-        onClickTab = viewModel::onClickTab
+        onClickTab = viewModel::onClickTab,
+        onNavigateToAddFolder = onNavigateToAddFolder
     )
 }
 
 @Composable
 fun FolderScreen(
     uiState: FolderState,
-    onClickTab: (Int) -> Unit = {}
+    onClickTab: (Int) -> Unit = {},
+    onNavigateToAddFolder: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -68,7 +71,9 @@ fun FolderScreen(
         )
 
         when(uiState.selectedTab) {
-            FolderTabs.Folder -> FolderDisplay()
+            FolderTabs.Folder -> FolderDisplay(
+                onNavigateToAddFolder = onNavigateToAddFolder
+            )
             FolderTabs.Uncategorized -> UncategorizedDisplay()
         }
     }
