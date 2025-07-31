@@ -11,6 +11,7 @@ reviews:
   auto_review:
     enabled: true
     drafts: false
+    base_branches: []  # 모든 브랜치에 대해 자동 리뷰
 
 chat:
   auto_reply: true
