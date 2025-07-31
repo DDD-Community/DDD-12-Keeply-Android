@@ -1,6 +1,8 @@
 package com.keeply.data.core.di
 
 import com.keeply.data.BuildConfig
+import com.keeply.data.core.interceptor.AuthInterceptor
+import com.keeply.data.user.local.UserDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,10 +35,18 @@ internal object ApiModule {
 
     @Singleton
     @Provides
+    fun provideAuthInterceptor(
+        userDataSource: UserDataSource
+    ): AuthInterceptor = AuthInterceptor(userDataSource)
+
+    @Singleton
+    @Provides
     fun provideOKHttpClient(
-        httpLoggingInterceptor: HttpLoggingInterceptor
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor
     ): OkHttpClient {
         return OkHttpClient().newBuilder()
+            .addInterceptor(authInterceptor)
             .addInterceptor(httpLoggingInterceptor)
             .build()
     }
