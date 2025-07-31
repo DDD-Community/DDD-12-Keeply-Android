@@ -16,13 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.keeply.presentation.core.components.colorBar.ColorBar
 import com.keeply.presentation.core.components.FolderIcon
 import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.components.KeeplyTextField
-import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.core.components.colorBar.ColorBar
 import com.keeply.presentation.core.components.colorBar.FolderColor
 import com.keeply.presentation.core.components.colorBar.toComposeColor
+import com.keeply.presentation.core.theme.KeeplyTheme
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -72,7 +72,7 @@ fun AddFolderScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(40.dp),
-            contentAlignment = Alignment.CenterHorizontally
+            contentAlignment = Alignment.TopCenter
         ) {
             Column(
                 modifier = Modifier
