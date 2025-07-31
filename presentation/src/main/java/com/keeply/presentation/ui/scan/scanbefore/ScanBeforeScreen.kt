@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,6 +48,7 @@ import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.ScanBar
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral900
+import com.keeply.presentation.util.uriToBase64
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -54,6 +56,8 @@ fun ScanBeforeRoute(
     onBack: () -> Unit,
     viewModel: ScanBeforeViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     val uiState by viewModel.collectAsState()
     val isShowOnBoarding by viewModel.showOnBoardingModal.collectAsState()
 
@@ -62,7 +66,18 @@ fun ScanBeforeRoute(
         isShowOnBoarding = isShowOnBoarding,
         onBack = onBack,
         onNavigateToDetail = {},
-        doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() }
+        doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() },
+        callScan = {
+            viewModel.scanImage(
+                image = uriToBase64(
+                    context = context,
+                    uri = uiState.uri.toUri()
+                ),
+                successCallback = {
+
+                }
+            )
+        }
     )
 }
 
@@ -72,7 +87,8 @@ fun ScanBeforeScreen(
     isShowOnBoarding: Boolean = false,
     onBack: () -> Unit,
     onNavigateToDetail: () -> Unit,
-    doNotRepeatButtonCallback: () -> Unit
+    doNotRepeatButtonCallback: () -> Unit,
+    callScan: () -> Unit = {}
 ) {
     var isMenuVisible by remember { mutableStateOf(true) }
     var isShowDialog by remember { mutableStateOf(true) }
@@ -143,7 +159,7 @@ fun ScanBeforeScreen(
                     modifier = Modifier
                         .align(Alignment.Center),
                     onClickCrop = { },
-                    onClickScan = { }
+                    onClickScan = { callScan() }
                 )
 
                 Icon(
