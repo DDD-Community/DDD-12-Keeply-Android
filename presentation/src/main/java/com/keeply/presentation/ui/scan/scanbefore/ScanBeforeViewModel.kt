@@ -22,13 +22,23 @@ class ScanBeforeViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     getScanOnBoardingVisibilityUseCase: GetScanOnBoardingVisibilityUseCase,
     private val setDoNotShowDialogUseCase: SetDoNotShowDialogUseCase
-):ContainerHost<ScanBeforeState, ScanBeforeSideEffect>, ViewModel() {
+) : ContainerHost<ScanBeforeState, ScanBeforeSideEffect>, ViewModel() {
     val scanBefore: ScanRoute.ScanBefore = savedStateHandle.toRoute()
 
+    fun onValueChange(value: String) = intent {
+        reduce {
+            state.copy(
+                textField = value
+            )
+        }
+    }
+
     override val container: Container<ScanBeforeState, ScanBeforeSideEffect> =
-        container(ScanBeforeState(
-            Uri.decode(scanBefore.url)
-        ))
+        container(
+            ScanBeforeState(
+                Uri.decode(scanBefore.url)
+            )
+        )
 
     // 온보딩 모달 노출 여부
     val showOnBoardingModal = getScanOnBoardingVisibilityUseCase()
