@@ -1,8 +1,6 @@
 package com.keeply.presentation.ui.folder.add
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.keeply.domain.extend.default
 import com.keeply.domain.folder.usecase.CreateFolderUseCase
 import com.keeply.presentation.core.components.colorBar.FolderColor
 import com.keeply.presentation.core.components.colorBar.toHexString
@@ -34,8 +32,8 @@ class AddFolderViewModel @Inject constructor(
         
         createFolderUseCase(folderName, color)
             .catch { exception ->
-                Log.e("test", exception.message.default())
-                // TODO: 에러 처리 - 에러 메시지 표시 등
+                val errorMessage = exception.message ?: "폴더 생성에 실패했습니다."
+                postSideEffect(AddFolderSideEffect.ShowError(errorMessage))
             }
             .collect { folder ->
                 postSideEffect(AddFolderSideEffect.ShowCreateSuccess)
