@@ -6,13 +6,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -24,6 +28,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
@@ -38,6 +44,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.BaseAlertModal
 import com.keeply.presentation.core.components.GifImage
@@ -47,11 +58,13 @@ import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.ScanBar
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral900
+import com.keeply.presentation.core.theme.orange400
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun ScanBeforeRoute(
     onBack: () -> Unit,
+    onNavigateToCrop: (Uri) -> Unit,
     viewModel: ScanBeforeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.collectAsState()
@@ -61,7 +74,7 @@ fun ScanBeforeRoute(
         uri = uiState.uri.toUri(),
         isShowOnBoarding = isShowOnBoarding,
         onBack = onBack,
-        onNavigateToDetail = {},
+        onNavigateToCrop = onNavigateToCrop,
         doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() }
     )
 }
@@ -71,11 +84,14 @@ fun ScanBeforeScreen(
     uri: Uri? = null,
     isShowOnBoarding: Boolean = false,
     onBack: () -> Unit,
-    onNavigateToDetail: () -> Unit,
+    onNavigateToCrop: (Uri) -> Unit,
     doNotRepeatButtonCallback: () -> Unit
 ) {
+    if (uri == null) return // 모달을 띄우거나 ~
+
     var isMenuVisible by remember { mutableStateOf(true) }
     var isShowDialog by remember { mutableStateOf(true) }
+    var isScanLoading by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -90,21 +106,55 @@ fun ScanBeforeScreen(
             )
         }
 
-        val painter = if (LocalInspectionMode.current || uri == null) {
-            painterResource(id = R.drawable.img_onboarding_02)
-        } else {
-            rememberAsyncImagePainter(uri)
-        }
-
-        Image(
-            painter = painter,
-            contentDescription = null,
+        BoxWithConstraints(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .wrapContentHeight()
                 .align(Alignment.Center)
-                .clickable { isMenuVisible = !isMenuVisible },
-            contentScale = ContentScale.Fit
-        )
+                .padding(if (isScanLoading) 35.dp else 0.dp)
+                .clickable { isMenuVisible = !isMenuVisible }
+        ) {
+            val painter = if (LocalInspectionMode.current) {
+                painterResource(id = R.drawable.img_onboarding_02)
+            } else {
+                rememberAsyncImagePainter(uri)
+            }
+
+            val overlayStart = maxHeight / 5  // Scan 그라데이션 시작 위치
+
+            Image(
+                painter = painter,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentScale = ContentScale.Fit
+            )
+
+            if (isScanLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .offset(y = overlayStart)
+                        .background(orange400)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(290.dp)
+                        .offset(y = overlayStart)
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    orange400.copy(alpha = 0.3f),
+                                    Color.Transparent
+                                )
+                            )
+                        )
+                )
+            }
+        }
 
         if (isMenuVisible) {
             KeeplyAppBar(
@@ -132,32 +182,50 @@ fun ScanBeforeScreen(
                 contentColor = KeeplyTheme.colors.neutralWhite
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 32.dp)
-                    .align(Alignment.BottomCenter),
-            ) {
-
-                ScanBar(
-                    modifier = Modifier
-                        .align(Alignment.Center),
-                    onClickCrop = { },
-                    onClickScan = { }
+            if (isScanLoading) {
+                val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie_loading))
+                val progress by animateLottieCompositionAsState(
+                    composition = composition,
+                    iterations = LottieConstants.IterateForever
                 )
 
-                Icon(
+                LottieAnimation(
                     modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(KeeplyTheme.colors.neutral200)
-                        .padding(11.dp)
-                        .align(Alignment.CenterEnd)
-                        .clickable { },
-                    painter = KeeplyTheme.icons.skip,
-                    tint = KeeplyTheme.colors.neutral800,
-                    contentDescription = "crop",
+                        .width(67.dp)
+                        .height(48.dp)
+                        .align(Alignment.BottomCenter)
+                        .offset(y = (-32.5).dp),
+                    composition = composition,
+                    progress = { progress }
                 )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 32.dp)
+                        .align(Alignment.BottomCenter),
+                ) {
+
+                    ScanBar(
+                        modifier = Modifier
+                            .align(Alignment.Center),
+                        onClickCrop = { onNavigateToCrop(uri) },
+                        onClickScan = { isScanLoading = true }
+                    )
+
+                    Icon(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(KeeplyTheme.colors.neutral200)
+                            .padding(11.dp)
+                            .align(Alignment.CenterEnd)
+                            .clickable { },
+                        painter = KeeplyTheme.icons.skip,
+                        tint = KeeplyTheme.colors.neutral800,
+                        contentDescription = "crop",
+                    )
+                }
             }
         }
     }
@@ -242,7 +310,7 @@ private fun ScanScreenPreview() {
     KeeplyTheme {
         ScanBeforeScreen(
             onBack = { },
-            onNavigateToDetail = { },
+            onNavigateToCrop = { },
             doNotRepeatButtonCallback = { }
         )
     }
