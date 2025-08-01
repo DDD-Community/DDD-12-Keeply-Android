@@ -27,6 +27,22 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
+        </activity>
+        
+        <!-- 이미지 공유 다이얼로그 -->
+        <activity
+            android:name="com.keeply.presentation.ui.share.ShareDialogActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Keeply.Translucent"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:launchMode="singleInstance">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
         </activity>
 
         <activity
