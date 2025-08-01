@@ -13,4 +13,5 @@ data class AddFolderState(
 
 sealed interface AddFolderSideEffect {
     data object ShowCreateSuccess : AddFolderSideEffect
+    data class ShowError(val message: String) : AddFolderSideEffect
 }
