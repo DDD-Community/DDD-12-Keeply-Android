@@ -24,20 +24,30 @@ import com.keeply.presentation.core.components.colorBar.FolderColor
 import com.keeply.presentation.core.components.colorBar.toComposeColor
 import com.keeply.presentation.core.theme.KeeplyTheme
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun AddFolderRoute(
     viewModel: AddFolderViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onNavigateSaveBack: () -> Unit = {}
 ) {
     val state by viewModel.collectAsState()
-    
+
+    viewModel.collectSideEffect { sideEffect ->
+        when(sideEffect) {
+            AddFolderSideEffect.ShowCreateSuccess -> {
+                onNavigateSaveBack()
+            }
+        }
+    }
+
     AddFolderScreen(
         state = state,
         onFolderNameChange = viewModel::updateFolderName,
         onColorSelect = viewModel::selectColor,
         onCreateFolder = viewModel::createFolder,
-        onNavigateBack = onNavigateBack
+        onNavigateBack = onNavigateBack,
     )
 }
 
@@ -47,7 +57,7 @@ fun AddFolderScreen(
     onFolderNameChange: (String) -> Unit = {},
     onColorSelect: (FolderColor) -> Unit = {},
     onCreateFolder: () -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -93,6 +103,8 @@ fun AddFolderScreen(
                         .fillMaxWidth(),
                     value = state.folderName,
                     onValueChange = onFolderNameChange,
+                    helpIcon = if (state.checkFolderRegex()) null else KeeplyTheme.icons.error,
+                    helpText = if (state.checkFolderRegex()) "" else "최대 20자까지 입력 가능합니다.",
                     placeholder = "새 폴더"
                 )
 
