@@ -1,5 +1,7 @@
 package com.keeply.presentation.ui.main
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -17,8 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -29,17 +29,22 @@ import com.keeply.presentation.core.navigation.KeeplyNavHost
 import com.keeply.presentation.core.navigation.KeeplyTab
 import com.keeply.presentation.core.navigation.rememberKeeplyNavigator
 import com.keeply.presentation.core.theme.KeeplyTheme
-import com.keeply.presentation.ui.home.navigation.navigateHome
-import com.keeply.presentation.ui.splash.SplashScreen
-import com.keeply.presentation.ui.splash.SplashViewModel
-import com.keeply.presentation.ui.splash.SplashSideEffect
 import com.keeply.presentation.ui.onboarding.navigation.navigateOnboarding
+import com.keeply.presentation.ui.splash.SplashScreen
+import com.keeply.presentation.ui.splash.SplashSideEffect
+import com.keeply.presentation.ui.splash.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private var sharedImageUri: Uri? = null
+    private var shouldNavigateToScanBefore = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Intent 처리
+        handleIntent(intent)
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(
                 android.graphics.Color.TRANSPARENT,
@@ -55,7 +60,15 @@ class MainActivity : ComponentActivity() {
             KeeplyTheme {
                 val backgroundColor = KeeplyTheme.colors.neutral100
                 val keeplyNavigator = rememberKeeplyNavigator()
-                var isShowSplash by remember { mutableStateOf(true) }
+                var isShowSplash by remember { mutableStateOf(!shouldNavigateToScanBefore) }
+                
+                // 공유된 이미지가 있고 스플래시가 끝났을 때 스캔 탭으로 이동
+                LaunchedEffect(isShowSplash, shouldNavigateToScanBefore) {
+                    if (!isShowSplash && shouldNavigateToScanBefore && sharedImageUri != null) {
+                        keeplyNavigator.navigate(KeeplyTab.SCAN)
+                        // TODO: ScanBeforeScreen으로 이동하는 로직 구현 필요
+                    }
+                }
                 
                 if (isShowSplash) {
                     val splashViewModel: SplashViewModel = hiltViewModel()
@@ -121,6 +134,22 @@ class MainActivity : ComponentActivity() {
                             SplashScreen()
                         }
                     }
+                }
+            }
+        }
+    }
+    
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+    
+    private fun handleIntent(intent: Intent) {
+        when (intent.action) {
+            Intent.ACTION_SEND -> {
+                if (intent.type?.startsWith("image/") == true) {
+                    sharedImageUri = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+                    shouldNavigateToScanBefore = intent.getStringExtra("navigate_to") == "scan_before"
                 }
             }
         }
