@@ -22,6 +22,9 @@ import com.keeply.presentation.core.components.colorBar.FolderColor
 import com.keeply.presentation.core.components.colorBar.toComposeColor
 import com.keeply.presentation.core.components.colorBar.toHexString
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.extend.formatDate
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun FolderCardItem(
@@ -61,7 +64,7 @@ fun FolderCardItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             KeeplyText(
-                text = "2025.06.19",
+                text = folder.updatedAt.formatDate(),
                 style = KeeplyTheme.typography.caption02,
                 color = KeeplyTheme.colors.neutral600
             )
@@ -85,7 +88,7 @@ fun FolderCardItem(
             KeeplyText(
                 modifier = Modifier
                     .padding(start = 2.dp),
-                text = "5",
+                text = folder.imageCount.toString(),
                 style = KeeplyTheme.typography.caption02,
                 color = KeeplyTheme.colors.neutral600
             )

@@ -9,7 +9,9 @@ fun FolderResponse?.toDomain(): Folder {
     return Folder(
         folderId = this?.folderId.default(),
         folderName = this?.folderName.default(),
-        color = this?.color.default()
+        color = this?.color.default(),
+        imageCount = 0,
+        updatedAt = ""
     )
 }
 
@@ -17,6 +19,8 @@ fun FolderData.toDomain(): Folder {
     return Folder(
         folderId = folderId.default(),
         folderName = folderName.default(),
-        color = color.default()
+        color = color.default(),
+        imageCount = imageCount.default(),
+        updatedAt = updatedAt.default()
     )
 }
