@@ -25,3 +25,8 @@ sealed interface OnboardingRoute: Route {
     @Serializable
     data object Onboarding: OnboardingRoute
 }
+
+sealed interface FolderRoute: Route {
+    @Serializable
+    data object AddFolder: FolderRoute
+}

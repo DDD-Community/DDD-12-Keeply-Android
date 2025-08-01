@@ -34,7 +34,9 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.folder.component.FolderCardItem
 
 @Composable
-fun FolderDisplay() {
+fun FolderDisplay(
+    onNavigateToAddFolder: () -> Unit = {}
+) {
     var isNotEmpty by remember { mutableStateOf(false) }
 
     Column(
@@ -135,7 +137,7 @@ fun FolderDisplay() {
                         text = "폴더 추가",
                         icon = KeeplyTheme.icons.add,
                         buttonSize = KeeplyButtonSize.SMALL,
-                        onClick = { isNotEmpty = true }
+                        onClick = onNavigateToAddFolder
                     )
                 }
             }

@@ -5,6 +5,8 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import com.keeply.presentation.ui.alarm.navigation.alarmNavGraph
+import com.keeply.presentation.ui.folder.add.navigation.addFolderNavGraph
+import com.keeply.presentation.ui.folder.add.navigation.navigateAddFolder
 import com.keeply.presentation.ui.folder.navigation.folderNavGraph
 import com.keeply.presentation.ui.home.navigation.homeNavGraph
 import com.keeply.presentation.ui.my.navigation.myNavGraph
@@ -27,7 +29,9 @@ internal fun KeeplyNavHost(
     ) {
         homeNavGraph()
 
-        folderNavGraph()
+        folderNavGraph(
+            onNavigateToAddFolder = { navigator.navController.navigateAddFolder() }
+        )
 
         scanNavGraph()
 
@@ -38,5 +42,7 @@ internal fun KeeplyNavHost(
         onboardingNavGraph(
             onEnterHome = { navigator.navigateHome() }
         )
+
+        addFolderNavGraph()
     }
 }
