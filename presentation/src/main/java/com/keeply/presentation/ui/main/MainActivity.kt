@@ -17,18 +17,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.keeply.presentation.core.components.NavigationBar
 import com.keeply.presentation.core.navigation.KeeplyNavHost
 import com.keeply.presentation.core.navigation.KeeplyTab
 import com.keeply.presentation.core.navigation.rememberKeeplyNavigator
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.ui.home.navigation.navigateHome
 import com.keeply.presentation.ui.splash.SplashScreen
+import com.keeply.presentation.ui.splash.SplashViewModel
+import com.keeply.presentation.ui.splash.SplashSideEffect
+import com.keeply.presentation.ui.onboarding.navigation.navigateOnboarding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -50,10 +56,21 @@ class MainActivity : ComponentActivity() {
                 val backgroundColor = KeeplyTheme.colors.neutral100
                 val keeplyNavigator = rememberKeeplyNavigator()
                 var isShowSplash by remember { mutableStateOf(true) }
+                
+                if (isShowSplash) {
+                    val splashViewModel: SplashViewModel = hiltViewModel()
 
-                LaunchedEffect(Unit) {
-                    delay(2000)
-                    isShowSplash = false
+                    splashViewModel.collectSideEffect { sideEffect ->
+                        when (sideEffect) {
+                            is SplashSideEffect.NavigateToHome -> {
+                                isShowSplash = false
+                            }
+                            is SplashSideEffect.NavigateToOnboarding -> {
+                                isShowSplash = false
+                                keeplyNavigator.navController.navigateOnboarding()
+                            }
+                        }
+                    }
                 }
 
                 SideEffect {
