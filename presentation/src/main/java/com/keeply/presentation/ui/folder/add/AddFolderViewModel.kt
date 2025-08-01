@@ -29,14 +29,19 @@ class AddFolderViewModel @Inject constructor(
     fun createFolder() = intent {
         val folderName = state.folderName
         val color = state.folderColor.toHexString()
-        
-        createFolderUseCase(folderName, color)
-            .catch { exception ->
-                val errorMessage = exception.message ?: "폴더 생성에 실패했습니다."
-                postSideEffect(AddFolderSideEffect.ShowError(errorMessage))
-            }
-            .collect { folder ->
-                postSideEffect(AddFolderSideEffect.ShowCreateSuccess)
-            }
+
+        if (state.checkFolderRegex()) {
+            createFolderUseCase(folderName, color)
+                .catch { exception ->
+                    val errorMessage = exception.message ?: "폴더 생성에 실패했습니다."
+                    postSideEffect(AddFolderSideEffect.ShowError(errorMessage))
+                }
+                .collect { folder ->
+                    postSideEffect(AddFolderSideEffect.ShowCreateSuccess)
+                }
+        } else {
+            postSideEffect(AddFolderSideEffect.ShowError("폴더 이름을 입력해주세요."))
+        }
+
     }
 }
