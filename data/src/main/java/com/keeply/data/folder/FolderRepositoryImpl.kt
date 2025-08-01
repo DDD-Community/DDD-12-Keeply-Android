@@ -35,4 +35,19 @@ class FolderRepositoryImpl @Inject constructor(
             throw e.toException(json)
         }
     }
+
+    override suspend fun getFolders(): Flow<List<Folder>> = flow {
+        try {
+            val response = folderService.getFolders()
+            
+            if (response.success == true && response.response != null) {
+                val folders = response.response.folderList?.map { it.toDomain() } ?: emptyList()
+                emit(folders)
+            } else {
+                throw Exception(response.reason)
+            }
+        } catch (e: HttpException) {
+            throw e.toException(json)
+        }
+    }
 }

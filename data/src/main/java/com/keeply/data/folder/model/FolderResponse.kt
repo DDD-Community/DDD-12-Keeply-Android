@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FolderResponse(
-    val folderId: Int?,
+    val folderId: Long?,
     val folderName: String?,
     val color: String?
 )

@@ -81,6 +81,8 @@ fun FolderScreen(
 
         when(uiState.selectedTab) {
             FolderTabs.Folder -> FolderDisplay(
+                folders = uiState.folders,
+                isLoading = uiState.isLoading,
                 onNavigateToAddFolder = onNavigateToAddFolder
             )
             FolderTabs.Uncategorized -> UncategorizedDisplay()
