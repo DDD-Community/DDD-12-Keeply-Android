@@ -53,7 +53,25 @@ class OnboardingViewModel @Inject constructor(
             it.stackTrace
             Log.e("ERROR", it.toString())
         }.collect {
-            successCallback()
+            // 로그인 성공 후 권한 요청 다이얼로그 표시
+            intent {
+                reduce { state.copy(showPermissionDialog = true) }
+            }
         }
+    }
+    
+    fun dismissPermissionDialog() = intent {
+        reduce { state.copy(showPermissionDialog = false) }
+        postSideEffect(OnboardingSideEffect.NavigateToHome)
+    }
+    
+    fun requestPermission() = intent {
+        reduce { state.copy(showPermissionDialog = false) }
+        postSideEffect(OnboardingSideEffect.RequestPermission)
+    }
+    
+    fun onPermissionResult(granted: Boolean) = intent {
+        reduce { state.copy(hasPermission = granted) }
+        postSideEffect(OnboardingSideEffect.NavigateToHome)
     }
 }
