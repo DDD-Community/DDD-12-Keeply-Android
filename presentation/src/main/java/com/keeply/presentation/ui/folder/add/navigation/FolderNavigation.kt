@@ -13,8 +13,18 @@ fun NavController.navigateAddFolder() {
     navigate(FolderRoute.AddFolder)
 }
 
-fun NavGraphBuilder.addFolderNavGraph() {
+fun NavGraphBuilder.addFolderNavGraph(
+    navController: NavController,
+    onNavigateBack: () -> Unit
+) {
     composable<FolderRoute.AddFolder> {
-        AddFolderRoute()
+        AddFolderRoute(
+            onNavigateBack = onNavigateBack,
+            onNavigateSaveBack = {
+                // 이전 화면에 결과 전달
+                navController.previousBackStackEntry?.savedStateHandle?.set("folder_created", true)
+                onNavigateBack()
+            }
+        )
     }
 }

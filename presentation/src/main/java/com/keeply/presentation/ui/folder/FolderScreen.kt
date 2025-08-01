@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,9 +23,17 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun FolderRoute(
     viewModel: FolderViewModel = hiltViewModel(),
-    onNavigateToAddFolder: () -> Unit
+    onNavigateToAddFolder: () -> Unit,
+    shouldRefresh: Boolean = false
 ) {
     val uiState by viewModel.collectAsState()
+    
+    // 폴더가 생성되었을 때 새로고침
+    LaunchedEffect(shouldRefresh) {
+        if (shouldRefresh) {
+            viewModel.refreshFolders()
+        }
+    }
 
     FolderScreen(
         uiState = uiState,
