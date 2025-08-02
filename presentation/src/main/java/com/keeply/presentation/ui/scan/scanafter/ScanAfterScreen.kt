@@ -7,11 +7,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +40,7 @@ import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral100
+import com.keeply.presentation.core.theme.neutralWhite
 import com.keeply.presentation.ui.scan.scanbefore.ScanBeforeViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -51,6 +63,7 @@ fun ScanAfterRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScanAfterScreen(
     uri: Uri? = null,
@@ -62,12 +75,22 @@ fun ScanAfterScreen(
     onBack: () -> Unit,
     onSave: () -> Unit
 ) {
+    val sheetState = rememberModalBottomSheetState()
+    var showSelectBottomSheet by remember { mutableStateOf(true) }
+
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(neutral100) // #F4F4F4 해야되는데 없어서 임시
     ) {
+        if (showSelectBottomSheet) {
+            SelectTextBottomSheet(
+                modifier = Modifier,
+                sheetState = sheetState
+            )
+        }
+
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
@@ -163,6 +186,97 @@ fun ScanAfterScreen(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectTextBottomSheet(
+    modifier: Modifier,
+    sheetState: SheetState
+) {
+    ModalBottomSheet(
+        onDismissRequest = {
+            // 아무것도 선택 안 하고 다음
+//                showSelectBottomSheet = false
+        },
+        sheetState = sheetState,
+        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+        containerColor = neutralWhite,
+        modifier = modifier,
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(437.dp)
+                .padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+
+            ) {
+                KeeplyText(
+                    text = "Text",
+                    style = KeeplyTheme.typography.header04,
+                )
+
+                KeeplyText(
+                    modifier = Modifier
+                        .padding(top = 6.dp),
+                    text = "기록에 활용할 문구를 선택해주세요.",
+                    style = KeeplyTheme.typography.body,
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(top = 28.dp)
+            ) {
+                // TODO: 리스트 표시
+
+            }
+
+            Row(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .padding(top = 32.dp)
+                    .align(Alignment.BottomEnd),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                KeeplyButton(
+                    onClick = { },
+                    modifier = Modifier
+                        .width(75.dp),
+                    text = "취소",
+                    buttonStyle = KeeplyButtonStyle.SECONDARY,
+                    buttonSize = KeeplyButtonSize.SMALL
+                )
+                KeeplyButton(
+                    onClick = { },
+                    modifier = Modifier
+                        .width(75.dp),
+                    enabled = false,
+                    text = "이동",
+                    buttonSize = KeeplyButtonSize.SMALL
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun SelectTextBottomSheetPreview() {
+    KeeplyTheme {
+        SelectTextBottomSheet(
+            sheetState = rememberModalBottomSheetState(),
+            modifier = Modifier
+        )
+    }
+}
+
 
 @Preview(showBackground = true, heightDp = 750)
 @Composable
