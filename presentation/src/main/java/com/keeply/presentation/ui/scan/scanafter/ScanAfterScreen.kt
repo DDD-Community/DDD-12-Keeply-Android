@@ -1,12 +1,17 @@
 package com.keeply.presentation.ui.scan.scanafter
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -43,6 +49,7 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral100
 import com.keeply.presentation.core.theme.neutralWhite
 import org.orbitmvi.orbit.compose.collectAsState
+import java.net.URLDecoder
 
 @Composable
 fun ScanAfterRoute(
@@ -51,15 +58,18 @@ fun ScanAfterRoute(
     viewModel: ScanAfterViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.collectAsState()
+    val context = LocalContext.current
 
     ScanAfterScreen(
         uri = uiState.uri.toUri(),
+        context = context,
         textField = uiState.textField,
         textFieldMaxLength = uiState.textFieldMaxLength,
         onBack = onBack,
         onSave = onSave,
         onValueChange = viewModel::onValueChange,
-        recommendedTags = uiState.recommendedTags
+        recommendedTags = uiState.recommendedTags,
+        detectedText = uiState.detectedText
     )
 }
 
@@ -68,10 +78,12 @@ fun ScanAfterRoute(
 fun ScanAfterScreen(
     uri: Uri? = null,
 
+    context: Context,
     textField: String,
     textFieldMaxLength: Int,
     onValueChange: (String) -> Unit,
     recommendedTags: List<String>? = null,
+    detectedText: String?,
 
     onBack: () -> Unit,
     onSave: () -> Unit
@@ -85,11 +97,13 @@ fun ScanAfterScreen(
             .fillMaxWidth()
             .background(neutral100) // #F4F4F4 해야되는데 없어서 임시
     ) {
-        if (showSelectBottomSheet) {
+        if (showSelectBottomSheet ) {
             SelectTextBottomSheet(
                 modifier = Modifier,
+                context = context,
                 sheetState = sheetState,
-                recommendedTags = recommendedTags
+                recommendedTags = recommendedTags,
+                detectedText = detectedText ?: "추출된 텍스트가 없습니다."
 
             )
         }
@@ -99,8 +113,9 @@ fun ScanAfterScreen(
                 .verticalScroll(rememberScrollState())
                 .align(Alignment.TopCenter)
         ) {
+            Log.d("TAG", "ScanAfterScreen: $uri")
             ImageFrame(
-                painter = rememberAsyncImagePainter(uri),
+                painter = rememberAsyncImagePainter(URLDecoder.decode(uri.toString(), "UTF-8")),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 25.dp, start = 22.dp, end = 22.dp)
@@ -194,21 +209,29 @@ fun ScanAfterScreen(
 @Composable
 fun SelectTextBottomSheet(
     modifier: Modifier,
+    context: Context,
     sheetState: SheetState,
-    recommendedTags: List<String>?
+    recommendedTags: List<String>?,
+    detectedText: String
 ) {
     Log.d("TAG", "SelectTextBottomSheet: $recommendedTags")
     ModalBottomSheet(
         onDismissRequest = {
             // 아무것도 선택 안 하고 다음
 //                showSelectBottomSheet = false
+            Toast.makeText(
+                context,
+                "이제 앱 종료 후 안내에 따라 진행해 주세요.",
+                Toast.LENGTH_SHORT
+            ).show()
         },
+        dragHandle = null,
         sheetState = sheetState,
         shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
         containerColor = neutralWhite,
         modifier = modifier,
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(437.dp)
@@ -216,7 +239,7 @@ fun SelectTextBottomSheet(
         ) {
             Column(
                 modifier = Modifier
-                    .align(Alignment.TopStart)
+                    .background(neutralWhite)
 
             ) {
                 KeeplyText(
@@ -235,43 +258,62 @@ fun SelectTextBottomSheet(
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
+                    .fillMaxHeight()
+                    .weight(1f)
                     .padding(top = 28.dp)
             ) {
-                // TODO: 리스트 표시
-                recommendedTags?.let {
-                    repeat(it.size) {
-                        val recommendedTag = recommendedTags[it]
-                        FolderList(
-                            modifier = Modifier
-                                .padding(vertical = 6.dp),
-                            tag = recommendedTag
-                        )
-                    }
+                val lineList: List<String> = detectedText.split("\n")
+
+                repeat(lineList.size) {
+                    val keyword = lineList[it]
+                    FolderTextList(
+                        modifier = Modifier
+                            .padding(vertical = 6.dp),
+                        tag = "",
+                        text = keyword
+                    )
                 }
 
             }
 
+
             Row(
                 modifier = Modifier
-                    .wrapContentWidth()
-                    .padding(top = 32.dp)
-                    .align(Alignment.BottomEnd),
+                    .fillMaxWidth()
+                    .height(78.dp)
+                    .background(neutralWhite),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement
+                    .End
             ) {
                 KeeplyButton(
-                    onClick = { },
+                    onClick = {
+                        Toast.makeText(
+                            context,
+                            "준비중입니다. 앱 종료 후 안내에 따라 진행해 주세요.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
                     modifier = Modifier
                         .width(75.dp),
                     text = "취소",
                     buttonStyle = KeeplyButtonStyle.SECONDARY,
                     buttonSize = KeeplyButtonSize.SMALL
                 )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
                 KeeplyButton(
-                    onClick = { },
+                    onClick = {
+                        Toast.makeText(
+                            context,
+                            "준비중입니다. 앱 종료 후 안내에 따라 진행해 주세요.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
                     modifier = Modifier
                         .width(75.dp),
-                    enabled = false,
+                    enabled = true,
                     text = "이동",
                     buttonSize = KeeplyButtonSize.SMALL
                 )
@@ -281,30 +323,27 @@ fun SelectTextBottomSheet(
 }
 
 @Composable
-fun FolderList(
+fun FolderTextList(
     modifier: Modifier = Modifier,
-    tag: String
+    tag: String,
+    text: String
 ) {
+    var isClick by remember { mutableStateOf(false) }
+
     Row(
         modifier = modifier
-            .background(neutralWhite)
+            .background(if (isClick) KeeplyTheme.colors.neutral1000 else KeeplyTheme.colors.neutral300)
             .fillMaxWidth()
+            .clickable { isClick = !isClick }
             .padding(all = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .padding(horizontal = 12.dp)
-                .width(1.dp)
-                .height(10.dp)
-                .background(KeeplyTheme.colors.neutral200)
-        )
         KeeplyText(
             modifier = Modifier
                 .padding(start = 4.dp),
-            text = tag,
-            style = KeeplyTheme.typography.body,
-            color = KeeplyTheme.colors.neutral500
+            text = text,
+            style = KeeplyTheme.typography.button01Suit,
+            color = if (isClick) KeeplyTheme.colors.neutralWhite else KeeplyTheme.colors.neutralBlack,
         )
     }
 }
@@ -323,16 +362,16 @@ fun FolderList(
 //}
 
 
-@Preview(showBackground = true, heightDp = 750)
-@Composable
-private fun ScanScreenPreview() {
-    KeeplyTheme {
-        ScanAfterScreen(
-            textField = "",
-            textFieldMaxLength = 300,
-            onBack = { },
-            onSave = { },
-            onValueChange = { }
-        )
-    }
-}
+//@Preview(showBackground = true, heightDp = 750)
+//@Composable
+//private fun ScanScreenPreview() {
+//    KeeplyTheme {
+//        ScanAfterScreen(
+//            textField = "",
+//            textFieldMaxLength = 300,
+//            onBack = { },
+//            onSave = { },
+//            onValueChange = { }
+//        )
+//    }
+//}

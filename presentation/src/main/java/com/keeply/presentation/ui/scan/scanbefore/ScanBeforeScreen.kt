@@ -1,6 +1,7 @@
 package com.keeply.presentation.ui.scan.scanbefore
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -87,7 +88,7 @@ fun ScanBeforeRoute(
             viewModel.scanImage(
                 image = uiState.uri.toUri().toFile(context),
                 successCallback = { result ->
-                    onNavigateToScanAfter(imageUri, result)
+                    onNavigateToScanAfter(uiState.uri.toUri(), result)
 
 
                 }
@@ -108,6 +109,7 @@ fun ScanBeforeScreen(
 ) {
     if (uri == null) return // 모달을 띄우거나 ~
 
+    Log.d("TAG", "ScanBeforeScreen: $uri")
     var isMenuVisible by remember { mutableStateOf(true) }
     var isShowDialog by remember { mutableStateOf(true) }
     var isScanLoading by remember { mutableStateOf(false) }
