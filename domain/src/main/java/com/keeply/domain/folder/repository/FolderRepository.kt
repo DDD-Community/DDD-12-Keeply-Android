@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface FolderRepository {
     suspend fun createFolder(folderName: String, color: String): Flow<Folder>
+    suspend fun getFolders(): Flow<List<Folder>>
 }

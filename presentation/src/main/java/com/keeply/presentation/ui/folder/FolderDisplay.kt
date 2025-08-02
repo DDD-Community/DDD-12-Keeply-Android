@@ -25,6 +25,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.keeply.domain.folder.model.Folder
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
@@ -32,12 +33,16 @@ import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.folder.component.FolderCardItem
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun FolderDisplay(
+    folders: ImmutableList<Folder>,
+    isLoading: Boolean = false,
     onNavigateToAddFolder: () -> Unit = {}
 ) {
-    var isNotEmpty by remember { mutableStateOf(false) }
+    val isNotEmpty = folders.isNotEmpty()
 
     Column(
         modifier = Modifier
@@ -56,18 +61,18 @@ fun FolderDisplay(
                 KeeplyText(
                     modifier = Modifier
                         .weight(1f),
-                    text = "999개",
+                    text = "${folders.size}개",
                     style = KeeplyTheme.typography.subtitle02,
                     color = KeeplyTheme.colors.neutral600
                 )
 
                 KeeplyIconButton(
                     painter = KeeplyTheme.icons.add,
+                    onClick = onNavigateToAddFolder
                 )
             }
 
-            val folderList = List(11) { it } // 예시 리스트
-            val chunkedList = folderList.chunked(2)
+            val chunkedList = folders.chunked(2)
             
             LazyColumn(
                 modifier = Modifier
@@ -88,10 +93,11 @@ fun FolderDisplay(
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        rowItems.forEach { item ->
+                        rowItems.forEach { folder ->
                             FolderCardItem(
                                 modifier = Modifier
-                                    .weight(1f)
+                                    .weight(1f),
+                                folder = folder
                             )
                         }
                         
@@ -151,6 +157,8 @@ fun FolderDisplay(
 @Composable
 fun FolderDisplayPreview() {
     KeeplyTheme {
-        FolderDisplay()
+        FolderDisplay(
+            folders = persistentListOf()
+        )
     }
 }

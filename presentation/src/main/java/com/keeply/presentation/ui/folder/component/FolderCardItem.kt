@@ -15,13 +15,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.keeply.domain.folder.model.Folder
 import com.keeply.presentation.core.components.FolderIcon
 import com.keeply.presentation.core.components.KeeplyText
+import com.keeply.presentation.core.components.colorBar.FolderColor
+import com.keeply.presentation.core.components.colorBar.toComposeColor
+import com.keeply.presentation.core.components.colorBar.toHexString
 import com.keeply.presentation.core.theme.KeeplyTheme
 
 @Composable
 fun FolderCardItem(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    folder: Folder
 ) {
     Column(
         modifier = modifier
@@ -29,17 +34,23 @@ fun FolderCardItem(
             .background(KeeplyTheme.colors.neutralWhite)
             .padding(12.dp)
     ) {
+        val folderColor = folder.color.let {
+            FolderColor.entries.firstOrNull { color ->
+                color.toHexString() == it
+            }
+        } ?: FolderColor.ORANGE
+        
         FolderIcon(
             iconModifier = Modifier
                 .width(56.dp)
                 .height(42.dp),
-            tint = KeeplyTheme.colors.orange400
+            tint = folderColor.toComposeColor()
         )
 
         KeeplyText(
             modifier = Modifier
                 .padding(top = 18.dp),
-            text = "Team DDD_안칠수",
+            text = folder.folderName,
             style = KeeplyTheme.typography.subtitle02,
             maxLines = 1
         )

@@ -39,3 +39,17 @@ fun FolderColor.toComposeColor(): Color {
         FolderColor.BLACK -> KeeplyTheme.colors.neutralBlack
     }
 }
+
+// 16진수 문자열에서 FolderColor로 변환
+fun fromHexString(hex: String): FolderColor? {
+    return when (hex.uppercase()) {
+        "FFFF4400" -> FolderColor.ORANGE
+        "FFFFC453" -> FolderColor.YELLOW
+        "FFBDBDBF" -> FolderColor.GRAY
+        "FF7AB9F2" -> FolderColor.BLUE
+        "FFBBA6F4" -> FolderColor.PURPLE
+        "FFD4BCA1" -> FolderColor.BEIGE
+        "FF000000" -> FolderColor.BLACK
+        else -> null
+    }
+}
