@@ -7,7 +7,9 @@ import com.keeply.presentation.R
 
 @Immutable
 data class OnboardingState(
-    val onboardingPage: OnboardingPage = OnboardingPage.FIRST
+    val onboardingPage: OnboardingPage = OnboardingPage.FIRST,
+    val showPermissionDialog: Boolean = false,
+    val hasPermission: Boolean = false
 )
 
 enum class OnboardingPage(
@@ -41,4 +43,7 @@ enum class OnboardingPage(
     }
 }
 
-sealed interface OnboardingSideEffect
+sealed interface OnboardingSideEffect {
+    data object NavigateToHome : OnboardingSideEffect
+    data object RequestPermission : OnboardingSideEffect
+}

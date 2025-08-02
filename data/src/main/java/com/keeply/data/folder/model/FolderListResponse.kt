@@ -12,5 +12,7 @@ data class FolderListResponse(
 data class FolderData(
     val folderId: Long? = null,
     val folderName: String? = null,
-    val color: String? = null
+    val color: String? = null,
+    val imageCount: Int? = null,
+    val updatedAt: String? = null
 )
