@@ -65,8 +65,12 @@ class MainActivity : ComponentActivity() {
                 // 공유된 이미지가 있고 스플래시가 끝났을 때 스캔 탭으로 이동
                 LaunchedEffect(isShowSplash, shouldNavigateToScanBefore) {
                     if (!isShowSplash && shouldNavigateToScanBefore && sharedImageUri != null) {
+                        // Scan 화면으로 이동하면서 URI 전달
+                        keeplyNavigator.navController.currentBackStackEntry?.savedStateHandle?.set(
+                            "sharedImageUri", 
+                            android.net.Uri.encode(sharedImageUri.toString())
+                        )
                         keeplyNavigator.navigate(KeeplyTab.SCAN)
-                        // TODO: ScanBeforeScreen으로 이동하는 로직 구현 필요
                     }
                 }
                 
