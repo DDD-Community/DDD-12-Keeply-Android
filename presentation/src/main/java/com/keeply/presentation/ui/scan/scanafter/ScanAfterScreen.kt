@@ -280,7 +280,7 @@ fun SelectTextBottomSheet(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(78.dp)
+                    .height(90.dp)
                     .background(neutralWhite),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement
