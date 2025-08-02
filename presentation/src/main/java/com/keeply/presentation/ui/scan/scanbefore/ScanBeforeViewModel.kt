@@ -74,6 +74,7 @@ class ScanBeforeViewModel @Inject constructor(
         }.collect {
             onScanComplete(true)
             successCallback(it)
+            onOcrResult(it)
             Log.d("euzl", "scanImage: $it") // for test
         }
     }
@@ -82,6 +83,14 @@ class ScanBeforeViewModel @Inject constructor(
         reduce {
             state.copy(
                 isScanCompleted = done
+            )
+        }
+    }
+
+    fun onOcrResult(scanAnalyze: ScanAnalyze) = intent {
+        reduce {
+            state.copy(
+                ocrResult = scanAnalyze
             )
         }
     }

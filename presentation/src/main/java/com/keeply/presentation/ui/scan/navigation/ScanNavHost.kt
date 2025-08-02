@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.keeply.presentation.ui.scan.scanafter.ScanAfterRoute
 import com.keeply.presentation.ui.scan.scanbefore.ScanBeforeRoute
 import com.keeply.presentation.ui.scan.scanbefore.ScanCropRoute
 import com.keeply.presentation.ui.scan.screenshot.ScreenshotRoute
@@ -45,7 +46,11 @@ fun ScanNavHost(
             )
         }
         composable<ScanRoute.ScanAfter> { backStackEntry ->
-
+            ScanAfterRoute(
+                onBack = { navigator.navController.popBackStack() },
+                onSave = { },
+                onValueChange = { }
+            )
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.keeply.presentation.ui.scan.scanafter
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,12 +10,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -30,6 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.keeply.domain.model.ScanAnalyze
+import com.keeply.presentation.core.components.FileTag
+import com.keeply.presentation.core.components.FileTagStyle
 import com.keeply.presentation.core.components.FolderList
 import com.keeply.presentation.core.components.ImageFrame
 import com.keeply.presentation.core.components.InsightTextField
@@ -59,7 +65,8 @@ fun ScanAfterRoute(
         textFieldMaxLength = uiState.textFieldMaxLength,
         onBack = onBack,
         onSave = onSave,
-        onValueChange = onValueChange
+        onValueChange = onValueChange,
+        recommendedTags = uiState.ocrResult?.recommendedTags
     )
 }
 
@@ -71,6 +78,7 @@ fun ScanAfterScreen(
     textField: String,
     textFieldMaxLength: Int,
     onValueChange: (String) -> Unit,
+    recommendedTags: List<String>? = null,
 
     onBack: () -> Unit,
     onSave: () -> Unit
@@ -87,7 +95,9 @@ fun ScanAfterScreen(
         if (showSelectBottomSheet) {
             SelectTextBottomSheet(
                 modifier = Modifier,
-                sheetState = sheetState
+                sheetState = sheetState,
+                recommendedTags = recommendedTags
+
             )
         }
 
@@ -191,8 +201,10 @@ fun ScanAfterScreen(
 @Composable
 fun SelectTextBottomSheet(
     modifier: Modifier,
-    sheetState: SheetState
+    sheetState: SheetState,
+    recommendedTags: List<String>?
 ) {
+    Log.d("TAG", "SelectTextBottomSheet: $recommendedTags")
     ModalBottomSheet(
         onDismissRequest = {
             // 아무것도 선택 안 하고 다음
@@ -233,6 +245,16 @@ fun SelectTextBottomSheet(
                     .padding(top = 28.dp)
             ) {
                 // TODO: 리스트 표시
+                recommendedTags?.let {
+                    repeat(it.size) {
+                        val recommendedTag = recommendedTags[it]
+                        FolderList(
+                            modifier = Modifier
+                                .padding(vertical = 6.dp),
+                            tag = recommendedTag
+                        )
+                    }
+                }
 
             }
 
@@ -265,17 +287,47 @@ fun SelectTextBottomSheet(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-private fun SelectTextBottomSheetPreview() {
-    KeeplyTheme {
-        SelectTextBottomSheet(
-            sheetState = rememberModalBottomSheetState(),
+fun FolderList(
+    modifier: Modifier = Modifier,
+    tag: String
+) {
+    Row(
+        modifier = modifier
+            .background(neutralWhite)
+            .fillMaxWidth()
+            .padding(all = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
             modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .width(1.dp)
+                .height(10.dp)
+                .background(KeeplyTheme.colors.neutral200)
+        )
+        KeeplyText(
+            modifier = Modifier
+                .padding(start = 4.dp),
+            text = tag,
+            style = KeeplyTheme.typography.body,
+            color = KeeplyTheme.colors.neutral500
         )
     }
 }
+
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Preview
+//@Composable
+//private fun SelectTextBottomSheetPreview() {
+//    KeeplyTheme {
+//        SelectTextBottomSheet(
+//            sheetState = rememberModalBottomSheetState(),
+//            modifier = Modifier
+//        )
+//    }
+//}
 
 
 @Preview(showBackground = true, heightDp = 750)
