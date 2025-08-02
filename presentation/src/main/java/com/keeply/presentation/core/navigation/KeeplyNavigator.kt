@@ -33,8 +33,18 @@ class KeeplyNavigator(
             .currentBackStackEntryAsState().value?.destination
 
     val currentTab: KeeplyTab?
-        @Composable get() = KeeplyTab.find { tab ->
-            (currentDestination ?: navController.currentDestination)?.hasRoute(tab::class).default()
+        @Composable get() {
+            val destination = currentDestination ?: navController.currentDestination
+            
+            // FolderDetail 화면에서는 Folder 탭 활성화
+            if (destination?.hasRoute<FolderRoute.FolderDetail>() == true) {
+                return KeeplyTab.FOLDER
+            }
+            
+            // 기본 탭 찾기
+            return KeeplyTab.find { tab ->
+                destination?.hasRoute(tab::class).default()
+            }
         }
 
     fun navigate(tab: KeeplyTab) {
@@ -48,7 +58,17 @@ class KeeplyNavigator(
 
         when (tab) {
             KeeplyTab.HOME -> navController.navigateHome(navOptions)
-            KeeplyTab.FOLDER -> navController.navigateFolder(navOptions)
+            KeeplyTab.FOLDER -> {
+                // 폴더 탭을 누르면 항상 첫 화면으로
+                val folderNavOptions = navOptions {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = false  // 상태 저장하지 않음
+                    }
+                    launchSingleTop = true
+                    restoreState = false  // 상태 복원하지 않음
+                }
+                navController.navigateFolder(folderNavOptions)
+            }
             KeeplyTab.SCAN -> navController.navigateScan(navOptions)
             KeeplyTab.ALARM -> navController.navigateAlarm(navOptions)
             KeeplyTab.MY -> navController.navigateMy(navOptions)
@@ -64,8 +84,23 @@ class KeeplyNavigator(
     })
 
     @Composable
-    fun shouldShowNavigationBar() = KeeplyTab.contains {
-        navController.currentDestination?.hasRoute(it::class) == true
+    fun shouldShowNavigationBar(): Boolean {
+        val currentDestination = navController.currentDestination
+        
+        // AddFolder 화면에서는 네비게이션 바 숨기기
+        if (currentDestination?.hasRoute<FolderRoute.AddFolder>() == true) {
+            return false
+        }
+        
+        // FolderDetail 화면에서는 네비게이션 바 표시
+        if (currentDestination?.hasRoute<FolderRoute.FolderDetail>() == true) {
+            return true
+        }
+        
+        // KeeplyTab에 포함된 화면들에서만 네비게이션 바 표시
+        return KeeplyTab.contains {
+            currentDestination?.hasRoute(it::class) == true
+        }
     }
 }
 

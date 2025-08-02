@@ -40,7 +40,8 @@ import kotlinx.collections.immutable.persistentListOf
 fun FolderDisplay(
     folders: ImmutableList<Folder>,
     isLoading: Boolean = false,
-    onNavigateToAddFolder: () -> Unit = {}
+    onNavigateToAddFolder: () -> Unit = {},
+    onFolderClick: (Folder) -> Unit = {}
 ) {
     val isNotEmpty = folders.isNotEmpty()
 
@@ -97,7 +98,8 @@ fun FolderDisplay(
                             FolderCardItem(
                                 modifier = Modifier
                                     .weight(1f),
-                                folder = folder
+                                folder = folder,
+                                onClick = { onFolderClick(folder) }
                             )
                         }
                         
