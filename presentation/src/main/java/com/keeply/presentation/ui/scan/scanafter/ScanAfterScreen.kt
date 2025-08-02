@@ -68,6 +68,7 @@ fun ScanAfterRoute(
         onBack = onBack,
         onSave = onSave,
         onValueChange = viewModel::onValueChange,
+        cachedImageId = uiState.cachedImageId,
         recommendedTags = uiState.recommendedTags,
         detectedText = uiState.detectedText
     )
@@ -82,6 +83,7 @@ fun ScanAfterScreen(
     textField: String,
     textFieldMaxLength: Int,
     onValueChange: (String) -> Unit,
+    cachedImageId: String?,
     recommendedTags: List<String>? = null,
     detectedText: String?,
 
@@ -102,6 +104,7 @@ fun ScanAfterScreen(
                 modifier = Modifier,
                 context = context,
                 sheetState = sheetState,
+                cachedImageId = cachedImageId,
                 recommendedTags = recommendedTags,
                 detectedText = detectedText ?: "추출된 텍스트가 없습니다."
 
@@ -211,9 +214,14 @@ fun SelectTextBottomSheet(
     modifier: Modifier,
     context: Context,
     sheetState: SheetState,
+    cachedImageId: String?,
     recommendedTags: List<String>?,
     detectedText: String
 ) {
+    if (cachedImageId.isNullOrBlank()) return // 추후수정
+
+    var resultString by remember { mutableStateOf("") }
+
     Log.d("TAG", "SelectTextBottomSheet: $recommendedTags")
     ModalBottomSheet(
         onDismissRequest = {
@@ -271,7 +279,11 @@ fun SelectTextBottomSheet(
                             .padding(vertical = 6.dp),
                         tag = "",
                         text = keyword
-                    )
+                    ) { text, isClick ->
+                        if (isClick) {
+                            resultString += text
+                        }
+                    }
                 }
 
             }
@@ -305,6 +317,10 @@ fun SelectTextBottomSheet(
 
                 KeeplyButton(
                     onClick = {
+                        // TODO: 여기에서 /api/images 호출 원합니다 !!
+                        // cachedImageId
+                        // imageInsight 에 resultString
+
                         Toast.makeText(
                             context,
                             "준비중입니다. 앱 종료 후 안내에 따라 진행해 주세요.",
@@ -326,7 +342,8 @@ fun SelectTextBottomSheet(
 fun FolderTextList(
     modifier: Modifier = Modifier,
     tag: String,
-    text: String
+    text: String,
+    onClick: (String, Boolean) -> Unit
 ) {
     var isClick by remember { mutableStateOf(false) }
 
@@ -334,7 +351,12 @@ fun FolderTextList(
         modifier = modifier
             .background(if (isClick) KeeplyTheme.colors.neutral1000 else KeeplyTheme.colors.neutral300)
             .fillMaxWidth()
-            .clickable { isClick = !isClick }
+            .clickable {
+                isClick = !isClick
+                if (isClick) {
+                    onClick(text, isClick)
+                }
+            }
             .padding(all = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
