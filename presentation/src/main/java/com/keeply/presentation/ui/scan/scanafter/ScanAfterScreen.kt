@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -33,9 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import com.keeply.domain.model.ScanAnalyze
-import com.keeply.presentation.core.components.FileTag
-import com.keeply.presentation.core.components.FileTagStyle
 import com.keeply.presentation.core.components.FolderList
 import com.keeply.presentation.core.components.ImageFrame
 import com.keeply.presentation.core.components.InsightTextField
@@ -47,15 +42,13 @@ import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral100
 import com.keeply.presentation.core.theme.neutralWhite
-import com.keeply.presentation.ui.scan.scanbefore.ScanBeforeViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun ScanAfterRoute(
     onBack: () -> Unit,
     onSave: () -> Unit,
-    onValueChange: (String) -> Unit,
-    viewModel: ScanBeforeViewModel = hiltViewModel()
+    viewModel: ScanAfterViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.collectAsState()
 
@@ -65,8 +58,8 @@ fun ScanAfterRoute(
         textFieldMaxLength = uiState.textFieldMaxLength,
         onBack = onBack,
         onSave = onSave,
-        onValueChange = onValueChange,
-        recommendedTags = uiState.ocrResult?.recommendedTags
+        onValueChange = viewModel::onValueChange,
+        recommendedTags = uiState.recommendedTags
     )
 }
 

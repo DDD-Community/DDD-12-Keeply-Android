@@ -48,8 +48,7 @@ fun ScanNavHost(
         composable<ScanRoute.ScanAfter> { backStackEntry ->
             ScanAfterRoute(
                 onBack = { navigator.navController.popBackStack() },
-                onSave = { },
-                onValueChange = { }
+                onSave = { }
             )
         }
     }
