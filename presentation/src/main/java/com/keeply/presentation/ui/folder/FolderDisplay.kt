@@ -125,6 +125,8 @@ fun FolderDisplay(
                     )
 
                     KeeplyText(
+                        modifier = Modifier
+                            .padding(top = 12.dp),
                         text = "새로운 폴더가 필요해요.\n폴더를 추가해주세요.",
                         style = KeeplyTheme.typography.button01Suit,
                         color = KeeplyTheme.colors.neutral500

@@ -1,6 +1,8 @@
 package com.keeply.data.core.di
 
+import com.keeply.data.folder.FolderRepositoryImpl
 import com.keeply.data.user.UserRepositoryImpl
+import com.keeply.domain.folder.repository.FolderRepository
 import com.keeply.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -15,6 +17,9 @@ abstract class RepositoryModule {
     abstract fun bindUserRepository(
         userRepositoryImpl: UserRepositoryImpl
     ): UserRepository
-
-
+    
+    @Binds
+    abstract fun bindFolderRepository(
+        folderRepositoryImpl: FolderRepositoryImpl
+    ): FolderRepository
 }

@@ -20,4 +20,9 @@ class FolderViewModel @Inject constructor(
             )
         }
     }
+    
+    fun refreshFolders() = intent {
+        // TODO: 폴더 목록을 다시 불러오는 로직 구현
+        // 예: getFoldersUseCase 호출
+    }
 }

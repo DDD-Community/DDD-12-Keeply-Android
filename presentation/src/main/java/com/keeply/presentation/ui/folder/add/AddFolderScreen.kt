@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,20 +26,34 @@ import com.keeply.presentation.core.components.colorBar.FolderColor
 import com.keeply.presentation.core.components.colorBar.toComposeColor
 import com.keeply.presentation.core.theme.KeeplyTheme
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun AddFolderRoute(
     viewModel: AddFolderViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    onNavigateSaveBack: () -> Unit = {}
 ) {
     val state by viewModel.collectAsState()
-    
+    val context = LocalContext.current
+
+    viewModel.collectSideEffect { sideEffect ->
+        when(sideEffect) {
+            AddFolderSideEffect.ShowCreateSuccess -> {
+                onNavigateSaveBack()
+            }
+            is AddFolderSideEffect.ShowError -> {
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     AddFolderScreen(
         state = state,
         onFolderNameChange = viewModel::updateFolderName,
         onColorSelect = viewModel::selectColor,
         onCreateFolder = viewModel::createFolder,
-        onNavigateBack = onNavigateBack
+        onNavigateBack = onNavigateBack,
     )
 }
 
@@ -47,7 +63,7 @@ fun AddFolderScreen(
     onFolderNameChange: (String) -> Unit = {},
     onColorSelect: (FolderColor) -> Unit = {},
     onCreateFolder: () -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -93,6 +109,8 @@ fun AddFolderScreen(
                         .fillMaxWidth(),
                     value = state.folderName,
                     onValueChange = onFolderNameChange,
+                    helpIcon = if (state.checkFolderRegex()) null else KeeplyTheme.icons.error,
+                    helpText = if (state.checkFolderRegex()) "" else "최대 20자까지 입력 가능합니다.",
                     placeholder = "새 폴더"
                 )
 

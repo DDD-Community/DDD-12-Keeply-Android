@@ -19,6 +19,10 @@ sealed interface HomeRoute: Route {
 
     @Serializable
     data object My: HomeRoute
+
+    companion object {
+        const val FOLDER_CREATED = "folder_created"
+    }
 }
 
 sealed interface OnboardingRoute: Route {

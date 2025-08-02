@@ -7,9 +7,11 @@ import com.keeply.presentation.core.components.colorBar.FolderColor
 data class AddFolderState(
     val folderName: String = "",
     val folderColor: FolderColor = FolderColor.ORANGE
-)
+) {
+    fun checkFolderRegex() = folderName.length in 1..20 && folderName.isNotBlank()
+}
 
 sealed interface AddFolderSideEffect {
-    data object NavigateBack : AddFolderSideEffect
     data object ShowCreateSuccess : AddFolderSideEffect
+    data class ShowError(val message: String) : AddFolderSideEffect
 }

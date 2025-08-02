@@ -14,6 +14,19 @@ enum class FolderColor {
     BLACK
 }
 
+// 각 색상에 대한 16진수 값 정의 (AARRGGBB 형식)
+fun FolderColor.toHexString(): String {
+    return when (this) {
+        FolderColor.ORANGE -> "FFFF4400"  // orange400
+        FolderColor.YELLOW -> "FFFFC453"  // folderYellow
+        FolderColor.GRAY -> "FFBDBDBF"    // neutral400
+        FolderColor.BLUE -> "FF7AB9F2"    // folderBlue
+        FolderColor.PURPLE -> "FFBBA6F4"  // folderPurple
+        FolderColor.BEIGE -> "FFD4BCA1"   // folderBeige
+        FolderColor.BLACK -> "FF000000"   // neutralBlack
+    }
+}
+
 @Composable
 fun FolderColor.toComposeColor(): Color {
     return when (this) {

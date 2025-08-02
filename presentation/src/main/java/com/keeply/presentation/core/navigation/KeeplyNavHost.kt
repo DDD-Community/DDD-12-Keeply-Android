@@ -30,6 +30,7 @@ internal fun KeeplyNavHost(
         homeNavGraph()
 
         folderNavGraph(
+            navController = navigator.navController,
             onNavigateToAddFolder = { navigator.navController.navigateAddFolder() }
         )
 
@@ -43,6 +44,9 @@ internal fun KeeplyNavHost(
             onEnterHome = { navigator.navigateHome() }
         )
 
-        addFolderNavGraph()
+        addFolderNavGraph(
+            navController = navigator.navController,
+            onNavigateBack = { navigator.popBackStack()}
+        )
     }
 }
