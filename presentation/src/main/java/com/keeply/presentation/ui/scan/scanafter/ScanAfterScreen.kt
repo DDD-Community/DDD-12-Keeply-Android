@@ -49,6 +49,7 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral100
 import com.keeply.presentation.core.theme.neutralWhite
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import java.net.URLDecoder
 
 @Composable
@@ -60,6 +61,17 @@ fun ScanAfterRoute(
     val uiState by viewModel.collectAsState()
     val context = LocalContext.current
 
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is ScanAfterSideEffect.ShowError -> {
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+            }
+            is ScanAfterSideEffect.NavigateToSuccess -> {
+                onSave()
+            }
+        }
+    }
+
     ScanAfterScreen(
         uri = uiState.uri.toUri(),
         context = context,
@@ -68,9 +80,11 @@ fun ScanAfterRoute(
         onBack = onBack,
         onSave = onSave,
         onValueChange = viewModel::onValueChange,
+        onSaveClick = viewModel::onSaveClick,
         cachedImageId = uiState.cachedImageId,
         recommendedTags = uiState.recommendedTags,
-        detectedText = uiState.detectedText
+        detectedText = uiState.detectedText,
+        isLoading = uiState.isLoading
     )
 }
 
@@ -83,9 +97,11 @@ fun ScanAfterScreen(
     textField: String,
     textFieldMaxLength: Int,
     onValueChange: (String) -> Unit,
+    onSaveClick: (String, Long) -> Unit,
     cachedImageId: String?,
     recommendedTags: List<String>? = null,
     detectedText: String?,
+    isLoading: Boolean,
 
     onBack: () -> Unit,
     onSave: () -> Unit
@@ -106,8 +122,9 @@ fun ScanAfterScreen(
                 sheetState = sheetState,
                 cachedImageId = cachedImageId,
                 recommendedTags = recommendedTags,
-                detectedText = detectedText ?: "추출된 텍스트가 없습니다."
-
+                detectedText = detectedText ?: "추출된 텍스트가 없습니다.",
+                onSaveClick = onSaveClick,
+                isLoading = isLoading
             )
         }
 
@@ -216,7 +233,9 @@ fun SelectTextBottomSheet(
     sheetState: SheetState,
     cachedImageId: String?,
     recommendedTags: List<String>?,
-    detectedText: String
+    detectedText: String,
+    onSaveClick: (String, Long) -> Unit,
+    isLoading: Boolean
 ) {
     if (cachedImageId.isNullOrBlank()) return // 추후수정
 
@@ -317,19 +336,12 @@ fun SelectTextBottomSheet(
 
                 KeeplyButton(
                     onClick = {
-                        // TODO: 여기에서 /api/images 호출 원합니다 !!
-                        // cachedImageId
-                        // imageInsight 에 resultString
-
-                        Toast.makeText(
-                            context,
-                            "준비중입니다. 앱 종료 후 안내에 따라 진행해 주세요.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        // TODO: 폴더 선택 기능 추가 필요, 현재는 기본값 0 사용
+                        onSaveClick(resultString, 0)
                     },
                     modifier = Modifier
                         .width(75.dp),
-                    enabled = true,
+                    enabled = !isLoading,
                     text = "이동",
                     buttonSize = KeeplyButtonSize.SMALL
                 )
