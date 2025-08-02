@@ -6,14 +6,20 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 
 class ScanNavigator(
-    val navController: NavHostController
+    val navController: NavHostController,
+    val initialUri: String? = null
 ) {
-    val startDestination = ScanRoute.ScanScreenShot
+    val startDestination = if (initialUri != null) {
+        ScanRoute.ScanBefore(initialUri)
+    } else {
+        ScanRoute.ScanScreenShot
+    }
 }
 
 @Composable
 fun rememberScanNavigator(
-    navController: NavHostController = rememberNavController()
-): ScanNavigator = remember(navController) {
-    ScanNavigator(navController)
+    navController: NavHostController = rememberNavController(),
+    initialUri: String? = null
+): ScanNavigator = remember(navController, initialUri) {
+    ScanNavigator(navController, initialUri)
 }

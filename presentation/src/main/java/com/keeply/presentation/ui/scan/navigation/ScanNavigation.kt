@@ -11,9 +11,11 @@ fun NavController.navigateScan(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.scanNavGraph(
+    navController: NavController
 ) {
-    composable<HomeRoute.Scan> {
-        val navigator = rememberScanNavigator()
+    composable<HomeRoute.Scan> { backStackEntry ->
+        val sharedImageUri = navController.previousBackStackEntry?.savedStateHandle?.get<String>("sharedImageUri")
+        val navigator = rememberScanNavigator(initialUri = sharedImageUri)
 
         ScanNavHost(navigator)
     }

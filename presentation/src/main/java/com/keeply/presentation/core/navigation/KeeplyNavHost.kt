@@ -34,7 +34,7 @@ internal fun KeeplyNavHost(
             onNavigateToAddFolder = { navigator.navController.navigateAddFolder() }
         )
 
-        scanNavGraph()
+        scanNavGraph(navController = navigator.navController)
 
         alarmNavGraph()
 
