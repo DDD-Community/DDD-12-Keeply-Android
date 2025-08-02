@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.keeply.domain.model.ScanAnalyze
 import com.keeply.domain.model.ScanImage
 import com.keeply.domain.usecase.scan.GetScanOnBoardingVisibilityUseCase
 import com.keeply.domain.usecase.scan.ScanImageUseCase
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,22 +58,31 @@ class ScanBeforeViewModel @Inject constructor(
     }
 
     fun scanImage(
-        image: String?,
-        successCallback: () -> Unit
+        image: File?,
+        successCallback: (ScanAnalyze) -> Unit
     ) = viewModelScope.launch {
         if (image == null) return@launch
 
+        onScanComplete(false)
         scanImageUseCase(
-            ScanImage(
-                isNew = true,
-                file = image
-            )
+            isNew = true,
+            imageId = null,
+            file = image
         ).catch {
             it.stackTrace
             Log.e("ERROR", it.toString())
         }.collect {
-            successCallback()
+            onScanComplete(true)
+            successCallback(it)
             Log.d("euzl", "scanImage: $it") // for test
+        }
+    }
+
+    fun onScanComplete(done: Boolean) = intent {
+        reduce {
+            state.copy(
+                isScanCompleted = done
+            )
         }
     }
 }

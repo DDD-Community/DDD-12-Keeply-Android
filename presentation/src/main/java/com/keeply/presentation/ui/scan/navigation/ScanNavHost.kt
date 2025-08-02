@@ -30,6 +30,9 @@ fun ScanNavHost(
                 onBack = { navigator.navController.popBackStack() },
                 onNavigateToCrop = { uri ->
                     navigator.navController.navigate(ScanRoute.ScanCrop(Uri.encode(uri.toString())))
+                },
+                onNavigateToScanAfter = { uri, result ->
+                    navigator.navController.navigate(ScanRoute.ScanAfter(Uri.encode(uri.toString()), result.cachedImageId, result.detectedText, result.recommendedTags))
                 }
             )
         }
@@ -40,6 +43,9 @@ fun ScanNavHost(
                     navigator.navController.navigate(ScanRoute.ScanBefore(Uri.encode(uri.toString())))
                 }
             )
+        }
+        composable<ScanRoute.ScanAfter> { backStackEntry ->
+
         }
     }
 }

@@ -50,6 +50,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.keeply.domain.model.ScanAnalyze
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.BaseAlertModal
 import com.keeply.presentation.core.components.GifImage
@@ -59,14 +60,15 @@ import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.ScanBar
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral900
-import com.keeply.presentation.util.uriToBase64
 import com.keeply.presentation.core.theme.orange400
+import com.keeply.presentation.util.toFile
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun ScanBeforeRoute(
     onBack: () -> Unit,
     onNavigateToCrop: (Uri) -> Unit,
+    onNavigateToScanAfter: (Uri, ScanAnalyze) -> Unit,
     viewModel: ScanBeforeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -77,16 +79,16 @@ fun ScanBeforeRoute(
     ScanBeforeScreen(
         uri = uiState.uri.toUri(),
         isShowOnBoarding = isShowOnBoarding,
+        isScanCompleted = uiState.isScanCompleted,
         onBack = onBack,
         onNavigateToCrop = onNavigateToCrop,
         doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() },
-        callScan = {
+        callScan = { imageUri ->
             viewModel.scanImage(
-                image = uriToBase64(
-                    context = context,
-                    uri = uiState.uri.toUri()
-                ),
-                successCallback = {
+                image = uiState.uri.toUri().toFile(context),
+                successCallback = { result ->
+                    onNavigateToScanAfter(imageUri, result)
+
 
                 }
             )
@@ -98,10 +100,11 @@ fun ScanBeforeRoute(
 fun ScanBeforeScreen(
     uri: Uri? = null,
     isShowOnBoarding: Boolean = false,
+    isScanCompleted: Boolean = false,
     onBack: () -> Unit,
     onNavigateToCrop: (Uri) -> Unit,
     doNotRepeatButtonCallback: () -> Unit,
-    callScan: () -> Unit = {}
+    callScan: (Uri) -> Unit = {}
 ) {
     if (uri == null) return // 모달을 띄우거나 ~
 
@@ -146,7 +149,7 @@ fun ScanBeforeScreen(
                 contentScale = ContentScale.Fit
             )
 
-            if (isScanLoading) {
+            if (isScanLoading && isScanCompleted.not()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -228,7 +231,7 @@ fun ScanBeforeScreen(
                         onClickCrop = { },
                         onClickScan = {
                             isScanLoading = true
-                            callScan()
+                            callScan(uri)
                         }
                     )
 

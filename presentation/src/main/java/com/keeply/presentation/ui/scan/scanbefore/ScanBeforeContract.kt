@@ -6,7 +6,8 @@ import androidx.compose.runtime.Immutable
 data class ScanBeforeState(
     val uri: String,
     val textField: String = "",
-    val textFieldMaxLength: Int = 300
+    val textFieldMaxLength: Int = 300,
+    val isScanCompleted: Boolean = false,
 )
 
 sealed interface ScanBeforeSideEffect
