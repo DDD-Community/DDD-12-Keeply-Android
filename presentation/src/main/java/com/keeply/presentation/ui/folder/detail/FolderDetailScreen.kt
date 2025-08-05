@@ -31,11 +31,13 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.KeeplyAppBar
+import com.keeply.presentation.core.components.KeeplyModalBottomSheet
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.ui.folder.detail.component.FolderModifyBottomSheetContent
 import com.keeply.presentation.ui.home.component.HomeKeeplyScreenshotItem
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
@@ -51,21 +53,25 @@ fun FolderDetailRoute(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is FolderDetailSideEffect.ShowError -> {
-                // Handle error
+
             }
         }
     }
     
     FolderDetailScreen(
         state = uiState,
-        onBack = onBack
+        onBack = onBack,
+        onHideBottomSheet = viewModel::hideBottomSheet,
+        onShowBottomSheet = viewModel::showBottomSheet
     )
 }
 
 @Composable
 fun FolderDetailScreen(
     state: FolderDetailState,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onHideBottomSheet: () -> Unit = {},
+    onShowBottomSheet: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -89,7 +95,7 @@ fun FolderDetailScreen(
                 )
             },
             onClickLeading = onBack,
-            onClickTrailing = { }
+            onClickTrailing = onShowBottomSheet
         )
 
         val isNotEmpty = state.images.isNotEmpty()
@@ -189,6 +195,15 @@ fun FolderDetailScreen(
             }
         }
     }
+
+    if (state.isShowBottomSheet) {
+        KeeplyModalBottomSheet(
+            onDismissRequest = onHideBottomSheet
+        ) {
+            FolderModifyBottomSheetContent()
+        }
+    }
+
 }
 
 @Preview(showBackground = true)
