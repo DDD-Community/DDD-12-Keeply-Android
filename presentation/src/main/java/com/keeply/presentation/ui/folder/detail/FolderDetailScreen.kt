@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
@@ -31,7 +32,6 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.keeply.presentation.R
-import com.keeply.presentation.core.components.KeeplyAlertCheckModal
 import com.keeply.presentation.core.components.KeeplyAlertModal
 import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.components.KeeplyModalBottomSheet
@@ -97,12 +97,11 @@ fun FolderDetailRoute(
     }
     // Delete Dialog
     if (uiState.isShowDeleteDialog) {
-        KeeplyAlertCheckModal(
-            title = "폴더 삭제",
-            content = "정말 삭제하시겠어요?",
-            checkText = "삭제",
-            confirmButtonText = "삭제",
-            cancelButtonText = "취소",
+        KeeplyAlertModal(
+            title = stringResource(id = R.string.folder_delete_dialog_title),
+            content = stringResource(id = R.string.folder_delete_dialog_content),
+            confirmButtonText = stringResource(id = R.string.folder_delete_dialog_confirm),
+            cancelButtonText = stringResource(id = R.string.folder_delete_dialog_cancel),
             onDismissCallback = viewModel::hideDeleteDialog,
             cancelButtonCallback = viewModel::hideDeleteDialog,
             confirmButtonCallback = viewModel::deleteFolder
