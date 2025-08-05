@@ -9,4 +9,5 @@ interface FolderRepository {
     suspend fun getFolders(): Flow<List<Folder>>
     suspend fun getFolderDetail(folderId: Long): Flow<List<FolderImage>>
     suspend fun updateFolder(folderId: Long, folderName: String, color: String): Flow<Folder>
+    suspend fun deleteFolder(folderId: Long): Flow<Boolean>
 }

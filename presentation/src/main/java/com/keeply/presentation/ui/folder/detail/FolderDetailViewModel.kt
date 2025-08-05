@@ -3,6 +3,7 @@ package com.keeply.presentation.ui.folder.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.keeply.domain.folder.usecase.DeleteFolderUseCase
 import com.keeply.domain.folder.usecase.GetFolderDetailUseCase
 import com.keeply.domain.folder.usecase.UpdateFolderUseCase
 import com.keeply.presentation.core.components.colorBar.FolderColor
@@ -22,7 +23,8 @@ import javax.inject.Inject
 class FolderDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getFolderDetailUseCase: GetFolderDetailUseCase,
-    private val updateFolderUseCase: UpdateFolderUseCase
+    private val updateFolderUseCase: UpdateFolderUseCase,
+    private val deleteFolderUseCase: DeleteFolderUseCase
 ) : ContainerHost<FolderDetailState, FolderDetailSideEffect>, ViewModel() {
     
     private val folderId: Long = savedStateHandle.get<Long>("folderId") ?: 0L
@@ -98,6 +100,29 @@ class FolderDetailViewModel @Inject constructor(
                         )
                     }
                     loadFolderDetail()
+                }
+        }
+    }
+    
+    fun showDeleteDialog() = intent {
+        reduce { state.copy(isShowDeleteDialog = true) }
+    }
+    
+    fun hideDeleteDialog() = intent {
+        reduce { state.copy(isShowDeleteDialog = false) }
+    }
+    
+    fun deleteFolder() = intent {
+        viewModelScope.launch {
+            deleteFolderUseCase(state.folderId)
+                .catch { error ->
+                    reduce { state.copy(isShowDeleteDialog = false) }
+                    postSideEffect(FolderDetailSideEffect.ShowError(error.message ?: "폴더 삭제에 실패했습니다"))
+                }
+                .collectLatest { success ->
+                    if (success) {
+                        postSideEffect(FolderDetailSideEffect.NavigateBackWithRefresh)
+                    }
                 }
         }
     }

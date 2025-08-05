@@ -7,6 +7,7 @@ import com.keeply.data.folder.model.CreateFolderRequest
 import com.keeply.data.folder.model.FolderListResponse
 import com.keeply.data.folder.model.FolderResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -28,4 +29,9 @@ interface FolderService {
         @Path("folderId") folderId: Long,
         @Body request: UpdateFolderRequest
     ): BaseResponse<FolderResponse>
+
+    @DELETE("api/folders/{folderId}")
+    suspend fun deleteFolder(
+        @Path("folderId") folderId: Long
+    ): BaseResponse<Map<String, String>>
 }

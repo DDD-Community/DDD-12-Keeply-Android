@@ -31,13 +31,14 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.keeply.presentation.R
+import com.keeply.presentation.core.components.KeeplyAlertCheckModal
+import com.keeply.presentation.core.components.KeeplyAlertModal
 import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.components.KeeplyModalBottomSheet
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
-import com.keeply.presentation.core.components.colorBar.FolderColor
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.folder.detail.component.FolderModifyBottomSheetContent
 import com.keeply.presentation.ui.home.component.HomeKeeplyScreenshotItem
@@ -66,6 +67,9 @@ fun FolderDetailRoute(
             is FolderDetailSideEffect.ShowError -> {
 
             }
+            is FolderDetailSideEffect.NavigateBackWithRefresh -> {
+                onBackWithUpdate()
+            }
         }
     }
 
@@ -74,25 +78,43 @@ fun FolderDetailRoute(
     FolderDetailScreen(
         state = uiState,
         onBack = onBack,
-        onHideBottomSheet = viewModel::hideBottomSheet,
-        onShowBottomSheet = viewModel::showBottomSheet,
-        onFolderNameChange = viewModel::updateFolderName,
-        onColorSelect = viewModel::selectColor,
-        onDeleteClick = { /* TODO: Implement delete */ },
-        onSaveClick = viewModel::saveFolder
+        onShowBottomSheet = viewModel::showBottomSheet
     )
+
+    if (uiState.isShowBottomSheet) {
+        KeeplyModalBottomSheet(
+            onDismissRequest = viewModel::hideBottomSheet
+        ) {
+            FolderModifyBottomSheetContent(
+                folderName = uiState.editingFolderName,
+                selectedColor = uiState.selectedColor,
+                onFolderNameChange = viewModel::updateFolderName,
+                onColorSelect = viewModel::selectColor,
+                onDeleteClick = viewModel::showDeleteDialog,
+                onSaveClick = viewModel::saveFolder
+            )
+        }
+    }
+    // Delete Dialog
+    if (uiState.isShowDeleteDialog) {
+        KeeplyAlertCheckModal(
+            title = "폴더 삭제",
+            content = "정말 삭제하시겠어요?",
+            checkText = "삭제",
+            confirmButtonText = "삭제",
+            cancelButtonText = "취소",
+            onDismissCallback = viewModel::hideDeleteDialog,
+            cancelButtonCallback = viewModel::hideDeleteDialog,
+            confirmButtonCallback = viewModel::deleteFolder
+        )
+    }
 }
 
 @Composable
 fun FolderDetailScreen(
     state: FolderDetailState,
     onBack: () -> Unit,
-    onHideBottomSheet: () -> Unit = {},
-    onShowBottomSheet: () -> Unit = {},
-    onFolderNameChange: (String) -> Unit = {},
-    onColorSelect: (FolderColor) -> Unit = {},
-    onDeleteClick: () -> Unit = {},
-    onSaveClick: () -> Unit = {}
+    onShowBottomSheet: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -216,22 +238,6 @@ fun FolderDetailScreen(
             }
         }
     }
-
-    if (state.isShowBottomSheet) {
-        KeeplyModalBottomSheet(
-            onDismissRequest = onHideBottomSheet
-        ) {
-            FolderModifyBottomSheetContent(
-                folderName = state.editingFolderName,
-                selectedColor = state.selectedColor,
-                onFolderNameChange = onFolderNameChange,
-                onColorSelect = onColorSelect,
-                onDeleteClick = onDeleteClick,
-                onSaveClick = onSaveClick
-            )
-        }
-    }
-
 }
 
 @Preview(showBackground = true)

@@ -16,10 +16,12 @@ data class FolderDetailState(
     val isShowBottomSheet: Boolean = false,
     val editingFolderName: String = "",
     val selectedColor: FolderColor = FolderColor.YELLOW,
-    val hasUpdated: Boolean = false
+    val hasUpdated: Boolean = false,
+    val isShowDeleteDialog: Boolean = false
 )
 
 sealed interface FolderDetailSideEffect {
     data class ShowError(val message: String) : FolderDetailSideEffect
+    data object NavigateBackWithRefresh : FolderDetailSideEffect
 }
 

@@ -87,4 +87,18 @@ class FolderRepositoryImpl @Inject constructor(
             throw e.toException(json)
         }
     }
+
+    override suspend fun deleteFolder(folderId: Long): Flow<Boolean> = flow {
+        try {
+            val response = folderService.deleteFolder(folderId)
+            
+            if (response.success == true) {
+                emit(true)
+            } else {
+                throw Exception(response.reason)
+            }
+        } catch (e: HttpException) {
+            throw e.toException(json)
+        }
+    }
 }
