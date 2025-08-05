@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keeply.domain.folder.usecase.GetFolderDetailUseCase
+import com.keeply.presentation.core.components.colorBar.FolderColor
+import com.keeply.presentation.core.components.colorBar.fromHexString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.catch
@@ -22,11 +24,14 @@ class FolderDetailViewModel @Inject constructor(
     
     private val folderId: Long = savedStateHandle.get<Long>("folderId") ?: 0L
     private val folderName: String = savedStateHandle.get<String>("folderName") ?: ""
+    private val folderColor: String = savedStateHandle.get<String>("folderColor") ?: "YELLOW"
 
     override val container: Container<FolderDetailState, FolderDetailSideEffect> = container(
         FolderDetailState(
             folderId = folderId,
-            folderName = folderName
+            folderName = folderName,
+            editingFolderName = folderName,
+            selectedColor = fromHexString(folderColor) ?: FolderColor.YELLOW
         )
     )
 
@@ -61,5 +66,13 @@ class FolderDetailViewModel @Inject constructor(
     
     fun showBottomSheet() = intent {
         reduce { state.copy(isShowBottomSheet = true) }
+    }
+    
+    fun updateFolderName(name: String) = intent {
+        reduce { state.copy(editingFolderName = name) }
+    }
+    
+    fun selectColor(color: FolderColor) = intent {
+        reduce { state.copy(selectedColor = color) }
     }
 }

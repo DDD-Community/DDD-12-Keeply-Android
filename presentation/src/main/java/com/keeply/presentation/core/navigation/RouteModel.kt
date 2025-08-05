@@ -37,6 +37,7 @@ sealed interface FolderRoute: Route {
     @Serializable
     data class FolderDetail(
         val folderId: Long,
-        val folderName: String
+        val folderName: String,
+        val folderColor: String
     ): FolderRoute
 }

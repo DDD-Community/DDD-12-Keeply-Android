@@ -23,8 +23,8 @@ fun NavGraphBuilder.folderNavGraph(
         val folderCreated = parentNavController.currentBackStackEntry?.savedStateHandle?.get<Boolean>(FOLDER_CREATED).default()
         FolderRoute(
             onNavigateToAddFolder = { parentNavController.navigateAddFolder() },
-            onNavigateToFolderDetail = { folderId, folderName ->
-                parentNavController.navigate(FolderRoute.FolderDetail(folderId, folderName))
+            onNavigateToFolderDetail = { folderId, folderName, folderColor ->
+                parentNavController.navigate(FolderRoute.FolderDetail(folderId, folderName, folderColor))
             },
             shouldRefresh = folderCreated
         )

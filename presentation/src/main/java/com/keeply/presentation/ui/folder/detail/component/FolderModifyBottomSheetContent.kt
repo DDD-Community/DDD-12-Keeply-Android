@@ -17,7 +17,14 @@ import com.keeply.presentation.core.components.colorBar.FolderColor
 import com.keeply.presentation.core.theme.KeeplyTheme
 
 @Composable
-fun FolderModifyBottomSheetContent() {
+fun FolderModifyBottomSheetContent(
+    folderName: String = "",
+    selectedColor: FolderColor = FolderColor.YELLOW,
+    onFolderNameChange: (String) -> Unit = {},
+    onColorSelect: (FolderColor) -> Unit = {},
+    onDeleteClick: () -> Unit = {},
+    onSaveClick: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .padding(
@@ -30,17 +37,16 @@ fun FolderModifyBottomSheetContent() {
         KeeplyTextField(
             modifier = Modifier
                 .fillMaxWidth(),
-            value = "DDD_안칠수",
-            onValueChange = {}
+            value = folderName,
+            onValueChange = onFolderNameChange
         )
 
         ColorBar(
             modifier = Modifier
                 .padding(top = 20.dp),
-            selectedColor = FolderColor.ORANGE
-        ) {
-
-        }
+            selectedColor = selectedColor,
+            onColorSelected = onColorSelect
+        )
 
         Row(
             modifier = Modifier
@@ -52,15 +58,15 @@ fun FolderModifyBottomSheetContent() {
                 modifier = Modifier
                     .weight(1f),
                 text = "폴더 삭제",
-                onClick = {},
+                onClick = onDeleteClick,
                 buttonStyle = KeeplyButtonStyle.SECONDARY
             )
 
             KeeplyButton(
                 modifier = Modifier
                     .weight(1f),
-                text = "폴더 삭제",
-                onClick = {}
+                text = "저장",
+                onClick = onSaveClick
             )
         }
     }

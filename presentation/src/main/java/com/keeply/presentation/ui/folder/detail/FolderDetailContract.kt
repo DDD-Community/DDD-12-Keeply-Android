@@ -2,6 +2,7 @@ package com.keeply.presentation.ui.folder.detail
 
 import androidx.compose.runtime.Immutable
 import com.keeply.domain.folder.model.FolderImage
+import com.keeply.presentation.core.components.colorBar.FolderColor
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -12,7 +13,9 @@ data class FolderDetailState(
     val images: ImmutableList<FolderImage> = persistentListOf(),
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isShowBottomSheet: Boolean = false
+    val isShowBottomSheet: Boolean = false,
+    val editingFolderName: String = "",
+    val selectedColor: FolderColor = FolderColor.YELLOW
 )
 
 sealed interface FolderDetailSideEffect {

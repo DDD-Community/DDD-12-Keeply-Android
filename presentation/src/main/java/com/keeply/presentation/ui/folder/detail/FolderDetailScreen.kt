@@ -36,6 +36,7 @@ import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
+import com.keeply.presentation.core.components.colorBar.FolderColor
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.folder.detail.component.FolderModifyBottomSheetContent
 import com.keeply.presentation.ui.home.component.HomeKeeplyScreenshotItem
@@ -62,7 +63,11 @@ fun FolderDetailRoute(
         state = uiState,
         onBack = onBack,
         onHideBottomSheet = viewModel::hideBottomSheet,
-        onShowBottomSheet = viewModel::showBottomSheet
+        onShowBottomSheet = viewModel::showBottomSheet,
+        onFolderNameChange = viewModel::updateFolderName,
+        onColorSelect = viewModel::selectColor,
+        onDeleteClick = { /* TODO: Implement delete */ },
+        onSaveClick = { /* TODO: Implement save */ }
     )
 }
 
@@ -71,7 +76,11 @@ fun FolderDetailScreen(
     state: FolderDetailState,
     onBack: () -> Unit,
     onHideBottomSheet: () -> Unit = {},
-    onShowBottomSheet: () -> Unit = {}
+    onShowBottomSheet: () -> Unit = {},
+    onFolderNameChange: (String) -> Unit = {},
+    onColorSelect: (FolderColor) -> Unit = {},
+    onDeleteClick: () -> Unit = {},
+    onSaveClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -200,7 +209,14 @@ fun FolderDetailScreen(
         KeeplyModalBottomSheet(
             onDismissRequest = onHideBottomSheet
         ) {
-            FolderModifyBottomSheetContent()
+            FolderModifyBottomSheetContent(
+                folderName = state.editingFolderName,
+                selectedColor = state.selectedColor,
+                onFolderNameChange = onFolderNameChange,
+                onColorSelect = onColorSelect,
+                onDeleteClick = onDeleteClick,
+                onSaveClick = onSaveClick
+            )
         }
     }
 
