@@ -16,9 +16,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -32,24 +37,34 @@ import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.home.component.HomeKeeplyScreenshotItem
+import kotlinx.collections.immutable.persistentListOf
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun FolderDetailRoute(
-    folderId: Long,
-    folderName: String,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    viewModel: FolderDetailViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.collectAsState()
+    
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is FolderDetailSideEffect.ShowError -> {
+                // Handle error
+            }
+        }
+    }
+    
     FolderDetailScreen(
-        folderId = folderId,
-        folderName = folderName,
+        state = uiState,
         onBack = onBack
     )
 }
 
 @Composable
 fun FolderDetailScreen(
-    folderId: Long,
-    folderName: String,
+    state: FolderDetailState,
     onBack: () -> Unit
 ) {
     Column(
@@ -58,7 +73,7 @@ fun FolderDetailScreen(
             .background(KeeplyTheme.colors.neutral100)
     ) {
         KeeplyAppBar(
-            title = folderName,
+            title = state.folderName,
             leadingIcon = {
                 Icon(
                     painter = KeeplyTheme.icons.chevronLeft,
@@ -77,7 +92,7 @@ fun FolderDetailScreen(
             onClickTrailing = { }
         )
 
-        val isNotEmpty = true
+        val isNotEmpty = state.images.isNotEmpty()
 
         if(isNotEmpty) {
             Column(
@@ -96,7 +111,7 @@ fun FolderDetailScreen(
                     KeeplyText(
                         modifier = Modifier
                             .weight(1f),
-                        text = "20개",
+                        text = "${state.images.size}개",
                         style = KeeplyTheme.typography.subtitle02,
                         color = KeeplyTheme.colors.neutral600
                     )
@@ -112,15 +127,19 @@ fun FolderDetailScreen(
                         bottom = 112.dp
                     )
                 ) {
-                    items(20) {
+                    items(state.images.size) { index ->
+                        val image = state.images[index]
                         HomeKeeplyScreenshotItem(
                             modifier = Modifier
                                 .padding(
                                     vertical = 16.dp
-                                )
+                                ),
+                            painter = rememberAsyncImagePainter(model = image.presignedUrl),
+                            tag = image.tag,
+                            insight = image.insight,
                         )
 
-                        if (it < 10 - 1 ) {
+                        if (index < state.images.size - 1 ) {
                             HorizontalDivider(
                                 thickness = 1.dp,
                                 color = KeeplyTheme.colors.neutral200
@@ -177,8 +196,11 @@ fun FolderDetailScreen(
 private fun FolderDetailScreenPreview() {
     KeeplyTheme {
         FolderDetailScreen(
-            folderId = 1,
-            folderName = "나의 폴더",
+            state = FolderDetailState(
+                folderId = 1,
+                folderName = "나의 폴더",
+                images = persistentListOf()
+            ),
             onBack = { }
         )
     }
