@@ -54,4 +54,12 @@ class FolderDetailViewModel @Inject constructor(
                 }
         }
     }
+    
+    fun hideBottomSheet() = intent {
+        reduce { state.copy(isShowBottomSheet = false) }
+    }
+    
+    fun showBottomSheet() = intent {
+        reduce { state.copy(isShowBottomSheet = true) }
+    }
 }

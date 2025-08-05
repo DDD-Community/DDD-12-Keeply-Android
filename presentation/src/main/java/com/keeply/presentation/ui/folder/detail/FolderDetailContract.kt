@@ -11,7 +11,8 @@ data class FolderDetailState(
     val folderName: String = "",
     val images: ImmutableList<FolderImage> = persistentListOf(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isShowBottomSheet: Boolean = false
 )
 
 sealed interface FolderDetailSideEffect {
