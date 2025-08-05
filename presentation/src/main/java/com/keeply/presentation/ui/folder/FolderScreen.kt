@@ -29,7 +29,6 @@ fun FolderRoute(
 ) {
     val uiState by viewModel.collectAsState()
     
-    // 폴더가 생성되었을 때 새로고침
     LaunchedEffect(shouldRefresh) {
         if (shouldRefresh) {
             viewModel.refreshFolders()

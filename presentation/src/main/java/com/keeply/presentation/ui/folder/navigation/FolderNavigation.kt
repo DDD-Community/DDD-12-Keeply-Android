@@ -7,8 +7,9 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.keeply.domain.extend.default
 import com.keeply.presentation.core.navigation.FolderRoute
+import com.keeply.presentation.core.navigation.FolderRoute.Companion.FOLDER_CREATED
+import com.keeply.presentation.core.navigation.FolderRoute.Companion.FOLDER_UPDATED
 import com.keeply.presentation.core.navigation.HomeRoute
-import com.keeply.presentation.core.navigation.HomeRoute.Companion.FOLDER_CREATED
 import com.keeply.presentation.ui.folder.FolderRoute
 import com.keeply.presentation.ui.folder.add.navigation.navigateAddFolder
 
@@ -17,16 +18,26 @@ fun NavController.navigateFolder(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.folderNavGraph(
-    parentNavController: NavHostController
+    navController: NavHostController
 ) {
     composable<HomeRoute.Folder> {
-        val folderCreated = parentNavController.currentBackStackEntry?.savedStateHandle?.get<Boolean>(FOLDER_CREATED).default()
+        val folderCreated = navController.currentBackStackEntry?.savedStateHandle?.get<Boolean>(FOLDER_CREATED).default()
+        val folderUpdated = navController.currentBackStackEntry?.savedStateHandle?.get<Boolean>(FOLDER_UPDATED).default()
+        
         FolderRoute(
-            onNavigateToAddFolder = { parentNavController.navigateAddFolder() },
+            onNavigateToAddFolder = { navController.navigateAddFolder() },
             onNavigateToFolderDetail = { folderId, folderName, folderColor ->
-                parentNavController.navigate(FolderRoute.FolderDetail(folderId, folderName, folderColor))
+                navController.navigate(FolderRoute.FolderDetail(folderId, folderName, folderColor))
             },
-            shouldRefresh = folderCreated
+            shouldRefresh = folderCreated || folderUpdated
         )
+        
+        // Clear the flags after use
+        if (folderCreated) {
+            navController.currentBackStackEntry?.savedStateHandle?.set(FOLDER_CREATED, false)
+        }
+        if (folderUpdated) {
+            navController.currentBackStackEntry?.savedStateHandle?.set(FOLDER_UPDATED, false)
+        }
     }
 }

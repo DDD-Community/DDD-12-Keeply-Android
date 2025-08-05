@@ -1,5 +1,6 @@
 package com.keeply.presentation.ui.folder.detail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,10 +48,19 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun FolderDetailRoute(
     onBack: () -> Unit,
+    onBackWithUpdate: () -> Unit,
     viewModel: FolderDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.collectAsState()
-    
+
+    val onBack = {
+        if (uiState.hasUpdated) {
+            onBackWithUpdate()
+        } else {
+            onBack()
+        }
+    }
+
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is FolderDetailSideEffect.ShowError -> {
@@ -58,6 +68,8 @@ fun FolderDetailRoute(
             }
         }
     }
+
+    BackHandler { onBack.invoke() }
     
     FolderDetailScreen(
         state = uiState,
@@ -67,7 +79,7 @@ fun FolderDetailRoute(
         onFolderNameChange = viewModel::updateFolderName,
         onColorSelect = viewModel::selectColor,
         onDeleteClick = { /* TODO: Implement delete */ },
-        onSaveClick = { /* TODO: Implement save */ }
+        onSaveClick = viewModel::saveFolder
     )
 }
 

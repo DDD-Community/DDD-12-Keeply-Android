@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import com.keeply.presentation.ui.alarm.navigation.alarmNavGraph
 import com.keeply.presentation.ui.folder.add.navigation.addFolderNavGraph
-import com.keeply.presentation.ui.folder.add.navigation.navigateAddFolder
 import com.keeply.presentation.ui.folder.detail.navigation.folderDetailNavGraph
 import com.keeply.presentation.ui.folder.navigation.folderNavGraph
 import com.keeply.presentation.ui.home.navigation.homeNavGraph
@@ -31,7 +30,7 @@ internal fun KeeplyNavHost(
         homeNavGraph()
 
         folderNavGraph(
-            parentNavController = navigator.navController
+            navController = navigator.navController
         )
 
         scanNavGraph(navController = navigator.navController)
@@ -51,7 +50,16 @@ internal fun KeeplyNavHost(
         
         folderDetailNavGraph(
             navController = navigator.navController,
-            onNavigateBack = { navigator.popBackStack() }
+            onNavigateBack = { 
+                navigator.popBackStack() 
+            },
+            onNavigateBackWithUpdate = {
+                navigator.navController.previousBackStackEntry?.savedStateHandle?.set(
+                    FolderRoute.FOLDER_UPDATED, 
+                    true
+                )
+                navigator.popBackStack()
+            }
         )
     }
 }

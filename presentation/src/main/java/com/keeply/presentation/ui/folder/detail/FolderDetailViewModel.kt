@@ -4,8 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keeply.domain.folder.usecase.GetFolderDetailUseCase
+import com.keeply.domain.folder.usecase.UpdateFolderUseCase
 import com.keeply.presentation.core.components.colorBar.FolderColor
 import com.keeply.presentation.core.components.colorBar.fromHexString
+import com.keeply.presentation.core.components.colorBar.toHexString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.catch
@@ -19,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FolderDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getFolderDetailUseCase: GetFolderDetailUseCase
+    private val getFolderDetailUseCase: GetFolderDetailUseCase,
+    private val updateFolderUseCase: UpdateFolderUseCase
 ) : ContainerHost<FolderDetailState, FolderDetailSideEffect>, ViewModel() {
     
     private val folderId: Long = savedStateHandle.get<Long>("folderId") ?: 0L
@@ -74,5 +77,28 @@ class FolderDetailViewModel @Inject constructor(
     
     fun selectColor(color: FolderColor) = intent {
         reduce { state.copy(selectedColor = color) }
+    }
+    
+    fun saveFolder() = intent {
+        viewModelScope.launch {
+            updateFolderUseCase(
+                folderId = state.folderId,
+                folderName = state.editingFolderName,
+                color = state.selectedColor.toHexString()
+            )
+                .catch { error ->
+                    postSideEffect(FolderDetailSideEffect.ShowError(error.message ?: "폴더 수정에 실패했습니다"))
+                }
+                .collectLatest { updatedFolder ->
+                    reduce { 
+                        state.copy(
+                            folderName = updatedFolder.folderName,
+                            isShowBottomSheet = false,
+                            hasUpdated = true
+                        )
+                    }
+                    loadFolderDetail()
+                }
+        }
     }
 }

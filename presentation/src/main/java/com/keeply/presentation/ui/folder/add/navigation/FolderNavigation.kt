@@ -6,7 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.keeply.presentation.core.navigation.FolderRoute
 import com.keeply.presentation.core.navigation.HomeRoute
-import com.keeply.presentation.core.navigation.HomeRoute.Companion.FOLDER_CREATED
+import com.keeply.presentation.core.navigation.FolderRoute.Companion.FOLDER_CREATED
 import com.keeply.presentation.ui.folder.add.AddFolderRoute
 
 fun NavController.navigateAddFolder() {
