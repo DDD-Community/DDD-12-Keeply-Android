@@ -24,6 +24,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun FolderRoute(
     viewModel: FolderViewModel = hiltViewModel(),
     onNavigateToAddFolder: () -> Unit,
+    onNavigateToFolderDetail: (folderId: Long, folderName: String) -> Unit,
     shouldRefresh: Boolean = false
 ) {
     val uiState by viewModel.collectAsState()
@@ -38,7 +39,8 @@ fun FolderRoute(
     FolderScreen(
         uiState = uiState,
         onClickTab = viewModel::onClickTab,
-        onNavigateToAddFolder = onNavigateToAddFolder
+        onNavigateToAddFolder = onNavigateToAddFolder,
+        onNavigateToFolderDetail = onNavigateToFolderDetail
     )
 }
 
@@ -46,7 +48,8 @@ fun FolderRoute(
 fun FolderScreen(
     uiState: FolderState,
     onClickTab: (Int) -> Unit = {},
-    onNavigateToAddFolder: () -> Unit = {}
+    onNavigateToAddFolder: () -> Unit = {},
+    onNavigateToFolderDetail: (folderId: Long, folderName: String) -> Unit = { _, _ -> }
 ) {
     Column(
         modifier = Modifier
@@ -83,7 +86,10 @@ fun FolderScreen(
             FolderTabs.Folder -> FolderDisplay(
                 folders = uiState.folders,
                 isLoading = uiState.isLoading,
-                onNavigateToAddFolder = onNavigateToAddFolder
+                onNavigateToAddFolder = onNavigateToAddFolder,
+                onFolderClick = { folder ->
+                    onNavigateToFolderDetail(folder.folderId, folder.folderName)
+                }
             )
             FolderTabs.Uncategorized -> UncategorizedDisplay()
         }

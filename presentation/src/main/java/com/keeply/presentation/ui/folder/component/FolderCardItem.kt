@@ -1,6 +1,7 @@
 package com.keeply.presentation.ui.folder.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,12 +30,14 @@ import java.util.Locale
 @Composable
 fun FolderCardItem(
     modifier: Modifier = Modifier,
-    folder: Folder
+    folder: Folder,
+    onClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .background(KeeplyTheme.colors.neutralWhite)
+            .clickable { onClick() }
             .padding(12.dp)
     ) {
         val folderColor = folder.color.let {

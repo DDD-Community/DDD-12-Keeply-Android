@@ -33,4 +33,10 @@ sealed interface OnboardingRoute: Route {
 sealed interface FolderRoute: Route {
     @Serializable
     data object AddFolder: FolderRoute
+    
+    @Serializable
+    data class FolderDetail(
+        val folderId: Long,
+        val folderName: String
+    ): FolderRoute
 }

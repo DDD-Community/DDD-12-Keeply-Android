@@ -6,7 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.keeply.presentation.core.navigation.FolderRoute
 import com.keeply.presentation.core.navigation.HomeRoute
-import com.keeply.presentation.ui.folder.FolderRoute
+import com.keeply.presentation.core.navigation.HomeRoute.Companion.FOLDER_CREATED
 import com.keeply.presentation.ui.folder.add.AddFolderRoute
 
 fun NavController.navigateAddFolder() {
@@ -22,7 +22,7 @@ fun NavGraphBuilder.addFolderNavGraph(
             onNavigateBack = onNavigateBack,
             onNavigateSaveBack = {
                 // 이전 화면에 결과 전달
-                navController.previousBackStackEntry?.savedStateHandle?.set("folder_created", true)
+                navController.previousBackStackEntry?.savedStateHandle?.set(FOLDER_CREATED, true)
                 onNavigateBack()
             }
         )
