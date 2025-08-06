@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,15 +16,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.size.Size
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -52,10 +48,10 @@ fun FolderDetailRoute(
     onBackWithUpdate: () -> Unit,
     viewModel: FolderDetailViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.collectAsState()
+    val state by viewModel.collectAsState()
 
     val onBack = {
-        if (uiState.hasUpdated) {
+        if (state.hasUpdated) {
             onBackWithUpdate()
         } else {
             onBack()
@@ -76,27 +72,29 @@ fun FolderDetailRoute(
     BackHandler { onBack.invoke() }
     
     FolderDetailScreen(
-        state = uiState,
+        state = state,
         onBack = onBack,
         onShowBottomSheet = viewModel::showBottomSheet
     )
 
-    if (uiState.isShowBottomSheet) {
+    if (state.isShowBottomSheet) {
         KeeplyModalBottomSheet(
             onDismissRequest = viewModel::hideBottomSheet
         ) {
             FolderModifyBottomSheetContent(
-                folderName = uiState.editingFolderName,
-                selectedColor = uiState.selectedColor,
-                onFolderNameChange = viewModel::updateFolderName,
-                onColorSelect = viewModel::selectColor,
+                initialFolderName = state.folderName,
+                initialSelectedColor = state.selectedColor,
                 onDeleteClick = viewModel::showDeleteDialog,
-                onSaveClick = viewModel::saveFolder
+                onSaveClick = { name, color ->
+                    viewModel.updateFolderName(name)
+                    viewModel.selectColor(color)
+                    viewModel.saveFolder()
+                }
             )
         }
     }
     // Delete Dialog
-    if (uiState.isShowDeleteDialog) {
+    if (state.isShowDeleteDialog) {
         KeeplyAlertModal(
             title = stringResource(id = R.string.folder_delete_dialog_title),
             content = stringResource(id = R.string.folder_delete_dialog_content),

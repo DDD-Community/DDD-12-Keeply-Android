@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,13 +22,15 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 
 @Composable
 fun FolderModifyBottomSheetContent(
-    folderName: String = "",
-    selectedColor: FolderColor = FolderColor.YELLOW,
-    onFolderNameChange: (String) -> Unit = {},
-    onColorSelect: (FolderColor) -> Unit = {},
+    initialFolderName: String = "",
+    initialSelectedColor: FolderColor,
     onDeleteClick: () -> Unit = {},
-    onSaveClick: () -> Unit = {}
+    onSaveClick: (String, FolderColor) -> Unit = { _, _ -> }
 ) {
+    var folderName by remember { mutableStateOf(initialFolderName) }
+    var selectedColor by remember { mutableStateOf(initialSelectedColor) }
+    val checkFolderRegex = folderName.length in 1..20 && folderName.isNotBlank()
+    
     Column(
         modifier = Modifier
             .padding(
@@ -38,14 +44,16 @@ fun FolderModifyBottomSheetContent(
             modifier = Modifier
                 .fillMaxWidth(),
             value = folderName,
-            onValueChange = onFolderNameChange
+            onValueChange = { folderName = it },
+            helpIcon = if (checkFolderRegex) null else KeeplyTheme.icons.error,
+            helpText = if (checkFolderRegex) "" else "최대 20자까지 입력 가능합니다.",
         )
 
         ColorBar(
             modifier = Modifier
                 .padding(top = 20.dp),
             selectedColor = selectedColor,
-            onColorSelected = onColorSelect
+            onColorSelected = { selectedColor = it }
         )
 
         Row(
@@ -66,7 +74,8 @@ fun FolderModifyBottomSheetContent(
                 modifier = Modifier
                     .weight(1f),
                 text = "저장",
-                onClick = onSaveClick
+                onClick = { onSaveClick(folderName, selectedColor) },
+                enabled = checkFolderRegex
             )
         }
     }
@@ -76,6 +85,9 @@ fun FolderModifyBottomSheetContent(
 @Composable
 private fun FolderModifyBottomSheetContentPreview() {
     KeeplyTheme {
-        FolderModifyBottomSheetContent()
+        FolderModifyBottomSheetContent(
+            initialFolderName = "나의 폴더",
+            initialSelectedColor = FolderColor.YELLOW
+        )
     }
 }
