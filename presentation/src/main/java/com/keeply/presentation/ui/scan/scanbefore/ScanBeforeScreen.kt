@@ -3,11 +3,12 @@ package com.keeply.presentation.ui.scan.scanbefore
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,16 +24,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -61,7 +63,6 @@ import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.ScanBar
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral900
-import com.keeply.presentation.core.theme.orange400
 import com.keeply.presentation.util.toFile
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -89,8 +90,6 @@ fun ScanBeforeRoute(
                 image = uiState.uri.toUri().toFile(context),
                 successCallback = { result ->
                     onNavigateToScanAfter(uiState.uri.toUri(), result)
-
-
                 }
             )
         }
@@ -127,13 +126,31 @@ fun ScanBeforeScreen(
             )
         }
 
-        BoxWithConstraints(
+        val interactionSource = remember { MutableInteractionSource() }
+        val clickableModifier = if (isScanLoading) {
+            Modifier
+                .padding(35.dp)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    onClick = { }
+                )
+        } else {
+            Modifier
+                .padding(0.dp)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = LocalIndication.current,
+                    onClick = { isMenuVisible = !isMenuVisible }
+                )
+        }
+
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .align(Alignment.Center)
-                .padding(if (isScanLoading) 35.dp else 0.dp)
-                .clickable { isMenuVisible = !isMenuVisible }
+                .then(clickableModifier)
         ) {
             val painter = if (LocalInspectionMode.current) {
                 painterResource(id = R.drawable.img_onboarding_02)
@@ -141,38 +158,32 @@ fun ScanBeforeScreen(
                 rememberAsyncImagePainter(uri)
             }
 
-            val overlayStart = maxHeight / 5  // Scan 그라데이션 시작 위치
-
+            val imageHeightPx = remember { mutableIntStateOf(0) }
+            val imageHeightDp = with(LocalDensity.current) { imageHeightPx.intValue.toDp() }
             Image(
                 painter = painter,
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        imageHeightPx.intValue = coordinates.size.height // px 단위
+                    },
                 contentScale = ContentScale.Fit
             )
 
             if (isScanLoading && isScanCompleted.not()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .offset(y = overlayStart)
-                        .background(orange400)
+                val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie_scan))
+                val progress by animateLottieCompositionAsState(
+                    composition = composition,
+                    iterations = LottieConstants.IterateForever
                 )
-
-                Box(
+                LottieAnimation(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(290.dp)
-                        .offset(y = overlayStart)
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    orange400.copy(alpha = 0.3f),
-                                    Color.Transparent
-                                )
-                            )
-                        )
+                        .height(imageHeightDp),
+                    contentScale = ContentScale.FillBounds,
+                    composition = composition,
+                    progress = { progress }
                 )
             }
         }
