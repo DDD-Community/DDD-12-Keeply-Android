@@ -6,8 +6,7 @@ import com.keeply.domain.home.model.HomeData
 @Immutable
 data class HomeState(
     val isLoading: Boolean = false,
-    val homeData: HomeData? = null,
-    val error: String? = null
+    val homeData: HomeData? = null
 )
 
 sealed interface HomeSideEffect {
