@@ -41,7 +41,7 @@ class ScanAfterViewModel @Inject constructor(
         }
     }
 
-    fun onSaveClick(selectedTag: String, folderId: Long) = intent {
+    fun onSaveClick(selectedText: String, folderId: Long) = intent {
         reduce { state.copy(isLoading = true) }
         
         viewModelScope.launch {
@@ -49,9 +49,9 @@ class ScanAfterViewModel @Inject constructor(
                 isCached = true,
                 cachedImageId = state.cachedImageId,
                 imageId = 0,
-                imageInsight = state.textField,
+                imageInsight = selectedText,
                 folderId = folderId,
-                tag = selectedTag
+                tag = "Sample"
             ).catch { error ->
                 reduce { state.copy(isLoading = false) }
                 postSideEffect(ScanAfterSideEffect.ShowError(error.message ?: "이미지 저장에 실패했습니다"))
