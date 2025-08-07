@@ -6,13 +6,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,16 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.keeply.presentation.R
@@ -38,7 +27,8 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun KeeplyToast(
-    message: String,
+    title: String,
+    content: String,
     isVisible: Boolean,
     modifier: Modifier = Modifier,
     duration: Long = 3000L,
@@ -78,7 +68,7 @@ fun KeeplyToast(
             ) {
                 Icon(
                     modifier = Modifier.size(24.dp),
-                    painter = KeeplyTheme.icons.checkmarkFilled,
+                    painter = painterResource(R.drawable.ic_checkmark_filled),
                     contentDescription = null,
                     tint = KeeplyTheme.colors.orange400
                 )
@@ -88,7 +78,7 @@ fun KeeplyToast(
                         .weight(1f)
                 ) {
                     KeeplyText(
-                        text = message,
+                        text = title,
                         modifier = Modifier
                             .padding(top = 1.dp),
                         style = KeeplyTheme.typography.subtitle01,
@@ -96,7 +86,7 @@ fun KeeplyToast(
                     )
 
                     KeeplyText(
-                        text = message,
+                        text = content,
                         style = KeeplyTheme.typography.body,
                         color = KeeplyTheme.colors.neutral500,
                     )
@@ -112,7 +102,8 @@ fun KeeplyToast(
 fun KeeplyToastInfoPreview() {
     KeeplyTheme {
         KeeplyToast(
-            message = "정보를 확인해주세요.",
+            title = "정보를 확인해주세요.",
+            content = "테스트",
             isVisible = true
         )
     }

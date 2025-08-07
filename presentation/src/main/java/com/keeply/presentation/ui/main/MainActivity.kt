@@ -150,7 +150,8 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 KeeplyToast(
                                     modifier = Modifier.padding(16.dp),
-                                    message = toastData.title,
+                                    title = toastData.title,
+                                    content = toastData.content,
                                     isVisible = true,
                                     onDismiss = { ToastManager.hide() }
                                 )
