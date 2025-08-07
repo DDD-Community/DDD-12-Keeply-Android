@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,26 +12,31 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,8 +50,11 @@ import com.keeply.presentation.core.components.KeeplyButtonStyle
 import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.core.theme.LocalColors
 import com.keeply.presentation.core.theme.neutral100
 import com.keeply.presentation.core.theme.neutralWhite
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import java.net.URLDecoder
@@ -71,6 +80,8 @@ fun ScanAfterRoute(
         }
     }
 
+    BackHandler { onBack.invoke() }
+
     ScanAfterScreen(
         uri = uiState.uri.toUri(),
         context = context,
@@ -79,11 +90,7 @@ fun ScanAfterRoute(
         onBack = onBack,
         onSave = onSave,
         onValueChange = viewModel::onValueChange,
-        onSaveClick = { selectedText, folderId ->
-//            viewModel::onSaveClick
-            viewModel.onSaveClick(selectedText, folderId)
-            onBack() // 임시!! 뒤로가기
-        },
+        onSaveClick = viewModel::onSaveClick,
         cachedImageId = uiState.cachedImageId,
         recommendedTags = uiState.recommendedTags,
         detectedText = uiState.detectedText,
@@ -110,23 +117,34 @@ fun ScanAfterScreen(
     onSave: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
-    var showSelectBottomSheet by remember { mutableStateOf(true) }
-
+    var isSheetVisible by remember { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(neutral100) // #F4F4F4 해야되는데 없어서 임시
     ) {
-        if (showSelectBottomSheet) {
+        if (isSheetVisible) {
             SelectTextBottomSheet(
                 modifier = Modifier,
                 context = context,
                 sheetState = sheetState,
                 cachedImageId = cachedImageId,
-                recommendedTags = recommendedTags,
                 detectedText = detectedText ?: "추출된 텍스트가 없습니다.",
-                onSaveClick = onSaveClick,
+                onBack = {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                    isSheetVisible = false
+                },
+                onSaveClick = { text, folderId ->
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                    isSheetVisible = false
+                    onSaveClick(text, folderId)
+                },
                 isLoading = isLoading
             )
         }
@@ -235,120 +253,128 @@ fun SelectTextBottomSheet(
     context: Context,
     sheetState: SheetState,
     cachedImageId: String?,
-    recommendedTags: List<String>?,
     detectedText: String,
+    onBack: () -> Unit,
     onSaveClick: (String, Long) -> Unit,
     isLoading: Boolean
 ) {
     if (cachedImageId.isNullOrBlank()) return // 추후수정
 
-    var resultString by remember { mutableStateOf("") }
 
-    Log.d("TAG", "SelectTextBottomSheet: $recommendedTags")
+//    BackHandler { onBack() }
+
+    // TODO: dragHandle 추가
     ModalBottomSheet(
-        onDismissRequest = {
-            // 아무것도 선택 안 하고 다음
-//                showSelectBottomSheet = false
-            Toast.makeText(
-                context,
-                "이제 앱 종료 후 안내에 따라 진행해 주세요.",
-                Toast.LENGTH_SHORT
-            ).show()
-        },
-        dragHandle = null,
+        onDismissRequest = onBack,
         sheetState = sheetState,
         shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
         containerColor = neutralWhite,
         modifier = modifier,
+        content = {
+            SelectTextBottomSheetContent(
+                context = context,
+                detectedText = detectedText,
+                onBackClick = onBack,
+                onSaveClick = onSaveClick,
+                isLoading = isLoading
+            )
+        }
+    )
+}
+
+@Composable
+fun SelectTextBottomSheetContent(
+    context: Context = LocalContext.current,
+    detectedText: String = "",
+    onBackClick: () -> Unit = {},
+    onSaveClick: (String, Long) -> Unit = { _, _ -> },
+    isLoading: Boolean = false
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(neutralWhite)
+            .padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
     ) {
+        val textList: List<String> = detectedText.split("\n")
+        val selectedIndices = remember { mutableStateListOf<Int>() }
+
+        // 헤더 (높이 고정)
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(437.dp)
-                .padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
+                .background(neutralWhite)
+                .padding(bottom = 28.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .background(neutralWhite)
+            KeeplyText(
+                text = "Text",
+                style = KeeplyTheme.typography.header04,
+            )
 
-            ) {
-                KeeplyText(
-                    text = "Text",
-                    style = KeeplyTheme.typography.header04,
-                )
+            KeeplyText(
+                modifier = Modifier.padding(top = 6.dp),
+                text = "스크린샷에서 추출한 문구 중\n기록에 활용할 문구를 선택해주세요.",
+                style = KeeplyTheme.typography.body,
+                color = LocalColors.current.neutral600
+            )
+        }
 
-                KeeplyText(
+        // 추출된 텍스트 (스크롤)
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            repeat(textList.size) { index ->
+                val keyword = textList[index]
+                FolderTextList(
                     modifier = Modifier
-                        .padding(top = 6.dp),
-                    text = "기록에 활용할 문구를 선택해주세요.",
-                    style = KeeplyTheme.typography.body,
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxHeight()
-                    .weight(1f)
-                    .padding(top = 28.dp)
-            ) {
-                val lineList: List<String> = detectedText.split("\n")
-
-                repeat(lineList.size) {
-                    val keyword = lineList[it]
-                    FolderTextList(
-                        modifier = Modifier
-                            .padding(vertical = 6.dp),
-                        tag = "",
-                        text = keyword
-                    ) { text, isClick ->
-                        if (isClick) {
-                            resultString += text
-                        }
+                        .padding(vertical = 3.dp),
+                    text = keyword
+                ) { isSelected ->
+                    if (isSelected) {
+                        selectedIndices.remove(index)
+                    } else {
+                        selectedIndices.add(index)
                     }
                 }
-
             }
+        }
 
+        // 하단 버튼 (높이 고정)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 32.dp)
+                .background(neutralWhite),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
+        ) {
+            KeeplyButton(
+                onClick = {
+                    onBackClick()
+                },
+                modifier = Modifier.wrapContentWidth(),
+                text = "돌아가기",
+                buttonStyle = KeeplyButtonStyle.SECONDARY,
+                buttonSize = KeeplyButtonSize.SMALL
+            )
 
-            Row(
+            Spacer(modifier = Modifier.width(8.dp))
+
+            KeeplyButton(
+                onClick = {
+                    // TODO: 폴더 선택 기능 추가 필요, 현재는 기본값 1 사용
+                    val selectedText = selectedIndices
+                        .sorted().joinToString(separator = "\n") { textList[it] }
+                    onSaveClick(selectedText, 1)
+                },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(90.dp)
-                    .background(neutralWhite),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement
-                    .End
-            ) {
-                KeeplyButton(
-                    onClick = {
-                        Toast.makeText(
-                            context,
-                            "준비중입니다. 앱 종료 후 안내에 따라 진행해 주세요.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    },
-                    modifier = Modifier
-                        .width(75.dp),
-                    text = "취소",
-                    buttonStyle = KeeplyButtonStyle.SECONDARY,
-                    buttonSize = KeeplyButtonSize.SMALL
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                KeeplyButton(
-                    onClick = {
-                        // TODO: 폴더 선택 기능 추가 필요, 현재는 기본값 1 사용
-                        onSaveClick(resultString, 1)
-                    },
-                    modifier = Modifier
-                        .width(75.dp),
-                    enabled = !isLoading,
-                    text = "이동",
-                    buttonSize = KeeplyButtonSize.SMALL
-                )
-            }
+                    .wrapContentWidth()
+                    .widthIn(min = 75.dp),
+                enabled = !isLoading,
+                text = "다음",
+                buttonSize = KeeplyButtonSize.SMALL
+            )
         }
     }
 }
@@ -356,47 +382,53 @@ fun SelectTextBottomSheet(
 @Composable
 fun FolderTextList(
     modifier: Modifier = Modifier,
-    tag: String,
     text: String,
-    onClick: (String, Boolean) -> Unit
+    onClick: (Boolean) -> Unit
 ) {
-    var isClick by remember { mutableStateOf(false) }
+    var isSelected by remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier
-            .background(if (isClick) KeeplyTheme.colors.neutral1000 else KeeplyTheme.colors.neutral300)
+            .background(if (isSelected) KeeplyTheme.colors.neutral1000 else KeeplyTheme.colors.neutral100)
             .fillMaxWidth()
             .clickable {
-                isClick = !isClick
-                if (isClick) {
-                    onClick(text, isClick)
-                }
+                isSelected = !isSelected
+                onClick(isSelected)
             }
             .padding(all = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         KeeplyText(
             modifier = Modifier
-                .padding(start = 4.dp),
+                .padding(start = 4.dp)
+                .weight(1f),
             text = text,
             style = KeeplyTheme.typography.button01Suit,
-            color = if (isClick) KeeplyTheme.colors.neutralWhite else KeeplyTheme.colors.neutralBlack,
+            color = if (isSelected) KeeplyTheme.colors.neutralWhite else KeeplyTheme.colors.neutralBlack,
+        )
+
+        Icon(
+            modifier = Modifier
+                .padding(start = 20.dp)
+                .size(16.dp),
+            painter = KeeplyTheme.icons.checkmark,
+            contentDescription = "",
+            tint = if (isSelected) KeeplyTheme.colors.neutralWhite else KeeplyTheme.colors.neutral300,
         )
     }
 }
 
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Preview
-//@Composable
-//private fun SelectTextBottomSheetPreview() {
-//    KeeplyTheme {
-//        SelectTextBottomSheet(
-//            sheetState = rememberModalBottomSheetState(),
-//            modifier = Modifier
-//        )
-//    }
-//}
+@Preview(widthDp = 360, heightDp = 600)
+@Composable
+private fun SelectTextBottomSheetPreview() {
+    KeeplyTheme {
+        SelectTextBottomSheetContent(
+            detectedText = "하이하이\n다음말이다\n반갑소\n이러한 책 속의 인용들을 보며, 나는 좋은 문구를 기록만 해두는 경우가 많은데, 잘 활용하는 것도 중요하단 생각을 많이 했다."
+
+        )
+    }
+}
 
 
 //@Preview(showBackground = true, heightDp = 750)
