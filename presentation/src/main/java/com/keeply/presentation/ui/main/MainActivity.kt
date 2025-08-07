@@ -23,8 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.keeply.presentation.core.components.KeeplyToast
 import com.keeply.presentation.core.components.NavigationBar
+import com.keeply.presentation.core.components.ToastManager
 import com.keeply.presentation.core.navigation.KeeplyNavHost
 import com.keeply.presentation.core.navigation.KeeplyTab
 import com.keeply.presentation.core.navigation.rememberKeeplyNavigator
@@ -136,6 +139,22 @@ class MainActivity : ComponentActivity() {
 
                         if(isShowSplash) {
                             SplashScreen()
+                        }
+
+                        ToastManager.toastState?.let { toastData ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .zIndex(999f),
+                                contentAlignment = toastData.contentAlignment
+                            ) {
+                                KeeplyToast(
+                                    modifier = Modifier.padding(16.dp),
+                                    message = toastData.title,
+                                    isVisible = true,
+                                    onDismiss = { ToastManager.hide() }
+                                )
+                            }
                         }
                     }
                 }
