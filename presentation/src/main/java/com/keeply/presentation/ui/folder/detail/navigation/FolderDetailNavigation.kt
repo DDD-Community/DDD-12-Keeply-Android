@@ -12,11 +12,13 @@ fun NavController.navigateFolderDetail() {
 
 fun NavGraphBuilder.folderDetailNavGraph(
     navController: NavController,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateBackWithUpdate: () -> Unit
 ) {
     composable<FolderRoute.FolderDetail> { backStackEntry ->
         FolderDetailRoute(
-            onBack = onNavigateBack
+            onBack = onNavigateBack,
+            onBackWithUpdate = onNavigateBackWithUpdate
         )
     }
 }

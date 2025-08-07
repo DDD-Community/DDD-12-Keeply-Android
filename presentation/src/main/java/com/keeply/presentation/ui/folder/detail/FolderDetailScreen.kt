@@ -1,11 +1,11 @@
 package com.keeply.presentation.ui.folder.detail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,26 +16,27 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.size.Size
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.keeply.presentation.R
+import com.keeply.presentation.core.components.KeeplyAlertModal
 import com.keeply.presentation.core.components.KeeplyAppBar
+import com.keeply.presentation.core.components.KeeplyModalBottomSheet
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.ui.folder.detail.component.FolderModifyBottomSheetContent
 import com.keeply.presentation.ui.home.component.HomeKeeplyScreenshotItem
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
@@ -44,28 +45,73 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun FolderDetailRoute(
     onBack: () -> Unit,
+    onBackWithUpdate: () -> Unit,
     viewModel: FolderDetailViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.collectAsState()
-    
+    val state by viewModel.collectAsState()
+
+    val onBack = {
+        if (state.hasUpdated) {
+            onBackWithUpdate()
+        } else {
+            onBack()
+        }
+    }
+
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is FolderDetailSideEffect.ShowError -> {
-                // Handle error
+
+            }
+            is FolderDetailSideEffect.NavigateBackWithRefresh -> {
+                onBackWithUpdate()
             }
         }
     }
+
+    BackHandler { onBack.invoke() }
     
     FolderDetailScreen(
-        state = uiState,
-        onBack = onBack
+        state = state,
+        onBack = onBack,
+        onShowBottomSheet = viewModel::showBottomSheet
     )
+
+    if (state.isShowBottomSheet) {
+        KeeplyModalBottomSheet(
+            onDismissRequest = viewModel::hideBottomSheet
+        ) {
+            FolderModifyBottomSheetContent(
+                initialFolderName = state.folderName,
+                initialSelectedColor = state.selectedColor,
+                onDeleteClick = viewModel::showDeleteDialog,
+                onSaveClick = { name, color ->
+                    viewModel.updateFolderName(name)
+                    viewModel.selectColor(color)
+                    viewModel.saveFolder()
+                }
+            )
+        }
+    }
+    // Delete Dialog
+    if (state.isShowDeleteDialog) {
+        KeeplyAlertModal(
+            title = stringResource(id = R.string.folder_delete_dialog_title),
+            content = stringResource(id = R.string.folder_delete_dialog_content),
+            confirmButtonText = stringResource(id = R.string.folder_delete_dialog_confirm),
+            cancelButtonText = stringResource(id = R.string.folder_delete_dialog_cancel),
+            onDismissCallback = viewModel::hideDeleteDialog,
+            cancelButtonCallback = viewModel::hideDeleteDialog,
+            confirmButtonCallback = viewModel::deleteFolder
+        )
+    }
 }
 
 @Composable
 fun FolderDetailScreen(
     state: FolderDetailState,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onShowBottomSheet: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -89,7 +135,7 @@ fun FolderDetailScreen(
                 )
             },
             onClickLeading = onBack,
-            onClickTrailing = { }
+            onClickTrailing = onShowBottomSheet
         )
 
         val isNotEmpty = state.images.isNotEmpty()
