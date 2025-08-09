@@ -2,6 +2,7 @@ package com.keeply.data.core.di
 
 import com.keeply.data.screenshot.remote.OcrService
 import com.keeply.data.folder.remote.FolderService
+import com.keeply.data.home.remote.HomeService
 import com.keeply.data.image.remote.ImageService
 import com.keeply.data.user.remote.UserService
 import dagger.Module
