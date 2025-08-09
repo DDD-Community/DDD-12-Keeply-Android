@@ -1,11 +1,11 @@
 package com.keeply.presentation.ui.folder.detail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,39 +18,100 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.keeply.presentation.R
+import com.keeply.presentation.core.components.KeeplyAlertModal
 import com.keeply.presentation.core.components.KeeplyAppBar
+import com.keeply.presentation.core.components.KeeplyModalBottomSheet
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.ui.folder.detail.component.FolderModifyBottomSheetContent
 import com.keeply.presentation.ui.home.component.HomeKeeplyScreenshotItem
+import kotlinx.collections.immutable.persistentListOf
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun FolderDetailRoute(
-    folderId: Long,
-    folderName: String,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onBackWithUpdate: () -> Unit,
+    viewModel: FolderDetailViewModel = hiltViewModel()
 ) {
+    val state by viewModel.collectAsState()
+
+    val onBack = {
+        if (state.hasUpdated) {
+            onBackWithUpdate()
+        } else {
+            onBack()
+        }
+    }
+
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is FolderDetailSideEffect.ShowError -> {
+
+            }
+            is FolderDetailSideEffect.NavigateBackWithRefresh -> {
+                onBackWithUpdate()
+            }
+        }
+    }
+
+    BackHandler { onBack.invoke() }
+    
     FolderDetailScreen(
-        folderId = folderId,
-        folderName = folderName,
-        onBack = onBack
+        state = state,
+        onBack = onBack,
+        onShowBottomSheet = viewModel::showBottomSheet
     )
+
+    if (state.isShowBottomSheet) {
+        KeeplyModalBottomSheet(
+            onDismissRequest = viewModel::hideBottomSheet
+        ) {
+            FolderModifyBottomSheetContent(
+                initialFolderName = state.folderName,
+                initialSelectedColor = state.selectedColor,
+                onDeleteClick = viewModel::showDeleteDialog,
+                onSaveClick = { name, color ->
+                    viewModel.updateFolderName(name)
+                    viewModel.selectColor(color)
+                    viewModel.saveFolder()
+                }
+            )
+        }
+    }
+    // Delete Dialog
+    if (state.isShowDeleteDialog) {
+        KeeplyAlertModal(
+            title = stringResource(id = R.string.folder_delete_dialog_title),
+            content = stringResource(id = R.string.folder_delete_dialog_content),
+            confirmButtonText = stringResource(id = R.string.folder_delete_dialog_confirm),
+            cancelButtonText = stringResource(id = R.string.folder_delete_dialog_cancel),
+            onDismissCallback = viewModel::hideDeleteDialog,
+            cancelButtonCallback = viewModel::hideDeleteDialog,
+            confirmButtonCallback = viewModel::deleteFolder
+        )
+    }
 }
 
 @Composable
 fun FolderDetailScreen(
-    folderId: Long,
-    folderName: String,
-    onBack: () -> Unit
+    state: FolderDetailState,
+    onBack: () -> Unit,
+    onShowBottomSheet: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -58,7 +119,7 @@ fun FolderDetailScreen(
             .background(KeeplyTheme.colors.neutral100)
     ) {
         KeeplyAppBar(
-            title = folderName,
+            title = state.folderName,
             leadingIcon = {
                 Icon(
                     painter = KeeplyTheme.icons.chevronLeft,
@@ -74,10 +135,10 @@ fun FolderDetailScreen(
                 )
             },
             onClickLeading = onBack,
-            onClickTrailing = { }
+            onClickTrailing = onShowBottomSheet
         )
 
-        val isNotEmpty = true
+        val isNotEmpty = state.images.isNotEmpty()
 
         if(isNotEmpty) {
             Column(
@@ -96,7 +157,7 @@ fun FolderDetailScreen(
                     KeeplyText(
                         modifier = Modifier
                             .weight(1f),
-                        text = "20개",
+                        text = "${state.images.size}개",
                         style = KeeplyTheme.typography.subtitle02,
                         color = KeeplyTheme.colors.neutral600
                     )
@@ -112,15 +173,19 @@ fun FolderDetailScreen(
                         bottom = 112.dp
                     )
                 ) {
-                    items(20) {
+                    items(state.images.size) { index ->
+                        val image = state.images[index]
                         HomeKeeplyScreenshotItem(
                             modifier = Modifier
                                 .padding(
                                     vertical = 16.dp
-                                )
+                                ),
+                            painter = rememberAsyncImagePainter(model = image.presignedUrl),
+                            tag = image.tag,
+                            insight = image.insight,
                         )
 
-                        if (it < 10 - 1 ) {
+                        if (index < state.images.size - 1 ) {
                             HorizontalDivider(
                                 thickness = 1.dp,
                                 color = KeeplyTheme.colors.neutral200
@@ -177,8 +242,11 @@ fun FolderDetailScreen(
 private fun FolderDetailScreenPreview() {
     KeeplyTheme {
         FolderDetailScreen(
-            folderId = 1,
-            folderName = "나의 폴더",
+            state = FolderDetailState(
+                folderId = 1,
+                folderName = "나의 폴더",
+                images = persistentListOf()
+            ),
             onBack = { }
         )
     }

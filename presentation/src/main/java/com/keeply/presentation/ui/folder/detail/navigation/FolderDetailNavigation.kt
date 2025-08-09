@@ -12,17 +12,13 @@ fun NavController.navigateFolderDetail() {
 
 fun NavGraphBuilder.folderDetailNavGraph(
     navController: NavController,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateBackWithUpdate: () -> Unit
 ) {
     composable<FolderRoute.FolderDetail> { backStackEntry ->
-        val args = backStackEntry.arguments
-        val folderId = args?.getLong("folderId") ?: 0L
-        val folderName = args?.getString("folderName") ?: ""
-
         FolderDetailRoute(
-            folderId = folderId,
-            folderName = folderName,
-            onBack = onNavigateBack
+            onBack = onNavigateBack,
+            onBackWithUpdate = onNavigateBackWithUpdate
         )
     }
 }

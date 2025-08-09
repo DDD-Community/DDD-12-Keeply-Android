@@ -1,10 +1,12 @@
 package com.keeply.data.folder
 
 import com.keeply.data.core.extension.toException
+import com.keeply.data.dto.folder.UpdateFolderRequest
 import com.keeply.data.folder.mapper.toDomain
 import com.keeply.data.folder.model.CreateFolderRequest
 import com.keeply.data.folder.remote.FolderService
 import com.keeply.domain.folder.model.Folder
+import com.keeply.domain.folder.model.FolderImage
 import com.keeply.domain.folder.repository.FolderRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -43,6 +45,55 @@ class FolderRepositoryImpl @Inject constructor(
             if (response.success == true && response.response != null) {
                 val folders = response.response.folderList?.map { it.toDomain() } ?: emptyList()
                 emit(folders)
+            } else {
+                throw Exception(response.reason)
+            }
+        } catch (e: HttpException) {
+            throw e.toException(json)
+        }
+    }
+
+    override suspend fun getFolderDetail(folderId: Long): Flow<List<FolderImage>> = flow {
+        try {
+            val response = folderService.getFolderDetail(folderId)
+            
+            if (response.success == true && response.response != null) {
+                val images = response.response.imageList?.map { it.toDomain() } ?: emptyList()
+                emit(images)
+            } else {
+                throw Exception(response.reason)
+            }
+        } catch (e: HttpException) {
+            throw e.toException(json)
+        }
+    }
+
+    override suspend fun updateFolder(folderId: Long, folderName: String, color: String): Flow<Folder> = flow {
+        try {
+            val response = folderService.updateFolder(
+                folderId = folderId,
+                request = UpdateFolderRequest(
+                    folderName = folderName,
+                    color = color
+                )
+            )
+            
+            if (response.success == true && response.response != null) {
+                emit(response.response.toDomain())
+            } else {
+                throw Exception(response.reason)
+            }
+        } catch (e: HttpException) {
+            throw e.toException(json)
+        }
+    }
+
+    override suspend fun deleteFolder(folderId: Long): Flow<Boolean> = flow {
+        try {
+            val response = folderService.deleteFolder(folderId)
+            
+            if (response.success == true) {
+                emit(true)
             } else {
                 throw Exception(response.reason)
             }

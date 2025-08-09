@@ -7,7 +7,7 @@ fun String.formatDate(
     format: String = "yyyy.MM.dd",
 ): String =
     try {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         val outputFormat = SimpleDateFormat(format, Locale.getDefault())
         val date = inputFormat.parse(this)
         date?.let { outputFormat.format(it) } ?: this
