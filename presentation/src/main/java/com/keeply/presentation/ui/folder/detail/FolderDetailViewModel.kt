@@ -48,7 +48,7 @@ class FolderDetailViewModel @Inject constructor(
         reduce { state.copy(isLoading = true) }
         
         viewModelScope.launch {
-            getFolderDetailUseCase(folderId)
+            getFolderDetailUseCase(folderId.toString())
                 .catch { error ->
                     reduce { state.copy(isLoading = false, error = error.message) }
                     postSideEffect(FolderDetailSideEffect.ShowError(error.message ?: "폴더 상세 조회에 실패했습니다"))

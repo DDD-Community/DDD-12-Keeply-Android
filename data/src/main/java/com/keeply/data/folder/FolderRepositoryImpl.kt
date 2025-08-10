@@ -53,7 +53,7 @@ class FolderRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFolderDetail(folderId: Long): Flow<List<FolderImage>> = flow {
+    override suspend fun getFolderDetail(folderId: String): Flow<List<FolderImage>> = flow {
         try {
             val response = folderService.getFolderDetail(folderId)
             

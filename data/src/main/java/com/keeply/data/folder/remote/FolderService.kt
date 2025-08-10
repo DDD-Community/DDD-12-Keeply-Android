@@ -22,7 +22,7 @@ interface FolderService {
     suspend fun getFolders(): BaseResponse<FolderListResponse>
 
     @GET("api/folders/{folderId}")
-    suspend fun getFolderDetail(@Path("folderId") folderId: Long): BaseResponse<FolderDetailResponse>
+    suspend fun getFolderDetail(@Path("folderId") folderId: String): BaseResponse<FolderDetailResponse>
 
     @PUT("api/folders/{folderId}")
     suspend fun updateFolder(

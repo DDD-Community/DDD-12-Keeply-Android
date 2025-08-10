@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetFolderDetailUseCase @Inject constructor(
     private val folderRepository: FolderRepository
 ) {
-    suspend operator fun invoke(folderId: Long): Flow<List<FolderImage>> {
+    suspend operator fun invoke(folderId: String): Flow<List<FolderImage>> {
         return folderRepository.getFolderDetail(folderId)
     }
 }
