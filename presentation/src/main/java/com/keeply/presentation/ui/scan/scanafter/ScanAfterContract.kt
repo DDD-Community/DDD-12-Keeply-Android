@@ -18,7 +18,9 @@ data class ScanAfterState(
     val textFieldMaxLength: Int = 300,
     val isLoading: Boolean = false,
     val folders: ImmutableList<Folder> = persistentListOf(),
-    val error: String? = null
+    val error: String? = null,
+    val showSelectTextBottomSheet: Boolean = true, // 초기값 설정
+    val showSuccessModal: Boolean = false
 )
 
 sealed interface ScanAfterSideEffect {

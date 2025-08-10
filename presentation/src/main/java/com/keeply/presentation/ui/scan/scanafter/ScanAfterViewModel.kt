@@ -41,6 +41,14 @@ class ScanAfterViewModel @Inject constructor(
         loadFolders()
     }
 
+    fun dismissSuccessModal() = intent {
+        reduce { state.copy(showSuccessModal = false) }
+    }
+
+    fun onFinishedTextSelection() = intent {
+        reduce { state.copy(showSelectTextBottomSheet = false) }
+    }
+
     fun updateSelectedIndices(selectedIndices: List<Int>) {
         val selectedText = selectedIndices
             .mapNotNull { idx ->
@@ -83,7 +91,8 @@ class ScanAfterViewModel @Inject constructor(
                 postSideEffect(ScanAfterSideEffect.ShowError(error.message ?: "이미지 저장에 실패했습니다"))
             }.collectLatest { image ->
                 reduce { state.copy(isLoading = false) }
-                postSideEffect(ScanAfterSideEffect.ShowSuccessModal(image.imageId))
+                reduce { state.copy(showSuccessModal = true) }
+//                postSideEffect(ScanAfterSideEffect.ShowSuccessModal(image.imageId))
             }
         }
     }

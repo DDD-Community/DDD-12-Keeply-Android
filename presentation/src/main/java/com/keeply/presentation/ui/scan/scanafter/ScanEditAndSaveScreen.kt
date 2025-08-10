@@ -37,6 +37,7 @@ import com.keeply.presentation.core.components.KeeplyButtonStyle
 import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.core.theme.neutral100
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import java.net.URLDecoder
@@ -55,7 +56,11 @@ fun ScanEditAndSaveScreen(
     // TODO: 수정 필요
     val isSavable by remember { mutableStateOf(textFieldLength <= textFieldMaxLength) }
 
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(neutral100)
+    ) {
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
