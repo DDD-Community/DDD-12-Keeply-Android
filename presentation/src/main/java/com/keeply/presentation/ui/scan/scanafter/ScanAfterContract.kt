@@ -21,6 +21,7 @@ data class ScanAfterState(
     val selectedFolderId: Long = 1, // 0으로 하고 '선택필요' 예외처리 할 수도
     val error: String? = null,
     val showSelectTextBottomSheet: Boolean = true, // 초기값 설정
+    val showAddFolderModal: Boolean = false,
     val showSuccessModal: Boolean = false
 )
 

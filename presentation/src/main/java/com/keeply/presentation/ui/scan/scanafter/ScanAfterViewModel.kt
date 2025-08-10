@@ -49,6 +49,10 @@ class ScanAfterViewModel @Inject constructor(
         reduce { state.copy(showSelectTextBottomSheet = false) }
     }
 
+    fun onAddFolderModal(isShow: Boolean) = intent {
+        reduce { state.copy(showAddFolderModal = isShow) }
+    }
+
     fun updateSelectedIndices(selectedIndices: List<Int>) {
         val selectedText = selectedIndices
             .mapNotNull { idx ->
@@ -101,7 +105,7 @@ class ScanAfterViewModel @Inject constructor(
         }
     }
 
-    private fun loadFolders() = intent {
+    fun loadFolders() = intent {
         viewModelScope.launch {
             getFoldersUseCase()
                 .onStart {
