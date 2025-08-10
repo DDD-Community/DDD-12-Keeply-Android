@@ -72,7 +72,7 @@ fun FolderListPreview() {
             folder = Folder(
                 folderId = 1,
                 folderName = "독서",
-                color = "",
+                color = "FF7AB9F2",
                 imageCount = 3,
                 updatedAt = "0000"
             )
