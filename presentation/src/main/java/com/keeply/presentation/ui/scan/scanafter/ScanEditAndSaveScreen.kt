@@ -2,6 +2,7 @@ package com.keeply.presentation.ui.scan.scanafter
 
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,9 +46,10 @@ fun ScanEditAndSaveScreen(
     textFieldLength: Int,
     textFieldMaxLength: Int,
     folderList: ImmutableList<Folder>,
-    onValueChange: (String) -> Unit,
+    onTextChange: (String) -> Unit,
+    onSelectFolder: (Long) -> Unit,
     onBackClick: () -> Unit,
-    onSaveClick: (String, Long) -> Unit
+    onSaveClick: () -> Unit
 ) {
     // TODO: 수정 필요
     val isSavable by remember { mutableStateOf(textFieldLength <= textFieldMaxLength) }
@@ -86,7 +88,7 @@ fun ScanEditAndSaveScreen(
 
                 InsightTextField(
                     value = textField,
-                    onValueChange = onValueChange,
+                    onValueChange = onTextChange,
                     modifier = Modifier
                         .padding(top = 16.dp, bottom = 40.dp),
                     placeholder = stringResource(R.string.scan_insight_text_field),
@@ -117,7 +119,8 @@ fun ScanEditAndSaveScreen(
             itemsIndexed(folderList) { index, folder ->
                 FolderList(
                     modifier = Modifier
-                        .padding(top = if (index == 0) 16.dp else 6.dp, bottom = 6.dp),
+                        .padding(top = if (index == 0) 16.dp else 6.dp, bottom = 6.dp)
+                        .clickable { onSelectFolder(folder.folderId) },
                     folder = folder
                 )
             }
@@ -144,8 +147,7 @@ fun ScanEditAndSaveScreen(
 
             KeeplyButton(
                 onClick = {
-                    // TODO: 폴더 일단 1로 고정함 -> 폴더 선택 처리, 선택시 UI 적용 필요
-                    onSaveClick(textField, 1)
+                    onSaveClick()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -166,9 +168,10 @@ private fun ScanScreenPreview() {
             textField = "",
             textFieldLength = 0,
             textFieldMaxLength = 300,
-            onValueChange = { },
+            onTextChange = { },
+            onSelectFolder = { },
             onBackClick = { },
-            onSaveClick = { _, _ -> },
+            onSaveClick = { },
             folderList = persistentListOf(
                 Folder(
                     folderId = 1,
