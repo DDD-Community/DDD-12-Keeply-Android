@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -29,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -108,25 +108,17 @@ fun SelectTextBottomSheetContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(173.dp)
-                    .background(LocalColors.current.neutral100)
+                    .background(LocalColors.current.neutral100),
+                contentAlignment = Alignment.Center
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(top = 32.dp, bottom = 32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // TODO: 이미지 파일, 사이즈 변경 필요
+                Column {
                     Image(
-                        modifier = Modifier
-                            .size(80.dp),
-                        painter = painterResource(R.drawable.ic_keeply_splash_logo),
+                        contentScale = ContentScale.Fit,
+                        painter = painterResource(R.drawable.ic_ocr_no_result),
                         contentDescription = null
                     )
 
                     KeeplyText(
-                        modifier = Modifier.padding(top = 6.dp),
                         text = "추출된 텍스트가 없습니다.",
                         style = KeeplyTheme.typography.subtitle02,
                         color = LocalColors.current.neutral900
