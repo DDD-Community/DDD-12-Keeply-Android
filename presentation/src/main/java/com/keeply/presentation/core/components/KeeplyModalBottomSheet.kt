@@ -2,37 +2,39 @@ package com.keeply.presentation.core.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.keeply.presentation.core.theme.KeeplyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KeeplyModalBottomSheet(
     onDismissRequest: () -> Unit = {},
+    skipPartiallyExpanded: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
+        skipPartiallyExpanded = skipPartiallyExpanded
     )
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         sheetState = sheetState,
         containerColor = KeeplyTheme.colors.neutralWhite,
         contentColor = KeeplyTheme.colors.neutralBlack,
