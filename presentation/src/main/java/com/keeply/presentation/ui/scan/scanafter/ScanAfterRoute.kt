@@ -45,11 +45,10 @@ fun ScanAfterRoute(
         textFieldMaxLength = uiState.textFieldMaxLength,
         folderList = uiState.folders,
         onAddFolderClick = { viewModel.onAddFolderModal(true) },
-        onValueChange = viewModel::onValueChange,
+        onTextChange = viewModel::onTextChange,
+        onSelectFolder = viewModel::onSelectFolder,
         onBackClick = onBack,
-        onSaveClick = { selectedText, folderId ->
-            viewModel.onSaveClick(selectedText, folderId)
-        }
+        onSaveClick = viewModel::onSaveClick
     )
 
     if (uiState.showSelectTextBottomSheet) {

@@ -12,12 +12,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.keeply.domain.folder.model.Folder
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutralWhite
-import com.keeply.presentation.core.theme.orange400
 
 @Composable
 fun FolderList(
@@ -35,7 +35,7 @@ fun FolderList(
             modifier = Modifier,
             text = folder.folderName,
             style = FileTagStyle.Small,
-//            color = folder.color
+            color = Color(folder.color.toLong(16))
         )
 
         Box(

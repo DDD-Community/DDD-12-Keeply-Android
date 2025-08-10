@@ -71,7 +71,7 @@ class ScanAfterViewModel @Inject constructor(
         }
     }
 
-    fun onValueChange(value: String) = intent {
+    fun onTextChange(value: String) = intent {
         reduce {
             state.copy(
                 textField = value
@@ -79,7 +79,11 @@ class ScanAfterViewModel @Inject constructor(
         }
     }
 
-    fun onSaveClick(selectedText: String, folderId: Long) = intent {
+    fun onSelectFolder(folderId: Long) = intent {
+        reduce { state.copy(selectedFolderId = folderId) }
+    }
+
+    fun onSaveClick() = intent {
         reduce { state.copy(isLoading = true) }
 
         viewModelScope.launch {
@@ -87,8 +91,8 @@ class ScanAfterViewModel @Inject constructor(
                 isCached = true,
                 cachedImageId = state.cachedImageId,
                 imageId = 0,
-                imageInsight = selectedText,
-                folderId = folderId,
+                imageInsight = state.textField,
+                folderId = state.selectedFolderId,
                 tag = "Sample"
             ).catch { error ->
                 reduce { state.copy(isLoading = false) }
