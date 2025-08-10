@@ -26,7 +26,10 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.folder.component.UncategorizedCardItem
 
 @Composable
-fun UncategorizedDisplay() {
+fun UncategorizedDisplay(
+    images: kotlinx.collections.immutable.ImmutableList<com.keeply.domain.folder.model.FolderImage> = kotlinx.collections.immutable.persistentListOf(),
+    isLoading: Boolean = false
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -43,7 +46,7 @@ fun UncategorizedDisplay() {
             KeeplyText(
                 modifier = Modifier
                     .weight(1f),
-                text = "999개",
+                text = "${images.size}개",
                 style = KeeplyTheme.typography.subtitle02,
                 color = KeeplyTheme.colors.neutral600
             )
@@ -53,8 +56,7 @@ fun UncategorizedDisplay() {
             )
         }
 
-        val folderList = List(100) { it } // 예시 리스트
-        val chunkedList = folderList.chunked(3)
+        val chunkedList = images.chunked(3)
 
         LazyColumn(
             modifier = Modifier
@@ -104,11 +106,13 @@ fun UncategorizedDisplay() {
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    rowItems.forEach { item ->
+                    rowItems.forEach { image ->
                         UncategorizedCardItem(
                             modifier = Modifier
                                 .weight(1f)
                                 .wrapContentHeight(),
+                            imageUrl = image.presignedUrl,
+                            daysUntilDeletion = image.daysUntilDeletion
                         )
                     }
 
