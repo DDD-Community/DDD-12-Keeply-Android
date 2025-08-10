@@ -8,6 +8,7 @@ import com.keeply.domain.folder.usecase.GetFoldersUseCase
 import com.keeply.domain.image.usecase.CreateImageUseCase
 import com.keeply.presentation.ui.scan.navigation.ScanRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -32,8 +33,8 @@ class ScanAfterViewModel @Inject constructor(
             ScanAfterState(
                 uri = scanAfter.url,
                 cachedImageId = scanAfter.cachedImageId ?: "",
-                detectedTextList = scanAfter.detectedText?.split("\n") ?: emptyList(),
-                recommendedTags = scanAfter.recommendedTags
+                detectedTextList = scanAfter.detectedText?.split("\n")?.toPersistentList() ?: persistentListOf(),
+                recommendedTags = scanAfter.recommendedTags?.toPersistentList()
             )
         )
 
