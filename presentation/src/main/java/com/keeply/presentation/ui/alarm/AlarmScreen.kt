@@ -1,5 +1,6 @@
 package com.keeply.presentation.ui.alarm
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,16 +58,14 @@ fun AlarmScreen() {
                     color = KeeplyTheme.colors.neutral500
                 )
 
-                Box(
+                Image(
                     modifier = Modifier
                         .padding(top = 24.dp)
-                        .shadow01()
                         .clip(RoundedCornerShape(12.dp))
-                        .size(88.dp)
-                        .background(KeeplyTheme.colors.neutralWhite)
-                ) {
-
-                }
+                        .size(88.dp),
+                    painter = painterResource(R.drawable.ic_keeply_background_logo),
+                    contentDescription = "Keeply Logo",
+                )
 
                 KeeplyButton(
                     modifier = Modifier
