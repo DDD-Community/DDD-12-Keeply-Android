@@ -14,12 +14,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.keeply.domain.folder.model.Folder
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutralWhite
+import com.keeply.presentation.core.theme.orange400
 
 @Composable
 fun FolderList(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    folder: Folder
 ) {
     Row(
         modifier = modifier
@@ -30,8 +33,9 @@ fun FolderList(
     ) {
         FileTag(
             modifier = Modifier,
-            text = "독서",
-            style = FileTagStyle.Small
+            text = folder.folderName,
+            style = FileTagStyle.Small,
+//            color = folder.color
         )
 
         Box(
@@ -53,7 +57,7 @@ fun FolderList(
         KeeplyText(
             modifier = Modifier
                 .padding(start = 4.dp),
-            text = "5",
+            text = folder.imageCount.toString(),
             style = KeeplyTheme.typography.caption02,
             color = KeeplyTheme.colors.neutral500
         )
@@ -64,6 +68,14 @@ fun FolderList(
 @Composable
 fun FolderListPreview() {
     KeeplyTheme {
-        FolderList()
+        FolderList(
+            folder = Folder(
+                folderId = 1,
+                folderName = "독서",
+                color = "",
+                imageCount = 3,
+                updatedAt = "0000"
+            )
+        )
     }
 }

@@ -26,7 +26,7 @@ fun FileTag(
     text: String,
     style: FileTagStyle,
     modifier: Modifier = Modifier,
-    color: Color = KeeplyTheme.colors.orange400
+    color: Color = KeeplyTheme.colors.orange400 // string으로 바꿔야..??
 ) {
     Row(
         modifier = modifier,

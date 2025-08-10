@@ -11,7 +11,9 @@ import com.keeply.presentation.ui.scan.screenshot.ScreenshotRoute
 
 @Composable
 fun ScanNavHost(
-    navigator: ScanNavigator
+    navigator: ScanNavigator,
+    onNavigateToHome: () -> Unit = {},
+    onNavigateBack: () -> Unit = {}
 ) {
     NavHost(
         navController = navigator.navController,
@@ -20,7 +22,7 @@ fun ScanNavHost(
 
         composable<ScanRoute.ScanScreenShot> {
             ScreenshotRoute(
-                onBack = { navigator.navController.popBackStack() },
+                onBack = onNavigateBack,
                 onNavigateToDetail = { uri ->
                     navigator.navController.navigate(ScanRoute.ScanBefore(Uri.encode(uri.toString())))
                 }
@@ -48,7 +50,7 @@ fun ScanNavHost(
         composable<ScanRoute.ScanAfter> { backStackEntry ->
             ScanAfterRoute(
                 onBack = { navigator.navController.popBackStack() },
-                onSave = { }
+                onNavigateToHome = onNavigateToHome // TODO: Folder이동으로 바뀔 듯
             )
         }
     }

@@ -33,7 +33,10 @@ internal fun KeeplyNavHost(
             navController = navigator.navController
         )
 
-        scanNavGraph(navController = navigator.navController)
+        scanNavGraph(
+            navController = navigator.navController,
+            onNavigateBack = { navigator.popBackStack() }
+        )
 
         alarmNavGraph()
 
