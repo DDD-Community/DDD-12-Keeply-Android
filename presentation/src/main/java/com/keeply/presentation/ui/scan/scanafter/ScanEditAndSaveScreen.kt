@@ -147,9 +147,7 @@ fun ScanEditAndSaveScreen(
             )
 
             KeeplyButton(
-                onClick = {
-                    onSaveClick()
-                },
+                onClick = onSaveClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
