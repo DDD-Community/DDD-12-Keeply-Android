@@ -11,7 +11,9 @@ data class FolderDetailResponse(
 data class FolderImageResponse(
     val imageId: Long? = null,
     val presignedUrl: String? = null,
-    val tag: String? = null,
     val insight: String? = null,
-    val updatedAt: String? = null
+    val tag: String? = null,
+    val isCategorized: Boolean? = null,
+    val scheduledDeleteAt: String? = null,
+    val daysUntilDeletion: Int? = null
 )
