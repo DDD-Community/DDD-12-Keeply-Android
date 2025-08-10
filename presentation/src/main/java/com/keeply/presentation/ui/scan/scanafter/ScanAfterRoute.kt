@@ -7,6 +7,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.keeply.presentation.ui.folder.add.AddFolderSideEffect
+import com.keeply.presentation.ui.folder.add.AddFolderViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -14,9 +16,12 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun ScanAfterRoute(
     onBack: () -> Unit,
     onNavigateToHome: () -> Unit,
-    viewModel: ScanAfterViewModel = hiltViewModel()
+    viewModel: ScanAfterViewModel = hiltViewModel(),
+    addFolderViewModel: AddFolderViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.collectAsState()
+    val addFolderState by addFolderViewModel.collectAsState()
+
     val context = LocalContext.current
 
     viewModel.collectSideEffect { sideEffect ->
@@ -39,6 +44,7 @@ fun ScanAfterRoute(
         textFieldLength = uiState.textFieldLength,
         textFieldMaxLength = uiState.textFieldMaxLength,
         folderList = uiState.folders,
+        onAddFolderClick = { viewModel.onAddFolderModal(true) },
         onValueChange = viewModel::onValueChange,
         onBackClick = onBack,
         onSaveClick = { selectedText, folderId ->
@@ -57,6 +63,29 @@ fun ScanAfterRoute(
                 viewModel.onFinishedTextSelection()
             },
             isLoading = uiState.isLoading
+        )
+    }
+
+    if (uiState.showAddFolderModal) {
+        addFolderViewModel.collectSideEffect { sideEffect ->
+            when (sideEffect) {
+                AddFolderSideEffect.ShowCreateSuccess -> {
+                    viewModel.onAddFolderModal(false)
+                    viewModel.loadFolders()
+                }
+
+                is AddFolderSideEffect.ShowError -> {
+                    Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        AddFolderModal(
+            state = addFolderState,
+            onFolderNameChange = addFolderViewModel::updateFolderName,
+            onColorSelect = addFolderViewModel::selectColor,
+            onCreateFolder = addFolderViewModel::createFolder,
+            onNavigateBack = { viewModel.onAddFolderModal(false) },
         )
     }
 

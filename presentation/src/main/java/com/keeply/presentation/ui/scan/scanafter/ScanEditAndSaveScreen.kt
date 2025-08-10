@@ -49,6 +49,7 @@ fun ScanEditAndSaveScreen(
     textFieldLength: Int,
     textFieldMaxLength: Int,
     folderList: ImmutableList<Folder>,
+    onAddFolderClick: () -> Unit = {},
     onValueChange: (String) -> Unit,
     onBackClick: () -> Unit,
     onSaveClick: (String, Long) -> Unit
@@ -113,7 +114,7 @@ fun ScanEditAndSaveScreen(
 
                     KeeplyIconButton(
                         painter = KeeplyTheme.icons.add,
-                        onClick = { /* TODO : 폴더 추가 로직 */ }
+                        onClick = { onAddFolderClick() }
                     )
                 }
             }

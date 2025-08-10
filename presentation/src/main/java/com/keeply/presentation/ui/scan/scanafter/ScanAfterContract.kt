@@ -20,6 +20,7 @@ data class ScanAfterState(
     val folders: ImmutableList<Folder> = persistentListOf(),
     val error: String? = null,
     val showSelectTextBottomSheet: Boolean = true, // 초기값 설정
+    val showAddFolderModal: Boolean = false,
     val showSuccessModal: Boolean = false
 )
 
