@@ -2,6 +2,7 @@ package com.keeply.presentation.ui.folder
 
 import androidx.compose.runtime.Immutable
 import com.keeply.domain.folder.model.Folder
+import com.keeply.domain.folder.model.FolderImage
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -10,6 +11,7 @@ data class FolderState(
     val tabs: ImmutableList<String> = persistentListOf("폴더", "미분류 스크린샷"),
     val selectedTab: FolderTabs = FolderTabs.Folder,
     val folders: ImmutableList<Folder> = persistentListOf(),
+    val uncategorizedImages: ImmutableList<FolderImage> = persistentListOf(),
     val isLoading: Boolean = false,
     val error: String? = null
 )
