@@ -1,6 +1,7 @@
 package com.keeply.presentation.ui.scan.scanafter
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,15 +9,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -103,7 +109,7 @@ fun SelectTextBottomSheetContent(
                 .heightIn(min = 168.dp)
         ) {
             itemsIndexed(textList) { index, keyword ->
-                FolderTextList(
+                DetectedTextHolder(
                     modifier = Modifier
                         .padding(vertical = 3.dp),
                     text = keyword
@@ -144,6 +150,45 @@ fun SelectTextBottomSheetContent(
                 buttonSize = KeeplyButtonSize.SMALL
             )
         }
+    }
+}
+
+@Composable
+fun DetectedTextHolder(
+    modifier: Modifier = Modifier,
+    text: String,
+    onClick: (Boolean) -> Unit
+) {
+    var isSelected by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = modifier
+            .background(if (isSelected) KeeplyTheme.colors.neutral1000 else KeeplyTheme.colors.neutral100)
+            .fillMaxWidth()
+            .clickable {
+                isSelected = !isSelected
+                onClick(isSelected)
+            }
+            .padding(all = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        KeeplyText(
+            modifier = Modifier
+                .padding(start = 4.dp)
+                .weight(1f),
+            text = text,
+            style = KeeplyTheme.typography.button01Suit,
+            color = if (isSelected) KeeplyTheme.colors.neutralWhite else KeeplyTheme.colors.neutralBlack,
+        )
+
+        Icon(
+            modifier = Modifier
+                .padding(start = 20.dp)
+                .size(16.dp),
+            painter = KeeplyTheme.icons.checkmark,
+            contentDescription = "",
+            tint = if (isSelected) KeeplyTheme.colors.neutralWhite else KeeplyTheme.colors.neutral300,
+        )
     }
 }
 
