@@ -4,11 +4,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.keeply.domain.folder.usecase.GetFoldersUseCase
 import com.keeply.domain.image.usecase.CreateImageUseCase
 import com.keeply.presentation.ui.scan.navigation.ScanRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -18,22 +22,61 @@ import javax.inject.Inject
 @HiltViewModel
 class ScanAfterViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val createImageUseCase: CreateImageUseCase
+    private val createImageUseCase: CreateImageUseCase,
+    private val getFoldersUseCase: GetFoldersUseCase
 ) : ContainerHost<ScanAfterState, ScanAfterSideEffect>, ViewModel() {
-    
+
     private val scanAfter: ScanRoute.ScanAfter = savedStateHandle.toRoute()
-    
+
     override val container: Container<ScanAfterState, ScanAfterSideEffect> =
         container(
             ScanAfterState(
                 uri = scanAfter.url,
                 cachedImageId = scanAfter.cachedImageId ?: "",
-                detectedText = scanAfter.detectedText,
+                detectedTextList = if (scanAfter.detectedText.isNullOrEmpty()) {
+                    emptyList()
+                } else {
+                    scanAfter.detectedText.split("\n")
+                },
                 recommendedTags = scanAfter.recommendedTags
             )
         )
-    
-    fun onValueChange(value: String) = intent {
+
+    init {
+        loadFolders()
+    }
+
+    fun dismissSuccessModal() = intent {
+        reduce { state.copy(showSuccessModal = false) }
+    }
+
+    fun onFinishedTextSelection() = intent {
+        reduce { state.copy(showSelectTextBottomSheet = false) }
+    }
+
+    fun onAddFolderModal(isShow: Boolean) = intent {
+        reduce { state.copy(showAddFolderModal = isShow) }
+    }
+
+    fun updateSelectedIndices(selectedIndices: List<Int>) {
+        val selectedText = selectedIndices
+            .mapNotNull { idx ->
+                container.stateFlow.value.detectedTextList.getOrNull(idx)
+            }
+            .joinToString("\n")
+//            .let { if (it.length > 300) it.take(300) else it } // 엣지케이스 .. 저장 불가 처리
+
+        intent {
+            reduce {
+                state.copy(
+                    textField = selectedText,
+                    textFieldLength = selectedText.length
+                )
+            }
+        }
+    }
+
+    fun onTextChange(value: String) = intent {
         reduce {
             state.copy(
                 textField = value
@@ -41,24 +84,55 @@ class ScanAfterViewModel @Inject constructor(
         }
     }
 
-    fun onSaveClick(selectedText: String, folderId: Long) = intent {
+    fun onSelectFolder(folderId: Long) = intent {
+        reduce { state.copy(selectedFolderId = folderId) }
+    }
+
+    fun onSaveClick() = intent {
         reduce { state.copy(isLoading = true) }
-        
+
         viewModelScope.launch {
             createImageUseCase(
                 isCached = true,
                 cachedImageId = state.cachedImageId,
                 imageId = 0,
-                imageInsight = selectedText,
-                folderId = folderId,
+                imageInsight = state.textField,
+                folderId = state.selectedFolderId,
                 tag = "Sample"
             ).catch { error ->
                 reduce { state.copy(isLoading = false) }
                 postSideEffect(ScanAfterSideEffect.ShowError(error.message ?: "이미지 저장에 실패했습니다"))
             }.collectLatest { image ->
                 reduce { state.copy(isLoading = false) }
-                postSideEffect(ScanAfterSideEffect.NavigateToSuccess(image.imageId))
+                reduce { state.copy(showSuccessModal = true) }
+//                postSideEffect(ScanAfterSideEffect.ShowSuccessModal(image.imageId))
             }
+        }
+    }
+
+    fun loadFolders() = intent {
+        viewModelScope.launch {
+            getFoldersUseCase()
+                .onStart {
+                    reduce { state.copy(isLoading = true) }
+                }
+                .catch { e ->
+                    reduce {
+                        state.copy(
+                            isLoading = false,
+                            error = e.message
+                        )
+                    }
+                }
+                .collect { folders ->
+                    reduce {
+                        state.copy(
+                            isLoading = false,
+                            folders = folders.toPersistentList(),
+                            error = null
+                        )
+                    }
+                }
         }
     }
 }
