@@ -19,15 +19,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.keeply.domain.folder.model.FolderImage
 import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.Tag
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.folder.component.UncategorizedCardItem
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun UncategorizedDisplay(
-    images: kotlinx.collections.immutable.ImmutableList<com.keeply.domain.folder.model.FolderImage> = kotlinx.collections.immutable.persistentListOf(),
+    images: ImmutableList<FolderImage> = persistentListOf(),
     isLoading: Boolean = false
 ) {
     Column(
