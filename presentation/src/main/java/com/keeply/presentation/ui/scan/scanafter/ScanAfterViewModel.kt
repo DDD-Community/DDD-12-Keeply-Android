@@ -8,6 +8,7 @@ import com.keeply.domain.folder.usecase.GetFoldersUseCase
 import com.keeply.domain.image.usecase.CreateImageUseCase
 import com.keeply.presentation.ui.scan.navigation.ScanRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -51,6 +52,10 @@ class ScanAfterViewModel @Inject constructor(
 
     fun onFinishedTextSelection() = intent {
         reduce { state.copy(showSelectTextBottomSheet = false) }
+    }
+
+    fun onAddFolderModal(isShow: Boolean) = intent {
+        reduce { state.copy(showAddFolderModal = isShow) }
     }
 
     fun updateSelectedIndices(selectedIndices: List<Int>) {
@@ -105,7 +110,7 @@ class ScanAfterViewModel @Inject constructor(
         }
     }
 
-    private fun loadFolders() = intent {
+    fun loadFolders() = intent {
         viewModelScope.launch {
             getFoldersUseCase()
                 .onStart {

@@ -10,9 +10,9 @@ data class ScanAfterState(
     val uri: String,
     val cachedImageId: String = "",
     val detectedText: String? = null,
-    val recommendedTags: List<String>? = null,
-    val detectedTextList: List<String> = emptyList(),
-    val selectedIndices: List<Int> = emptyList(),
+    val recommendedTags: ImmutableList<String>? = null,
+    val detectedTextList: ImmutableList<String> = persistentListOf(),
+    val selectedIndices: ImmutableList<Int> = persistentListOf(),
     val textField: String = "",
     val textFieldLength: Int = 0,
     val textFieldMaxLength: Int = 300,
@@ -21,6 +21,7 @@ data class ScanAfterState(
     val selectedFolderId: Long = 1, // 0으로 하고 '선택필요' 예외처리 할 수도
     val error: String? = null,
     val showSelectTextBottomSheet: Boolean = true, // 초기값 설정
+    val showAddFolderModal: Boolean = false,
     val showSuccessModal: Boolean = false
 )
 
