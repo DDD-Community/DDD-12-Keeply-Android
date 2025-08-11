@@ -1,12 +1,14 @@
 package com.keeply.presentation.ui.scan.scanbefore
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,15 +24,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,6 +53,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.keeply.domain.model.ScanAnalyze
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.BaseAlertModal
 import com.keeply.presentation.core.components.GifImage
@@ -58,24 +63,53 @@ import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.ScanBar
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral900
-import com.keeply.presentation.core.theme.orange400
+import com.keeply.presentation.util.toFile
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun ScanBeforeRoute(
     onBack: () -> Unit,
     onNavigateToCrop: (Uri) -> Unit,
+    onNavigateToScanAfter: (Uri, ScanAnalyze) -> Unit,
     viewModel: ScanBeforeViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     val uiState by viewModel.collectAsState()
     val isShowOnBoarding by viewModel.showOnBoardingModal.collectAsState()
 
     ScanBeforeScreen(
         uri = uiState.uri.toUri(),
         isShowOnBoarding = isShowOnBoarding,
+        isScanCompleted = uiState.isScanCompleted,
         onBack = onBack,
         onNavigateToCrop = onNavigateToCrop,
-        doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() }
+        doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() },
+        callScan = { imageUri ->
+            // real -> Crop후 imageUri 사용하도록 수정하는게 좋을 듯함
+            viewModel.scanImage(
+                image = uiState.uri.toUri().toFile(context),
+                successCallback = { result ->
+                    onNavigateToScanAfter(uiState.uri.toUri(), result)
+                }
+            )
+            
+            // for test (OCR 하지 앟는 임시 버전)
+//            onNavigateToScanAfter(
+//                imageUri,
+//                ScanAnalyze(
+//                    recommendedTags = null,
+//                    cachedImageId = null,
+//                    detectedText = "하이하이\n다음말이다\n반갑소\n이러한 책 속의 인용들을 보며, 나는 좋은 문구를 기록만 해두는 경우가 많은데, 잘 활용하는 것도 중요하단 생각을 많이 했다.\n하이하이\n" +
+//                            "다음말이다\n" +
+//                            "반갑소\n" +
+//                            "이러한 책 속의 인용들을 보며, 나는 좋은 문구를 기록만 해두는 경우가 많은데, 잘 활용하는 것도 중요하단 생각을 많이 했다.\n하이하이\n" +
+//                            "다음말이다\n" +
+//                            "반갑소\n" +
+//                            "이러한 책 속의 인용들을 보며, 나는 좋은 문구를 기록만 해두는 경우가 많은데, 잘 활용하는 것도 중요하단 생각을 많이 했다."
+//                )
+//            )
+        }
     )
 }
 
@@ -83,12 +117,15 @@ fun ScanBeforeRoute(
 fun ScanBeforeScreen(
     uri: Uri? = null,
     isShowOnBoarding: Boolean = false,
+    isScanCompleted: Boolean = false,
     onBack: () -> Unit,
     onNavigateToCrop: (Uri) -> Unit,
-    doNotRepeatButtonCallback: () -> Unit
+    doNotRepeatButtonCallback: () -> Unit,
+    callScan: (Uri) -> Unit = {}
 ) {
     if (uri == null) return // 모달을 띄우거나 ~
 
+    Log.d("TAG", "ScanBeforeScreen: $uri")
     var isMenuVisible by remember { mutableStateOf(true) }
     var isShowDialog by remember { mutableStateOf(true) }
     var isScanLoading by remember { mutableStateOf(false) }
@@ -106,13 +143,31 @@ fun ScanBeforeScreen(
             )
         }
 
-        BoxWithConstraints(
+        val interactionSource = remember { MutableInteractionSource() }
+        val clickableModifier = if (isScanLoading) {
+            Modifier
+                .padding(35.dp)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    onClick = { }
+                )
+        } else {
+            Modifier
+                .padding(0.dp)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = LocalIndication.current,
+                    onClick = { isMenuVisible = !isMenuVisible }
+                )
+        }
+
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .align(Alignment.Center)
-                .padding(if (isScanLoading) 35.dp else 0.dp)
-                .clickable { isMenuVisible = !isMenuVisible }
+                .then(clickableModifier)
         ) {
             val painter = if (LocalInspectionMode.current) {
                 painterResource(id = R.drawable.img_onboarding_02)
@@ -120,38 +175,32 @@ fun ScanBeforeScreen(
                 rememberAsyncImagePainter(uri)
             }
 
-            val overlayStart = maxHeight / 5  // Scan 그라데이션 시작 위치
-
+            val imageHeightPx = remember { mutableIntStateOf(0) }
+            val imageHeightDp = with(LocalDensity.current) { imageHeightPx.intValue.toDp() }
             Image(
                 painter = painter,
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        imageHeightPx.intValue = coordinates.size.height // px 단위
+                    },
                 contentScale = ContentScale.Fit
             )
 
-            if (isScanLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .offset(y = overlayStart)
-                        .background(orange400)
+            if (isScanLoading && isScanCompleted.not()) {
+                val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie_scan))
+                val progress by animateLottieCompositionAsState(
+                    composition = composition,
+                    iterations = LottieConstants.IterateForever
                 )
-
-                Box(
+                LottieAnimation(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(290.dp)
-                        .offset(y = overlayStart)
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    orange400.copy(alpha = 0.3f),
-                                    Color.Transparent
-                                )
-                            )
-                        )
+                        .height(imageHeightDp),
+                    contentScale = ContentScale.FillBounds,
+                    composition = composition,
+                    progress = { progress }
                 )
             }
         }
@@ -209,8 +258,11 @@ fun ScanBeforeScreen(
                     ScanBar(
                         modifier = Modifier
                             .align(Alignment.Center),
-                        onClickCrop = { onNavigateToCrop(uri) },
-                        onClickScan = { isScanLoading = true }
+                        onClickCrop = { },
+                        onClickScan = {
+                            isScanLoading = true
+                            callScan(uri)
+                        }
                     )
 
                     Icon(

@@ -1,10 +1,13 @@
 package com.keeply.data.core.di
 
 import com.keeply.domain.repository.LocalScreenshotRepository
+import com.keeply.domain.repository.OcrRepository
 import com.keeply.domain.repository.PreferencesRepository
 import com.keeply.domain.repository.UserRepository
 import com.keeply.domain.usecase.scan.GetScanOnBoardingVisibilityUseCase
 import com.keeply.domain.usecase.scan.GetScanOnBoardingVisibilityUseCaseImpl
+import com.keeply.domain.usecase.scan.ScanImageUseCase
+import com.keeply.domain.usecase.scan.ScanImageUseCaseImpl
 import com.keeply.domain.usecase.scan.SetDoNotShowDialogUseCase
 import com.keeply.domain.usecase.scan.SetDoNotShowDialogUseCaseImpl
 import com.keeply.domain.usecase.screenshot.GetLocalScreenshotsUseCase
@@ -52,5 +55,14 @@ object UseCaseModule {
     ): GetLocalScreenshotsUseCase = GetLocalScreenshotsUseCaseImpl(
         repository = localScreenshotRepository
     )
+
+    @Provides
+    @Singleton
+    fun provideAnalyzeImageUseCase(
+        ocrRepository: OcrRepository
+    ): ScanImageUseCase = ScanImageUseCaseImpl(
+        repository = ocrRepository
+    )
+
 
 }
