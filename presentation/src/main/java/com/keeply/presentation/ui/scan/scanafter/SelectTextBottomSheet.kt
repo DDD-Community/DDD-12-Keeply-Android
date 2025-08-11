@@ -1,12 +1,15 @@
 package com.keeply.presentation.ui.scan.scanafter
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,8 +28,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.keeply.presentation.R
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyButtonStyle
@@ -84,37 +90,55 @@ fun SelectTextBottomSheetContent(
             .padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
     ) {
         // 헤더 (높이 고정)
-        Column(
-            modifier = Modifier
-                .background(neutralWhite)
-                .padding(bottom = 28.dp)
-        ) {
-            KeeplyText(
-                text = "Text",
-                style = KeeplyTheme.typography.header04,
-            )
+        KeeplyText(
+            text = "Text",
+            style = KeeplyTheme.typography.header04,
+        )
 
-            KeeplyText(
-                modifier = Modifier.padding(top = 6.dp),
-                text = "스크린샷에서 추출한 문구 중\n기록에 활용할 문구를 선택해주세요.",
-                style = KeeplyTheme.typography.body,
-                color = LocalColors.current.neutral600
-            )
-        }
+        KeeplyText(
+            modifier = Modifier.padding(top = 6.dp, bottom = 28.dp),
+            text = "스크린샷에서 추출한 문구 중\n기록에 활용할 문구를 선택해주세요.",
+            style = KeeplyTheme.typography.body,
+            color = LocalColors.current.neutral600
+        )
 
         // 추출된 텍스트 (스크롤)
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .heightIn(min = 168.dp)
-        ) {
-            itemsIndexed(textList) { index, keyword ->
-                DetectedTextHolder(
-                    modifier = Modifier
-                        .padding(vertical = 3.dp),
-                    text = keyword
-                ) { isSelected ->
-                    onClickItem(index, isSelected)
+        if (textList.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(173.dp)
+                    .background(LocalColors.current.neutral100),
+                contentAlignment = Alignment.Center
+            ) {
+                Column {
+                    Image(
+                        contentScale = ContentScale.Fit,
+                        painter = painterResource(R.drawable.ic_ocr_no_result),
+                        contentDescription = null
+                    )
+
+                    KeeplyText(
+                        text = "추출된 텍스트가 없습니다.",
+                        style = KeeplyTheme.typography.subtitle02,
+                        color = LocalColors.current.neutral900
+                    )
+                }
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = 168.dp)
+            ) {
+                itemsIndexed(textList) { index, keyword ->
+                    DetectedTextHolder(
+                        modifier = Modifier
+                            .padding(vertical = 3.dp),
+                        text = keyword
+                    ) { isSelected ->
+                        onClickItem(index, isSelected)
+                    }
                 }
             }
         }
@@ -123,15 +147,12 @@ fun SelectTextBottomSheetContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp)
-                .background(neutralWhite),
+                .padding(top = 32.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
             KeeplyButton(
-                onClick = {
-                    onBackClick()
-                },
+                onClick = onBackClick,
                 modifier = Modifier.wrapContentWidth(),
                 text = "돌아가기",
                 buttonStyle = KeeplyButtonStyle.SECONDARY,
@@ -205,6 +226,16 @@ private fun SelectTextBottomSheetPreview() {
                 "이러한 책 속의 인용들을 보며, 나는 좋은 문구를 기록만 해두는 경우가 많은데, 잘 활용하는 것도 중요하단 생각을 많이 했다.",
                 "이러한 책 속의 인용들을 보며, 나는 좋은 문구를 기록만 해두는 경우가 많은데, 잘 활용하는 것도 중요하단 생각을 많이 했다."
             )
+        )
+    }
+}
+
+@Preview(widthDp = 360)
+@Composable
+private fun SelectTextBottomSheetEmptyPreview() {
+    KeeplyTheme {
+        SelectTextBottomSheetContent(
+            textList = listOf()
         )
     }
 }

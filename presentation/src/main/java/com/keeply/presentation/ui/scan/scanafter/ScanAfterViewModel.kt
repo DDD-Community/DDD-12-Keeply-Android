@@ -33,8 +33,12 @@ class ScanAfterViewModel @Inject constructor(
             ScanAfterState(
                 uri = scanAfter.url,
                 cachedImageId = scanAfter.cachedImageId ?: "",
-                detectedTextList = scanAfter.detectedText?.split("\n")?.toPersistentList() ?: persistentListOf(),
-                recommendedTags = scanAfter.recommendedTags?.toPersistentList()
+                detectedTextList = if (scanAfter.detectedText.isNullOrEmpty()) {
+                    emptyList()
+                } else {
+                    scanAfter.detectedText.split("\n")
+                },
+                recommendedTags = scanAfter.recommendedTags
             )
         )
 
