@@ -90,7 +90,10 @@ fun FolderScreen(
                     onNavigateToFolderDetail(folder.folderId, folder.folderName, folder.color)
                 }
             )
-            FolderTabs.Uncategorized -> UncategorizedDisplay()
+            FolderTabs.Uncategorized -> UncategorizedDisplay(
+                images = uiState.uncategorizedImages,
+                isLoading = uiState.isLoading
+            )
         }
     }
 }
