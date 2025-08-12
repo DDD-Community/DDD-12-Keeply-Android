@@ -9,6 +9,7 @@ import com.keeply.domain.model.Token
 import com.keeply.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -23,6 +24,22 @@ class UserRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun logout(): Flow<Unit> = flow {
+        try {
+            val response = userService.logout()
+            if (response.success == true) {
+                clearTokens()
+                emit(Unit)
+            } else {
+                throw Exception(response.reason ?: "로그아웃에 실패했습니다")
+            }
+        } catch (e: HttpException) {
+            throw Exception("네트워크 오류가 발생했습니다: ${e.message}")
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
     override suspend fun saveRefreshToken(refreshToken: String) =
         userDataSource.saveRefreshToken(refreshToken)
 
@@ -32,5 +49,10 @@ class UserRepositoryImpl @Inject constructor(
     
     override suspend fun fetchAccessToken(): String? = 
         userDataSource.fetchAccessToken()
+
+    override suspend fun clearTokens() {
+        userDataSource.clearAccessToken()
+        userDataSource.clearRefreshToken()
+    }
 
 }
