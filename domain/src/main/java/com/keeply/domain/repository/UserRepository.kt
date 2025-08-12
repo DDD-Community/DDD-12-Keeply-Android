@@ -9,6 +9,8 @@ interface UserRepository {
 
     suspend fun logout(): Flow<Unit>
 
+    suspend fun withdraw(): Flow<Unit>
+
     suspend fun saveRefreshToken(refreshToken: String)
 
     suspend fun saveAccessToken(accessToken: String)

@@ -50,4 +50,9 @@
     <string name="my_page_other">기타</string>
     <string name="my_page_logout">로그아웃</string>
     <string name="my_page_withdrawal">탈퇴하기</string>
+    <string name="my_page_withdrawal_dialog_title">정말로 탈퇴하시겠어요?</string>
+    <string name="my_page_withdrawal_dialog_content">회원 탈퇴 시 모든 데이터는 \n즉시 삭제되며 복구할 수 없습니다.</string>
+    <string name="my_page_withdrawal_dialog_check">안내사항 모두 확인, 동의합니다.</string>
+    <string name="my_page_withdrawal_dialog_confirm">탈퇴</string>
+    <string name="my_page_withdrawal_dialog_cancel">취소</string>
 </resources>

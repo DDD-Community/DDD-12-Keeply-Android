@@ -17,37 +17,41 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
 import org.orbitmvi.orbit.compose.collectSideEffect
 import android.app.Activity
 import android.widget.Toast
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.keeply.presentation.core.components.KeeplyAlertCheckModal
 import com.keeply.presentation.extend.restartApplication
+import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun MyRoute(
     viewModel: MyViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
-    
+    val state by viewModel.collectAsState()
+
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is MySideEffect.SuccessLogout -> {
+                (context as? Activity)?.restartApplication()
+            }
+            
+            is MySideEffect.SuccessWithdraw -> {
                 (context as? Activity)?.restartApplication()
             }
 
@@ -58,15 +62,35 @@ fun MyRoute(
     }
     
     MyScreen(
-        isLoading = isLoading,
-        onLogoutClick = viewModel::logout
+        onLogoutClick = viewModel::logout,
+        onWithdrawClick = viewModel::showWithdrawModal
     )
+
+    if (state.isShowWithdrawModal) {
+        KeeplyAlertCheckModal(
+            title = stringResource(R.string.my_page_withdrawal_dialog_title),
+            content = stringResource(R.string.my_page_withdrawal_dialog_content),
+            checkText = stringResource(R.string.my_page_withdrawal_dialog_check),
+            confirmButtonText = stringResource(R.string.my_page_withdrawal_dialog_confirm),
+            cancelButtonText = stringResource(R.string.my_page_withdrawal_dialog_cancel),
+            confirmButtonCallback = {
+                viewModel.dismissWithdrawModal()
+                viewModel.withdraw()
+            },
+            onDismissCallback = {
+                viewModel.dismissWithdrawModal()
+            },
+            cancelButtonCallback = {
+                viewModel.dismissWithdrawModal()
+            }
+        )
+    }
 }
 
 @Composable
 fun MyScreen(
-    isLoading: Boolean = false,
-    onLogoutClick: () -> Unit = {}
+    onLogoutClick: () -> Unit = {},
+    onWithdrawClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -194,6 +218,8 @@ fun MyScreen(
             )
 
             MyPageMenuItem(
+                modifier = Modifier
+                    .clickable { onWithdrawClick() },
                 text = stringResource(R.string.my_page_withdrawal),
                 iconVisibility = false
             )
