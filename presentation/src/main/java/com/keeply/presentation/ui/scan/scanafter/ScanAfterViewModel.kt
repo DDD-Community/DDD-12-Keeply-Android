@@ -8,7 +8,6 @@ import com.keeply.domain.folder.usecase.GetFoldersUseCase
 import com.keeply.domain.image.usecase.CreateImageUseCase
 import com.keeply.presentation.ui.scan.navigation.ScanRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -37,8 +36,8 @@ class ScanAfterViewModel @Inject constructor(
                     emptyList()
                 } else {
                     scanAfter.detectedText.split("\n")
-                },
-                recommendedTags = scanAfter.recommendedTags
+                }.toPersistentList(),
+                recommendedTags = scanAfter.recommendedTags?.toPersistentList()
             )
         )
 
