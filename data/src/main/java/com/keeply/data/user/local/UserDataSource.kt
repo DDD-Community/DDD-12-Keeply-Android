@@ -79,4 +79,16 @@ class UserDataSource @Inject constructor(
             }
         return flow.firstOrNull()
     }
+    
+    suspend fun clearAccessToken() {
+        userDataStore.edit { preferences ->
+            preferences.remove(ACCESS_TOKEN)
+        }
+    }
+
+    suspend fun clearRefreshToken() {
+        userDataStore.edit { preferences ->
+            preferences.remove(REFRESH_TOKEN)
+        }
+    }
 }
