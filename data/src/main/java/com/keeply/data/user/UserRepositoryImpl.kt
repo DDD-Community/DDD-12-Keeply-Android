@@ -40,6 +40,22 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun withdraw(): Flow<Unit> = flow {
+        try {
+            val response = userService.withdraw()
+            if (response.success == true) {
+                clearTokens()
+                emit(Unit)
+            } else {
+                throw Exception(response.reason ?: "회원 탈퇴에 실패했습니다")
+            }
+        } catch (e: HttpException) {
+            throw Exception("네트워크 오류가 발생했습니다: ${e.message}")
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
     override suspend fun saveRefreshToken(refreshToken: String) =
         userDataSource.saveRefreshToken(refreshToken)
 
