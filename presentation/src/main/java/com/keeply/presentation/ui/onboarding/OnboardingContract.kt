@@ -9,7 +9,7 @@ import com.keeply.presentation.R
 data class OnboardingState(
     val onboardingPage: OnboardingPage = OnboardingPage.FIRST,
     val showPermissionDialog: Boolean = false,
-    val hasPermission: Boolean = false
+    val showPermissionUpgradeDialog: Boolean = false,
 )
 
 enum class OnboardingPage(
