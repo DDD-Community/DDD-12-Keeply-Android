@@ -34,6 +34,7 @@ fun HomeImageDto.toDomain(): HomeImage {
 fun HomeFolderDto.toDomain(): HomeFolder {
     return HomeFolder(
         folderId = folderId,
+        folderName = folderName,
         color = color,
         updatedAt = updatedAt,
         imageCount = imageCount
