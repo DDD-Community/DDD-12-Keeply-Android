@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.keeply.domain.home.model.HomeImage
 import com.keeply.presentation.core.components.FileTag
 import com.keeply.presentation.core.components.FileTagStyle
 import com.keeply.presentation.core.components.ImageFrame
@@ -24,7 +25,7 @@ fun HomeKeeplyScreenshotItem(
     painter: Painter? = null,
     tag: String = "",
     date: String = "",
-    insight: String = ""
+    insight: String = "",
 ) {
     Row(
         modifier = modifier
