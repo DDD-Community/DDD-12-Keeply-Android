@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,17 +17,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.rememberAsyncImagePainter
+import com.keeply.domain.model.Screenshot
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.ImageFrame
 import com.keeply.presentation.core.components.KeeplyAppBar
@@ -40,6 +42,7 @@ import com.keeply.presentation.ui.home.component.HomeKeeplyScreenshotItem
 import com.keeply.presentation.ui.home.component.HomeUncategorizedCard
 import com.keeply.presentation.ui.home.component.KeeplyProgressBar
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.flowOf
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -47,12 +50,17 @@ fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.collectAsState()
+    val lazyPagingItems = viewModel.screenshots.collectAsLazyPagingItems()
 
-    HomeScreen()
+    HomeScreen(
+        lazyPagingItems = lazyPagingItems
+    )
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    lazyPagingItems: LazyPagingItems<Screenshot>
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -129,20 +137,29 @@ fun HomeScreen() {
                 )
             }
 
+            // 최대 10개만 가져오기
+            val itemsToShow = (0 until minOf(lazyPagingItems.itemCount, 10)).mapNotNull { index ->
+                lazyPagingItems[index]
+            }
+
             LazyRow(
                 modifier = Modifier
-                    .padding(top = 12.dp, bottom = 38.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(top = 12.dp, bottom = 38.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item { Spacer(modifier = Modifier.size(4.dp)) }
-                items(5) {
+
+                items(itemsToShow.size) { index ->
+                    val screenshot = itemsToShow[index]
                     ImageFrame(
+                        painter = rememberAsyncImagePainter(screenshot.uri),
                         modifier = Modifier
-                            .width(96.dp),
-                        painter = ColorPainter(KeeplyTheme.colors.neutral200)
+                            .width(96.dp)
+                            .clickable { }
                     )
                 }
+
                 item { Spacer(modifier = Modifier.size(4.dp)) }
             }
 
@@ -238,6 +255,6 @@ fun HomeScreen() {
 @Composable
 fun HomeScreenPreview() {
     KeeplyTheme {
-        HomeScreen()
+        HomeScreen(flowOf(PagingData.empty<Screenshot>()).collectAsLazyPagingItems())
     }
 }
