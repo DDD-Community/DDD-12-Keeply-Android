@@ -94,4 +94,12 @@ class FolderViewModel @Inject constructor(
                 }
         }
     }
+
+    fun updateExpireToday(isExpireToday: Boolean) = intent {
+        reduce {
+            state.copy(
+                isExpireToday = isExpireToday
+            )
+        }
+    }
 }
