@@ -182,6 +182,7 @@ fun FolderDetailScreen(
                                 ),
                             painter = rememberAsyncImagePainter(model = image.presignedUrl),
                             tag = image.tag,
+                            tagColor = image.tagColor,
                             insight = image.insight,
                         )
 

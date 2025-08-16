@@ -238,6 +238,7 @@ fun HomeScreen(
                                         .padding(vertical = 16.dp),
                                     painter = rememberAsyncImagePainter(homeImage.presignedUrl),
                                     tag = homeImage.tag,
+                                    tagColor = homeImage.tagColor,
                                     date = homeImage.updatedAt.formatDate(),
                                     insight = homeImage.insight,
                                 )
