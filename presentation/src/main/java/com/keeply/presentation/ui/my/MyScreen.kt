@@ -218,17 +218,16 @@ fun MyScreen(
 
                 MyPageMenuItem(
                     modifier = Modifier
-                        .padding(top = 12.dp)
-                        .clickable { onLogoutClick() },
+                        .padding(top = 12.dp),
                     text = stringResource(R.string.my_page_logout),
-                    iconVisibility = false
+                    iconVisibility = false,
+                    onClick = onLogoutClick
                 )
 
                 MyPageMenuItem(
-                    modifier = Modifier
-                        .clickable { onWithdrawClick() },
                     text = stringResource(R.string.my_page_withdrawal),
-                    iconVisibility = false
+                    iconVisibility = false,
+                    onClick = onWithdrawClick
                 )
             }
         }
