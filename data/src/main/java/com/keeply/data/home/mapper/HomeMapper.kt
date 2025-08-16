@@ -26,6 +26,7 @@ fun HomeImageDto.toDomain(): HomeImage {
         imageId = imageId,
         presignedUrl = presignedUrl,
         tag = tag,
+        tagColor = tagColor ?: "",
         insight = insight,
         updatedAt = updatedAt
     )
