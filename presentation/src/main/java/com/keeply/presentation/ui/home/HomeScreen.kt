@@ -18,14 +18,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,6 +40,8 @@ import com.keeply.presentation.ui.home.component.HomeKeeplyFolderItem
 import com.keeply.presentation.ui.home.component.HomeKeeplyScreenshotItem
 import com.keeply.presentation.ui.home.component.HomeUncategorizedCard
 import com.keeply.presentation.ui.home.component.KeeplyProgressBar
+import com.keeply.presentation.util.isPermissionGranted
+import com.keeply.presentation.util.openAppSettings
 import kotlinx.collections.immutable.persistentListOf
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -46,13 +49,23 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.collectAsState()
 
-    HomeScreen()
+    viewModel.setRestrictService(isPermissionGranted(context))
+
+
+    HomeScreen(
+        isRestricted = uiState.isRestrictedService,
+        onClickSetting = { openAppSettings(context) }
+    )
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    isRestricted: Boolean = false,
+    onClickSetting: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -87,6 +100,39 @@ fun HomeScreen() {
                     bottom = 112.dp
                 )
         ) {
+            if (isRestricted) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 11.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(KeeplyTheme.colors.neutral200)
+                        .clickable { onClickSetting() }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        KeeplyText(
+                            text = "권한 부족으로 서비스 내 일부 기능이 제한됩니다.\n설정에서 권한을 켜주세요.",
+                            style = KeeplyTheme.typography.caption02,
+                            color = KeeplyTheme.colors.neutral800
+                        )
+
+                        KeeplyText(
+                            text = "권한 설정",
+                            style = KeeplyTheme.typography.button01Suit.copy(
+                                textDecoration = TextDecoration.Underline
+                            ),
+                            color = KeeplyTheme.colors.neutral900
+                        )
+                    }
+                }
+            }
+
             Column(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
@@ -120,35 +166,37 @@ fun HomeScreen() {
                         count = 0
                     )
                 }
+            }
 
+            if (isRestricted.not()) {
                 KeeplyText(
                     modifier = Modifier
-                        .padding(top = 36.dp),
+                        .padding(top = 36.dp, start = 16.dp),
                     text = "최근 스크린샷",
                     style = KeeplyTheme.typography.subtitle01,
                 )
-            }
 
-            LazyRow(
-                modifier = Modifier
-                    .padding(top = 12.dp, bottom = 38.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                item { Spacer(modifier = Modifier.size(4.dp)) }
-                items(5) {
-                    ImageFrame(
-                        modifier = Modifier
-                            .width(96.dp),
-                        painter = ColorPainter(KeeplyTheme.colors.neutral200)
-                    )
+                LazyRow(
+                    modifier = Modifier
+                        .padding(top = 12.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    item { Spacer(modifier = Modifier.size(4.dp)) }
+                    items(5) {
+                        ImageFrame(
+                            modifier = Modifier
+                                .width(96.dp),
+                            painter = ColorPainter(KeeplyTheme.colors.neutral200)
+                        )
+                    }
+                    item { Spacer(modifier = Modifier.size(4.dp)) }
                 }
-                item { Spacer(modifier = Modifier.size(4.dp)) }
             }
 
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
+                    .padding(top = 38.dp, start = 16.dp, end = 16.dp)
             ) {
                 Row(
                     modifier = Modifier

@@ -31,6 +31,9 @@ fun getRequiredImagePermission(): String {
     }
 }
 
+fun isPermissionGranted(context: Context): Boolean
+    = hasPermission(context, getRequiredImagePermission())
+
 fun checkImagePermissions(context: Context): ImagePermissionStatus {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         when {
