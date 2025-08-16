@@ -7,6 +7,7 @@ data class FolderImage(
     val presignedUrl: String,
     val insight: String,
     val tag: String,
+    val tagColor: String,
     val isCategorized: Boolean,
     val scheduledDeleteAt: LocalDate?,
     val daysUntilDeletion: Int
