@@ -40,7 +40,8 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun MyRoute(
-    viewModel: MyViewModel = hiltViewModel()
+    viewModel: MyViewModel = hiltViewModel(),
+    navigateToAlertSetting: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val state by viewModel.collectAsState()
@@ -63,7 +64,8 @@ fun MyRoute(
     
     MyScreen(
         onLogoutClick = viewModel::logout,
-        onWithdrawClick = viewModel::showWithdrawModal
+        onWithdrawClick = viewModel::showWithdrawModal,
+        onAlertSettingClick = navigateToAlertSetting
     )
 
     if (state.isShowWithdrawModal) {
@@ -90,11 +92,11 @@ fun MyRoute(
 @Composable
 fun MyScreen(
     onLogoutClick: () -> Unit = {},
-    onWithdrawClick: () -> Unit = {}
+    onWithdrawClick: () -> Unit = {},
+    onAlertSettingClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
             .fillMaxSize()
             .background(KeeplyTheme.colors.neutral100)
             .padding(
@@ -102,127 +104,133 @@ fun MyScreen(
                 end = 16.dp,
                 top = 24.dp,
                 bottom = 112.dp
-            ),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        KeeplyText(
-            text = stringResource(R.string.my_page_title),
-            style = KeeplyTheme.typography.header03
-        )
-
-        Row(
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .fillMaxWidth()
-                .background(KeeplyTheme.colors.neutralWhite)
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(44.dp),
-                painter = ColorPainter(KeeplyTheme.colors.neutral200),
-                contentDescription = null
             )
+    ) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            KeeplyText(
+                text = stringResource(R.string.my_page_title),
+                style = KeeplyTheme.typography.header03
+            )
+
+            Row(
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .fillMaxWidth()
+                    .background(KeeplyTheme.colors.neutralWhite)
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(44.dp),
+                    painter = ColorPainter(KeeplyTheme.colors.neutral200),
+                    contentDescription = null
+                )
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
+                    KeeplyText(
+                        text = "닉네임",
+                        style = KeeplyTheme.typography.button01Suit
+                    )
+
+                    KeeplyText(
+                        text = "Android@gmail.com",
+                        style = KeeplyTheme.typography.button02Altform,
+                        color = KeeplyTheme.colors.neutral800
+                    )
+                }
+            }
 
             Column(
                 modifier = Modifier
-                    .weight(1f)
+                    .padding(top = 12.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .fillMaxWidth()
+                    .background(KeeplyTheme.colors.neutralWhite)
+                    .padding(16.dp)
             ) {
                 KeeplyText(
-                    text = "닉네임",
-                    style = KeeplyTheme.typography.button01Suit
+                    text = stringResource(R.string.my_page_user_settings),
+                    style = KeeplyTheme.typography.subtitle03,
+                    color = KeeplyTheme.colors.neutral700
                 )
 
-                KeeplyText(
-                    text = "Android@gmail.com",
-                    style = KeeplyTheme.typography.button02Altform,
-                    color = KeeplyTheme.colors.neutral800
+                MyPageMenuItem(
+                    modifier = Modifier
+                        .padding(top = 12.dp),
+                    text = stringResource(R.string.my_page_notification_settings),
+                    onClick = onAlertSettingClick
+                )
+
+                MyPageMenuItem(
+                    text = stringResource(R.string.my_page_permission_settings)
                 )
             }
-        }
 
-        Column(
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .fillMaxWidth()
-                .background(KeeplyTheme.colors.neutralWhite)
-                .padding(16.dp)
-        ) {
-            KeeplyText(
-                text = stringResource(R.string.my_page_user_settings),
-                style = KeeplyTheme.typography.subtitle03,
-                color = KeeplyTheme.colors.neutral700
-            )
-
-            MyPageMenuItem(
-                modifier = Modifier
-                    .padding(top = 12.dp),
-                text = stringResource(R.string.my_page_notification_settings)
-            )
-
-            MyPageMenuItem(
-                text = stringResource(R.string.my_page_permission_settings)
-            )
-        }
-
-        Column(
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .fillMaxWidth()
-                .background(KeeplyTheme.colors.neutralWhite)
-                .padding(16.dp)
-        ) {
-            KeeplyText(
-                text = stringResource(R.string.my_page_customer_support),
-                style = KeeplyTheme.typography.subtitle03,
-                color = KeeplyTheme.colors.neutral700
-            )
-
-            MyPageMenuItem(
-                modifier = Modifier
-                    .padding(top = 12.dp),
-                text = stringResource(R.string.my_page_inquiry)
-            )
-
-            MyPageMenuItem(
-                text = stringResource(R.string.my_page_terms_policies)
-            )
-        }
-
-        Column(
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .fillMaxWidth()
-                .background(KeeplyTheme.colors.neutralWhite)
-                .padding(16.dp)
-        ) {
-            KeeplyText(
-                text = stringResource(R.string.my_page_other),
-                style = KeeplyTheme.typography.subtitle03,
-                color = KeeplyTheme.colors.neutral700
-            )
-
-            MyPageMenuItem(
+            Column(
                 modifier = Modifier
                     .padding(top = 12.dp)
-                    .clickable { onLogoutClick() },
-                text = stringResource(R.string.my_page_logout),
-                iconVisibility = false
-            )
+                    .clip(RoundedCornerShape(10.dp))
+                    .fillMaxWidth()
+                    .background(KeeplyTheme.colors.neutralWhite)
+                    .padding(16.dp)
+            ) {
+                KeeplyText(
+                    text = stringResource(R.string.my_page_customer_support),
+                    style = KeeplyTheme.typography.subtitle03,
+                    color = KeeplyTheme.colors.neutral700
+                )
 
-            MyPageMenuItem(
+                MyPageMenuItem(
+                    modifier = Modifier
+                        .padding(top = 12.dp),
+                    text = stringResource(R.string.my_page_inquiry)
+                )
+
+                MyPageMenuItem(
+                    text = stringResource(R.string.my_page_terms_policies)
+                )
+            }
+
+            Column(
                 modifier = Modifier
-                    .clickable { onWithdrawClick() },
-                text = stringResource(R.string.my_page_withdrawal),
-                iconVisibility = false
-            )
+                    .padding(top = 12.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .fillMaxWidth()
+                    .background(KeeplyTheme.colors.neutralWhite)
+                    .padding(16.dp)
+            ) {
+                KeeplyText(
+                    text = stringResource(R.string.my_page_other),
+                    style = KeeplyTheme.typography.subtitle03,
+                    color = KeeplyTheme.colors.neutral700
+                )
+
+                MyPageMenuItem(
+                    modifier = Modifier
+                        .padding(top = 12.dp)
+                        .clickable { onLogoutClick() },
+                    text = stringResource(R.string.my_page_logout),
+                    iconVisibility = false
+                )
+
+                MyPageMenuItem(
+                    modifier = Modifier
+                        .clickable { onWithdrawClick() },
+                    text = stringResource(R.string.my_page_withdrawal),
+                    iconVisibility = false
+                )
+            }
         }
     }
 }
@@ -232,11 +240,13 @@ fun MyPageMenuItem(
     text: String,
     modifier: Modifier = Modifier,
     iconVisibility: Boolean = true,
+    onClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(44.dp),
+            .height(44.dp)
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         KeeplyText(
