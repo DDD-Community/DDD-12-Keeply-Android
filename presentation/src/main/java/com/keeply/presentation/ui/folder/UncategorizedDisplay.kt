@@ -18,8 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.keeply.domain.folder.model.FolderImage
+import com.keeply.presentation.R
 import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.components.Tag
@@ -30,9 +32,12 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun UncategorizedDisplay(
-    images: ImmutableList<FolderImage> = persistentListOf(),
-    isLoading: Boolean = false
+    isExpireToday: Boolean,
+    images: ImmutableList<FolderImage>,
+    updateExpireToday: (Boolean) -> Unit = {},
+    isLoading: Boolean = false,
 ) {
+    val contentImages = images.filter { if (isExpireToday) it.daysUntilDeletion == 0 else true }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,7 +54,7 @@ fun UncategorizedDisplay(
             KeeplyText(
                 modifier = Modifier
                     .weight(1f),
-                text = "${images.size}개",
+                text = stringResource(R.string.folder_uncategorized_count, contentImages.size),
                 style = KeeplyTheme.typography.subtitle02,
                 color = KeeplyTheme.colors.neutral600
             )
@@ -59,7 +64,7 @@ fun UncategorizedDisplay(
             )
         }
 
-        val chunkedList = images.chunked(3)
+        val chunkedList = contentImages.chunked(3)
 
         LazyColumn(
             modifier = Modifier
@@ -79,18 +84,18 @@ fun UncategorizedDisplay(
                     var labelCheck by remember { mutableStateOf(true) }
 
                     Tag(
-                        label = "전체보기",
-                        checked = labelCheck,
+                        label = stringResource(R.string.folder_uncategorized_view_all),
+                        checked = isExpireToday.not(),
                         onCheckedChange = {
-                            labelCheck = true
+                            updateExpireToday(false)
                         }
                     )
 
                     Tag(
-                        label = "오늘만료",
-                        checked = labelCheck.not(),
+                        label = stringResource(R.string.folder_uncategorized_expire_today),
+                        checked = isExpireToday,
                         onCheckedChange = {
-                            labelCheck = false
+                            updateExpireToday(true)
                         }
                     )
                 }
@@ -136,6 +141,9 @@ fun UncategorizedDisplay(
 @Composable
 fun UncategorizedDisplayPreview() {
     KeeplyTheme {
-        UncategorizedDisplay()
+        UncategorizedDisplay(
+            isExpireToday = false,
+            images = persistentListOf()
+        )
     }
 }

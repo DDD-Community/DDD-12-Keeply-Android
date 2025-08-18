@@ -13,7 +13,8 @@ data class FolderState(
     val folders: ImmutableList<Folder> = persistentListOf(),
     val uncategorizedImages: ImmutableList<FolderImage> = persistentListOf(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isExpireToday: Boolean = false
 )
 
 enum class FolderTabs(val displayName: String, val index: Int) {

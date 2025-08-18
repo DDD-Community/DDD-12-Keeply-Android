@@ -38,6 +38,7 @@ fun FolderRoute(
     FolderScreen(
         uiState = uiState,
         onClickTab = viewModel::onClickTab,
+        updateExpireToday = viewModel::updateExpireToday,
         onNavigateToAddFolder = onNavigateToAddFolder,
         onNavigateToFolderDetail = onNavigateToFolderDetail
     )
@@ -47,6 +48,7 @@ fun FolderRoute(
 fun FolderScreen(
     uiState: FolderState,
     onClickTab: (Int) -> Unit = {},
+    updateExpireToday: (Boolean) -> Unit = {},
     onNavigateToAddFolder: () -> Unit = {},
     onNavigateToFolderDetail: (folderId: Long, folderName: String, folderColor: String) -> Unit = { _, _, _ -> }
 ) {
@@ -92,7 +94,9 @@ fun FolderScreen(
             )
             FolderTabs.Uncategorized -> UncategorizedDisplay(
                 images = uiState.uncategorizedImages,
-                isLoading = uiState.isLoading
+                isExpireToday = uiState.isExpireToday,
+                isLoading = uiState.isLoading,
+                updateExpireToday = updateExpireToday
             )
         }
     }
