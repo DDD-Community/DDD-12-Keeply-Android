@@ -10,6 +10,8 @@ import com.keeply.presentation.ui.folder.detail.navigation.folderDetailNavGraph
 import com.keeply.presentation.ui.folder.navigation.folderNavGraph
 import com.keeply.presentation.ui.home.navigation.homeNavGraph
 import com.keeply.presentation.ui.my.navigation.myNavGraph
+import com.keeply.presentation.ui.my.setting.alert.navigation.navigateSettingAlert
+import com.keeply.presentation.ui.my.setting.alert.navigation.settingAlertNavGraph
 import com.keeply.presentation.ui.onboarding.navigation.onboardingNavGraph
 import com.keeply.presentation.ui.scan.navigation.scanNavGraph
 
@@ -40,7 +42,9 @@ internal fun KeeplyNavHost(
 
         alarmNavGraph()
 
-        myNavGraph()
+        myNavGraph(
+            navigateToAlertSetting = { navigator.navController.navigateSettingAlert() }
+        )
 
         onboardingNavGraph(
             onEnterHome = { navigator.navigateHome() }
@@ -64,5 +68,7 @@ internal fun KeeplyNavHost(
                 navigator.popBackStack()
             }
         )
+
+        settingAlertNavGraph()
     }
 }
