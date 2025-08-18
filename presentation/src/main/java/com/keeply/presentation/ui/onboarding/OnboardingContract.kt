@@ -35,6 +35,12 @@ enum class OnboardingPage(
         title = R.string.onboarding_page_third_title,
         content = R.string.onboarding_page_third_content,
         image = R.drawable.img_onboarding_03
+    ),
+    FOURTH(
+        pageIndex = 3,
+        title = R.string.onboarding_page_fourth_title,
+        content = R.string.onboarding_page_fourth_content,
+        image = R.drawable.img_onboarding_04
     );
 
     companion object {
