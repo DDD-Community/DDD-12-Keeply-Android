@@ -46,6 +46,7 @@ fun ScanEditAndSaveScreen(
     textFieldLength: Int,
     textFieldMaxLength: Int,
     folderList: ImmutableList<Folder>,
+    selectedFolderId: Long,
     onAddFolderClick: () -> Unit = {},
     onTextChange: (String) -> Unit,
     onSelectFolder: (Long) -> Unit,
@@ -122,7 +123,8 @@ fun ScanEditAndSaveScreen(
                     modifier = Modifier
                         .padding(top = if (index == 0) 16.dp else 6.dp, bottom = 6.dp)
                         .clickable { onSelectFolder(folder.folderId) },
-                    folder = folder
+                    folder = folder,
+                    isSelected = folder.folderId == selectedFolderId
                 )
             }
 
@@ -180,13 +182,14 @@ private fun ScanScreenPreview() {
                     updatedAt = "0000"
                 ),
                 Folder(
-                    folderId = 1,
+                    folderId = 2,
                     folderName = "독서",
                     color = "",
                     imageCount = 3,
                     updatedAt = "0000"
                 )
-            )
+            ),
+            selectedFolderId = 1
         )
     }
 }
