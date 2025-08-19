@@ -8,9 +8,9 @@ import com.keeply.domain.repository.LocalScreenshotRepository
 class GetLocalScreenshotsUseCaseImpl(
     private val repository: LocalScreenshotRepository
 ) : GetLocalScreenshotsUseCase {
-    override fun invoke(): Pager<Int, Screenshot> {
+    override fun invoke(pageSize: Int): Pager<Int, Screenshot> {
         return Pager(
-            config = PagingConfig(pageSize = 100),
+            config = PagingConfig(pageSize = pageSize),
             pagingSourceFactory = { repository.getScreenshots() }
         )
     }
