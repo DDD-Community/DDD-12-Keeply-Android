@@ -30,6 +30,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.rememberAsyncImagePainter
+import com.keeply.domain.model.Screenshot
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.ImageFrame
 import com.keeply.presentation.core.components.KeeplyAppBar
@@ -43,6 +48,7 @@ import com.keeply.presentation.ui.home.component.KeeplyProgressBar
 import com.keeply.presentation.util.isPermissionGranted
 import com.keeply.presentation.util.openAppSettings
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.flowOf
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -51,11 +57,13 @@ fun HomeRoute(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.collectAsState()
+    val lazyPagingItems = viewModel.screenshots.collectAsLazyPagingItems()
 
     viewModel.setRestrictService(isPermissionGranted(context))
 
 
     HomeScreen(
+        lazyPagingItems = lazyPagingItems,
         isRestricted = uiState.isRestrictedService,
         onClickSetting = { openAppSettings(context) }
     )
@@ -63,6 +71,7 @@ fun HomeRoute(
 
 @Composable
 fun HomeScreen(
+    lazyPagingItems: LazyPagingItems<Screenshot>,
     isRestricted: Boolean = false,
     onClickSetting: () -> Unit = {}
 ) {
@@ -176,20 +185,29 @@ fun HomeScreen(
                     style = KeeplyTheme.typography.subtitle01,
                 )
 
+                // 최대 10개만 가져오기
+                val itemsToShow = (0 until minOf(lazyPagingItems.itemCount, 10)).mapNotNull { index ->
+                    lazyPagingItems[index]
+                }
+
                 LazyRow(
                     modifier = Modifier
-                        .padding(top = 12.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(top = 12.dp, bottom = 38.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     item { Spacer(modifier = Modifier.size(4.dp)) }
-                    items(5) {
+
+                    items(itemsToShow.size) { index ->
+                        val screenshot = itemsToShow[index]
                         ImageFrame(
+                            painter = rememberAsyncImagePainter(screenshot.uri),
                             modifier = Modifier
-                                .width(96.dp),
-                            painter = ColorPainter(KeeplyTheme.colors.neutral200)
+                                .width(96.dp)
+                                .clickable { }
                         )
                     }
+
                     item { Spacer(modifier = Modifier.size(4.dp)) }
                 }
             }
@@ -286,6 +304,6 @@ fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     KeeplyTheme {
-        HomeScreen()
+        HomeScreen(flowOf(PagingData.empty<Screenshot>()).collectAsLazyPagingItems())
     }
 }
