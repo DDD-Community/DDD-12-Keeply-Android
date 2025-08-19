@@ -90,6 +90,12 @@ class ScanAfterViewModel @Inject constructor(
     fun onSaveClick() = intent {
         reduce { state.copy(isLoading = true) }
 
+        if (state.selectedFolderId == -1L) {
+            reduce { state.copy(isLoading = false) }
+            postSideEffect(ScanAfterSideEffect.ShowError("폴더를 선택해주세요"))
+            return@intent
+        }
+
         viewModelScope.launch {
             createImageUseCase(
                 isCached = true,
@@ -130,6 +136,9 @@ class ScanAfterViewModel @Inject constructor(
                             folders = folders.toPersistentList(),
                             error = null
                         )
+                    }
+                    if (folders.isNotEmpty()) {
+                        onSelectFolder(folders.get(0).folderId) // default select folder
                     }
                 }
         }
