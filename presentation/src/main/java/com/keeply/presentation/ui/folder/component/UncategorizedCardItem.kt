@@ -1,5 +1,6 @@
 package com.keeply.presentation.ui.folder.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -35,22 +36,20 @@ fun UncategorizedCardItem(
             }
         )
 
-        if (daysUntilDeletion > 0) {
-            KeeplyText(
-                modifier = Modifier
-                    .padding(bottom = 6.dp)
-                    .background(
-                        color = Color(0xE5FFFFFF),
-                        shape = CircleShape
-                    ).padding(
-                        horizontal = 6.dp,
-                        vertical = 2.dp
-                    ).align(Alignment.BottomCenter),
-                text = "D-$daysUntilDeletion",
-                style = KeeplyTheme.typography.caption02,
-                color = KeeplyTheme.colors.neutral600
-            )
-        }
+        KeeplyText(
+            modifier = Modifier
+                .padding(bottom = 6.dp)
+                .background(
+                    color = Color(0xE5FFFFFF),
+                    shape = CircleShape
+                ).padding(
+                    horizontal = 6.dp,
+                    vertical = 2.dp
+                ).align(Alignment.BottomCenter),
+            text = "D-${daysUntilDeletion+1}",
+            style = KeeplyTheme.typography.caption02,
+            color = KeeplyTheme.colors.neutral600
+        )
     }
 }
 

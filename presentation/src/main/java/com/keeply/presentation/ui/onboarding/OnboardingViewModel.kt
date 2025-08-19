@@ -59,19 +59,22 @@ class OnboardingViewModel @Inject constructor(
             }
         }
     }
-    
+
     fun dismissPermissionDialog() = intent {
         reduce { state.copy(showPermissionDialog = false) }
         postSideEffect(OnboardingSideEffect.NavigateToHome)
     }
-    
+
     fun requestPermission() = intent {
         reduce { state.copy(showPermissionDialog = false) }
         postSideEffect(OnboardingSideEffect.RequestPermission)
     }
-    
+
     fun onPermissionResult(granted: Boolean) = intent {
-        reduce { state.copy(hasPermission = granted) }
-        postSideEffect(OnboardingSideEffect.NavigateToHome)
+        if (granted) {
+            postSideEffect(OnboardingSideEffect.NavigateToHome)
+        } else {
+            reduce { state.copy(showPermissionUpgradeDialog = true) }
+        }
     }
 }

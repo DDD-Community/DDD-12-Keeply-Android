@@ -42,3 +42,9 @@ sealed interface FolderRoute: Route {
         const val FOLDER_UPDATED = "folder_updated"
     }
 }
+
+sealed interface AlertRoute: Route {
+    @Serializable
+    data object AlertSetting: AlertRoute
+
+}

@@ -43,4 +43,8 @@ class HomeViewModel @Inject constructor(
     val screenshots = getLocalScreenshotsUseCase()
         .flow
         .cachedIn(viewModelScope)
+
+    fun setRestrictService(granted: Boolean) = intent {
+        reduce { state.copy(isRestrictedService = !granted) }
+    }
 }

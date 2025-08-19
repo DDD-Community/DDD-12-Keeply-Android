@@ -55,4 +55,9 @@
     <string name="my_page_withdrawal_dialog_check">안내사항 모두 확인, 동의합니다.</string>
     <string name="my_page_withdrawal_dialog_confirm">탈퇴</string>
     <string name="my_page_withdrawal_dialog_cancel">취소</string>
+    
+    <!-- Folder -->
+    <string name="folder_uncategorized_count">%d개</string>
+    <string name="folder_uncategorized_view_all">전체보기</string>
+    <string name="folder_uncategorized_expire_today">오늘만료</string>
 </resources>

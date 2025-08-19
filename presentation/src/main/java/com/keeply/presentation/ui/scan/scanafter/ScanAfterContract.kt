@@ -18,7 +18,7 @@ data class ScanAfterState(
     val textFieldMaxLength: Int = 300,
     val isLoading: Boolean = false,
     val folders: ImmutableList<Folder> = persistentListOf(),
-    val selectedFolderId: Long = 1, // 0으로 하고 '선택필요' 예외처리 할 수도
+    val selectedFolderId: Long = -1L,
     val error: String? = null,
     val showSelectTextBottomSheet: Boolean = true, // 초기값 설정
     val showAddFolderModal: Boolean = false,
