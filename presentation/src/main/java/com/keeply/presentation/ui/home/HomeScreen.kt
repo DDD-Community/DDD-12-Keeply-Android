@@ -23,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -61,10 +60,10 @@ fun HomeRoute(
 
     viewModel.setRestrictService(isPermissionGranted(context))
 
-
     HomeScreen(
         lazyPagingItems = lazyPagingItems,
         isRestricted = uiState.isRestrictedService,
+        latestScreenshotCount = viewModel.latestScreenshotCount,
         onClickSetting = { openAppSettings(context) }
     )
 }
@@ -73,6 +72,7 @@ fun HomeRoute(
 fun HomeScreen(
     lazyPagingItems: LazyPagingItems<Screenshot>,
     isRestricted: Boolean = false,
+    latestScreenshotCount: Int = 10,
     onClickSetting: () -> Unit = {}
 ) {
     Column(
@@ -186,7 +186,7 @@ fun HomeScreen(
                 )
 
                 // 최대 10개만 가져오기
-                val itemsToShow = (0 until minOf(lazyPagingItems.itemCount, 10)).mapNotNull { index ->
+                val itemsToShow = (0 until minOf(lazyPagingItems.itemCount, latestScreenshotCount)).mapNotNull { index ->
                     lazyPagingItems[index]
                 }
 
