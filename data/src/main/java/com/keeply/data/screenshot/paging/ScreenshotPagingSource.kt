@@ -2,7 +2,6 @@ package com.keeply.data.screenshot.paging
 
 import android.content.ContentResolver
 import android.content.ContentUris
-import android.os.Build
 import android.provider.MediaStore
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -19,15 +18,8 @@ class ScreenshotPagingSource(
 
         val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(MediaStore.Images.Media._ID)
-
-        val pathColumn = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaStore.Images.Media.RELATIVE_PATH
-        } else {
-            MediaStore.Images.Media.DATA
-        }
-
-        val selection = "(${MediaStore.Images.Media.MIME_TYPE}=? OR ${MediaStore.Images.Media.MIME_TYPE}=?) AND $pathColumn LIKE ?"
-        val selectionArgs: Array<String> = arrayOf("image/png", "image/jpeg", "%Screenshots%")
+        val selection = "${MediaStore.Images.Media.MIME_TYPE}=? OR ${MediaStore.Images.Media.MIME_TYPE}=?"
+        val selectionArgs = arrayOf("image/png", "image/jpeg")
         val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC" // 최신 순 정렬
 
         contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)?.use { cursor ->
