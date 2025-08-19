@@ -1,13 +1,11 @@
 package com.keeply.presentation.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keeply.domain.extend.default
 import com.keeply.domain.home.usecase.GetHomeDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -37,5 +35,9 @@ class HomeViewModel @Inject constructor(
                     reduce { state.copy(homeData = homeData) }
                 }
         }
+    }
+
+    fun setRestrictService(granted: Boolean) = intent {
+        reduce { state.copy(isRestrictedService = !granted) }
     }
 }

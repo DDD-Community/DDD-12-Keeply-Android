@@ -1,9 +1,6 @@
 package com.keeply.presentation.ui.onboarding
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
@@ -38,6 +33,8 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.onboarding.component.KakaoLoginButton
 import com.keeply.presentation.ui.onboarding.component.OnboardingPager
 import com.keeply.presentation.ui.onboarding.component.PermissionRequestDialog
+import com.keeply.presentation.ui.permission.PermissionUpgradeDialog
+import com.keeply.presentation.util.getRequiredImagePermission
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -47,25 +44,19 @@ fun OnboardingRoute(
     onEnterHome: () -> Unit
 ) {
     val uiState by viewModel.collectAsState()
-    val context = LocalContext.current
-    
+
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         viewModel.onPermissionResult(isGranted)
     }
-    
+
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is OnboardingSideEffect.NavigateToHome -> onEnterHome()
-            is OnboardingSideEffect.RequestPermission -> {
-                val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    Manifest.permission.READ_MEDIA_IMAGES
-                } else {
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                }
-                permissionLauncher.launch(permission)
-            }
+            is OnboardingSideEffect.RequestPermission -> permissionLauncher.launch(
+                getRequiredImagePermission()
+            )
         }
     }
 
@@ -150,10 +141,16 @@ fun OnboardingScreen(
             )
         }
     }
-    
+
     // 권한 요청 다이얼로그
     if (uiState.showPermissionDialog) {
         PermissionRequestDialog(
+            onConfirm = onRequestPermission
+        )
+    }
+
+    if (uiState.showPermissionUpgradeDialog) {
+        PermissionUpgradeDialog(
             onDismiss = onDismissPermissionDialog,
             onConfirm = onRequestPermission
         )
@@ -180,9 +177,9 @@ private fun loginWithKakaoTalk(
             }
         }
     }
-    
+
     Log.d("KakaoLogin", "카카오톡 설치 여부: ${UserApiClient.instance.isKakaoTalkLoginAvailable(context)}")
-    
+
     // 카카오톡이 설치되어 있으면 앱으로 로그인, 아니면 웹으로 로그인
     if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
         Log.d("KakaoLogin", "카카오톡으로 로그인 시도")
