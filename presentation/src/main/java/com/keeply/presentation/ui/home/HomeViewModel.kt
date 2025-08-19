@@ -21,14 +21,7 @@ class HomeViewModel @Inject constructor(
     private val getHomeDataUseCase: GetHomeDataUseCase,
     getLocalScreenshotsUseCase: GetLocalScreenshotsUseCase
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
-
     override val container: Container<HomeState, HomeSideEffect> = container(HomeState())
-
-    val latestScreenshotCount = 10
-
-    val screenshots = getLocalScreenshotsUseCase(pageSize = latestScreenshotCount)
-        .flow
-        .cachedIn(viewModelScope)
 
     init {
         loadHomeData()
@@ -46,6 +39,10 @@ class HomeViewModel @Inject constructor(
                 }
         }
     }
+
+    val screenshots = getLocalScreenshotsUseCase()
+        .flow
+        .cachedIn(viewModelScope)
 
     fun setRestrictService(granted: Boolean) = intent {
         reduce { state.copy(isRestrictedService = !granted) }
