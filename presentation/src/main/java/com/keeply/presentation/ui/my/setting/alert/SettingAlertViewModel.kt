@@ -28,6 +28,20 @@ class SettingAlertViewModel @Inject constructor(
         loadNotificationSettings()
     }
 
+    fun updateNotificationPermission(hasPermission: Boolean) = intent {
+        reduce { state.copy(hasNotificationPermission = hasPermission) }
+    }
+
+    fun handleNotificationPermissionToggle() = intent {
+        if (state.hasNotificationPermission) {
+            // 권한이 있으면 설정 화면으로 이동하여 사용자가 직접 끌 수 있도록
+            postSideEffect(SettingAlertSideEffect.OpenNotificationSettings)
+        } else {
+            // 권한이 없으면 권한 요청 모달 표시
+            postSideEffect(SettingAlertSideEffect.RequestNotificationPermission)
+        }
+    }
+
     fun loadNotificationSettings() = intent {
         viewModelScope.launch {
             getNotificationSettingUseCase()
