@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +27,7 @@ import com.keeply.presentation.core.components.KeeplyTextField
 import com.keeply.presentation.core.components.colorBar.ColorBar
 import com.keeply.presentation.core.components.colorBar.FolderColor
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.core.theme.neutral100
 import com.keeply.presentation.core.theme.neutral200
 import com.keeply.presentation.core.theme.neutral600
 import com.keeply.presentation.ui.folder.add.AddFolderState
@@ -82,6 +84,8 @@ fun AddFolderModal(
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .fillMaxWidth(),
+                inputModifier = Modifier
+                    .background(neutral100, RoundedCornerShape(4.dp)),
                 value = state.folderName,
                 onValueChange = onFolderNameChange,
                 helpIcon = if (state.checkFolderRegex()) null else KeeplyTheme.icons.error,

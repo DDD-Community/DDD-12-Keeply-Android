@@ -28,6 +28,7 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 @Composable
 fun KeeplyTextField(
     modifier: Modifier = Modifier,
+    inputModifier: Modifier = Modifier, // todo Textfield 타입 추가 후 제거
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String = "",
@@ -52,7 +53,7 @@ fun KeeplyTextField(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Row(
-            modifier = Modifier
+            modifier = inputModifier
                 .fillMaxWidth()
                 .height(40.dp)
                 .border(
