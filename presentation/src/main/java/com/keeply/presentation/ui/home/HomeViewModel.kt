@@ -1,13 +1,13 @@
 package com.keeply.presentation.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.keeply.domain.extend.default
 import com.keeply.domain.home.usecase.GetHomeDataUseCase
+import com.keeply.domain.usecase.screenshot.GetLocalScreenshotsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -19,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getHomeDataUseCase: GetHomeDataUseCase,
+    getLocalScreenshotsUseCase: GetLocalScreenshotsUseCase
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container: Container<HomeState, HomeSideEffect> = container(HomeState())
 
@@ -33,5 +34,13 @@ class HomeViewModel @Inject constructor(
                     reduce { state.copy(homeData = homeData) }
                 }
         }
+    }
+
+    val screenshots = getLocalScreenshotsUseCase()
+        .flow
+        .cachedIn(viewModelScope)
+
+    fun setRestrictService(granted: Boolean) = intent {
+        reduce { state.copy(isRestrictedService = !granted) }
     }
 }

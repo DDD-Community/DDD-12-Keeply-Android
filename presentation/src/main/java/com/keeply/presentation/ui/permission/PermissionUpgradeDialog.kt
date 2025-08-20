@@ -1,9 +1,9 @@
-package com.keeply.presentation.ui.onboarding.component
+package com.keeply.presentation.ui.permission
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -14,16 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.keeply.presentation.core.components.FolderIcon
 import com.keeply.presentation.core.components.KeeplyButton
+import com.keeply.presentation.core.components.KeeplyButtonStyle
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
 
 @Composable
-fun PermissionRequestDialog(
+fun PermissionUpgradeDialog(
+    onDismiss: () -> Unit = {},
     onConfirm: () -> Unit = {}
 ) {
-    Dialog(onDismissRequest = { }) {
+    Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -39,34 +40,38 @@ fun PermissionRequestDialog(
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                FolderIcon(
-                    tint = KeeplyTheme.colors.orange400
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
                 KeeplyText(
-                    text = "사진 접근 권한이 필요해요!",
-                    style = KeeplyTheme.typography.subtitle01,
-                    color = KeeplyTheme.colors.neutralBlack
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                KeeplyText(
-                    text = "Keeply의 주요 기능 (스크린샷 자동 불러오기 등)을 사용하려면 사진 접근 권한을 허용해 주세요.",
+                    text = "갤러리에 대한 권한 사용을 거부했습니다. 주요 기능 사용을 위해 사진 접근 권한을 허용해 주세요.",
                     style = KeeplyTheme.typography.body,
-                    color = KeeplyTheme.colors.neutral600,
+                    color = KeeplyTheme.colors.neutralBlack,
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 28.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    KeeplyButton(
+                        modifier = Modifier
+                            .weight(1f),
+                        text = "닫기",
+                        buttonStyle = KeeplyButtonStyle.SECONDARY,
+                        onClick = {
+                            onDismiss()
+                        }
+                    )
 
-                KeeplyButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "확인",
-                    onClick = onConfirm
-                )
+                    KeeplyButton(
+                        modifier = Modifier
+                            .weight(1f),
+                        text = "권한 설정",
+                        onClick = {
+                            onConfirm()
+                        }
+                    )
+                }
             }
         }
     }
