@@ -34,7 +34,7 @@ fun OnboardingPager(
         Row(
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            repeat(3) { index ->
+            repeat(OnboardingPage.entries.size) { index ->
                 val backgroundColor = if (index == onboardingPage.pageIndex)
                     KeeplyTheme.colors.neutral900
                 else

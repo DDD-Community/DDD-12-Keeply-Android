@@ -23,10 +23,6 @@ class HomeViewModel @Inject constructor(
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
     override val container: Container<HomeState, HomeSideEffect> = container(HomeState())
 
-    init {
-        loadHomeData()
-    }
-
     fun loadHomeData() = intent {
         viewModelScope.launch {
             getHomeDataUseCase()

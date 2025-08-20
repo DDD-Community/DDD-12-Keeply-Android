@@ -11,6 +11,8 @@ data class HomeImageDto(
     val presignedUrl: String,
     @SerialName("tag")
     val tag: String,
+    @SerialName("tagColor")
+    val tagColor: String?,
     @SerialName("insight")
     val insight: String,
     @SerialName("updatedAt")
