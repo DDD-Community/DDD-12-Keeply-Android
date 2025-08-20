@@ -26,6 +26,7 @@ fun HomeImageDto.toDomain(): HomeImage {
         imageId = imageId,
         presignedUrl = presignedUrl,
         tag = tag,
+        tagColor = tagColor ?: "",
         insight = insight,
         updatedAt = updatedAt
     )
@@ -34,6 +35,7 @@ fun HomeImageDto.toDomain(): HomeImage {
 fun HomeFolderDto.toDomain(): HomeFolder {
     return HomeFolder(
         folderId = folderId,
+        folderName = folderName,
         color = color,
         updatedAt = updatedAt,
         imageCount = imageCount

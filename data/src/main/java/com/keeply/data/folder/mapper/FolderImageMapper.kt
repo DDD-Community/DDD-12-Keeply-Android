@@ -11,6 +11,7 @@ fun FolderImageResponse.toDomain(): FolderImage {
         presignedUrl = presignedUrl ?: "",
         insight = insight ?: "",
         tag = tag ?: "",
+        tagColor = tagColor ?: "",
         isCategorized = isCategorized ?: false,
         scheduledDeleteAt = scheduledDeleteAt?.let {
             LocalDate.parse(it, DateTimeFormatter.ISO_DATE)

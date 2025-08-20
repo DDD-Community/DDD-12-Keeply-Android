@@ -4,21 +4,32 @@ import android.content.Context
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,11 +38,10 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.kakao.sdk.user.model.User
-import com.keeply.presentation.R
-import com.keeply.presentation.core.components.KeeplyButton
+import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.extend.shadow01
 import com.keeply.presentation.ui.onboarding.component.KakaoLoginButton
-import com.keeply.presentation.ui.onboarding.component.OnboardingPager
 import com.keeply.presentation.ui.onboarding.component.PermissionRequestDialog
 import com.keeply.presentation.ui.permission.PermissionUpgradeDialog
 import com.keeply.presentation.util.getRequiredImagePermission
@@ -74,6 +84,7 @@ fun OnboardingRoute(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
     uiState: OnboardingState,
@@ -83,56 +94,52 @@ fun OnboardingScreen(
     onRequestPermission: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    val pagerState = rememberPagerState(
+        initialPage = uiState.onboardingPage.pageIndex,
+        pageCount = { OnboardingPage.entries.size }
+    )
 
-    Box(
+    // pagerState 변경 시 viewModel 상태 업데이트
+    LaunchedEffect(pagerState.currentPage) {
+        val currentPage = OnboardingPage.entries[pagerState.currentPage]
+        updateOnboardingPage(currentPage)
+    }
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(KeeplyTheme.colors.neutral100)
+            .background(KeeplyTheme.colors.neutral100),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OnboardingPager(
+        Row(
             modifier = Modifier
-                .padding(top = 40.dp)
-                .width(246.dp)
-                .align(Alignment.TopCenter),
-            onboardingPage = uiState.onboardingPage
-        )
+                .padding(top = 54.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            repeat(OnboardingPage.entries.size) { index ->
+                val backgroundColor = if (index == pagerState.currentPage)
+                    KeeplyTheme.colors.neutral900
+                else
+                    KeeplyTheme.colors.neutral300
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(270.dp)
-                .align(Alignment.BottomCenter)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            KeeplyTheme.colors.neutral100,
-                            KeeplyTheme.colors.neutral100
-                        )
-                    )
+                Box(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(6.dp)
+                        .background(backgroundColor)
                 )
-        )
+            }
+        }
 
-        val bottomModifier = Modifier
-            .padding(
-                start = 16.dp,
-                end = 16.dp,
-                bottom = 50.dp
-            )
-            .fillMaxWidth()
-            .height(50.dp)
-            .align(Alignment.BottomCenter)
-
-        if (uiState.onboardingPage != OnboardingPage.THIRD) {
-            KeeplyButton(
-                modifier = bottomModifier,
-                text = stringResource(R.string.next),
-                onClick = { updateOnboardingPage(uiState.onboardingPage) }
-            )
-        } else {
-            KakaoLoginButton(
-                modifier = bottomModifier,
-                onClick = {
+        // 전체 화면 스크롤 영역
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize(),
+            userScrollEnabled = true
+        ) { page ->
+            OnboardingPageContent(
+                onboardingPage = OnboardingPage.entries[page],
+                onLoginClick = {
                     loginWithKakaoTalk(
                         context = context,
                         callLogin = callLogin
@@ -156,6 +163,80 @@ fun OnboardingScreen(
         )
     }
 }
+
+@Composable
+fun OnboardingPageContent(
+    onboardingPage: OnboardingPage,
+    modifier: Modifier = Modifier,
+    onLoginClick: () -> Unit = {}
+) {
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(top = 24.dp)
+                .width(246.dp)
+                .align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            KeeplyText(
+                modifier = Modifier,
+                text = stringResource(onboardingPage.title),
+                style = KeeplyTheme.typography.subtitle01
+            )
+
+            KeeplyText(
+                modifier = Modifier
+                    .padding(top = 6.dp),
+                text = stringResource(onboardingPage.content),
+                textAlign = TextAlign.Center,
+                style = KeeplyTheme.typography.caption02,
+                color = KeeplyTheme.colors.neutral700
+            )
+
+            Image(
+                modifier = Modifier
+                    .padding(top = 34.dp)
+                    .fillMaxWidth(),
+                painter = androidx.compose.ui.res.painterResource(onboardingPage.image),
+                contentDescription = onboardingPage.name,
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                alignment = Alignment.TopCenter
+            )
+        }
+
+        if (onboardingPage == OnboardingPage.FOURTH) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .shadow01()
+                    .clip(
+                        shape = RoundedCornerShape(
+                            topStart = 12.dp,
+                            topEnd = 12.dp
+                        )
+                    )
+                    .background(KeeplyTheme.colors.neutralWhite)
+                    .fillMaxWidth()
+                    .padding(
+                        vertical = 36.dp,
+                        horizontal = 16.dp
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                KakaoLoginButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    onClick = onLoginClick
+                )
+            }
+
+        }
+    }
+}
+
 
 private fun loginWithKakaoTalk(
     context: Context,
@@ -219,7 +300,9 @@ private fun loginWithKakaoTalk(
 fun OnboardingScreenPreview() {
     KeeplyTheme {
         OnboardingScreen(
-            uiState = OnboardingState()
+            uiState = OnboardingState(
+                OnboardingPage.FOURTH
+            )
         )
     }
 }

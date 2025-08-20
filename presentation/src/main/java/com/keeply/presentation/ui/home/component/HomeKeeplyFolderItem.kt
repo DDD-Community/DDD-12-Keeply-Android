@@ -15,14 +15,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.keeply.domain.home.model.HomeFolder
 import com.keeply.presentation.core.components.FolderIcon
 import com.keeply.presentation.core.components.KeeplyText
+import com.keeply.presentation.core.components.colorBar.FolderColor
+import com.keeply.presentation.core.components.colorBar.toComposeColor
+import com.keeply.presentation.core.components.colorBar.toHexString
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.extend.formatDate
 
 @Composable
 fun HomeKeeplyFolderItem(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    homeFolder: HomeFolder
 ) {
+    val folderColor = homeFolder.color.let {
+        FolderColor.entries.firstOrNull { color ->
+            color.toHexString() == it
+        }
+    } ?: FolderColor.ORANGE
+
     Row(
         modifier = modifier
     ) {
@@ -30,7 +42,7 @@ fun HomeKeeplyFolderItem(
             iconModifier = Modifier
                 .width(56.dp)
                 .height(42.dp),
-            tint = KeeplyTheme.colors.orange400
+            tint = folderColor.toComposeColor()
         )
 
         Column(
@@ -39,7 +51,7 @@ fun HomeKeeplyFolderItem(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             KeeplyText(
-                text = "위시리스트",
+                text = homeFolder.folderName,
                 style = KeeplyTheme.typography.subtitle02,
             )
 
@@ -47,7 +59,7 @@ fun HomeKeeplyFolderItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 KeeplyText(
-                    text = "오늘 수정",
+                    text = homeFolder.updatedAt.formatDate(),
                     style = KeeplyTheme.typography.caption02,
                     color = KeeplyTheme.colors.neutral600
                 )
@@ -71,7 +83,7 @@ fun HomeKeeplyFolderItem(
                 KeeplyText(
                     modifier = Modifier
                         .padding(start = 2.dp),
-                    text = "5",
+                    text = homeFolder.imageCount.toString(),
                     style = KeeplyTheme.typography.caption02,
                     color = KeeplyTheme.colors.neutral600
                 )
@@ -84,7 +96,15 @@ fun HomeKeeplyFolderItem(
 @Composable
 fun HomeKeeplyFolderItemPreview() {
     KeeplyTheme {
-        HomeKeeplyFolderItem()
+        HomeKeeplyFolderItem(
+            homeFolder = HomeFolder(
+                folderId = 0,
+                folderName = "위시리스트",
+                updatedAt = "2025-08-16T14:52:40",
+                imageCount = 5,
+                color = ""
+            )
+        )
     }
 }
 

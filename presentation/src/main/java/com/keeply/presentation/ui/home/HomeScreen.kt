@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,13 +41,14 @@ import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.extend.formatDate
 import com.keeply.presentation.ui.home.component.HomeKeeplyFolderItem
 import com.keeply.presentation.ui.home.component.HomeKeeplyScreenshotItem
 import com.keeply.presentation.ui.home.component.HomeUncategorizedCard
 import com.keeply.presentation.ui.home.component.KeeplyProgressBar
 import com.keeply.presentation.util.isPermissionGranted
 import com.keeply.presentation.util.openAppSettings
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.flowOf
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -60,7 +62,13 @@ fun HomeRoute(
 
     viewModel.setRestrictService(isPermissionGranted(context))
 
+    LaunchedEffect(Unit) {
+        viewModel.loadHomeData()
+    }
+
+
     HomeScreen(
+        state = uiState,
         lazyPagingItems = lazyPagingItems,
         isRestricted = uiState.isRestrictedService,
         latestScreenshotCount = viewModel.latestScreenshotCount,
@@ -70,233 +78,246 @@ fun HomeRoute(
 
 @Composable
 fun HomeScreen(
+    state: HomeState,
     lazyPagingItems: LazyPagingItems<Screenshot>,
     isRestricted: Boolean = false,
     latestScreenshotCount: Int = 10,
     onClickSetting: () -> Unit = {}
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(KeeplyTheme.colors.neutral100)
-    ) {
-        KeeplyAppBar(
-            customTitleContent = {
-                Image(
-                    modifier = Modifier
-                        .width(72.dp)
-                        .align(Alignment.CenterStart),
-                    painter = painterResource(R.drawable.ic_keeply_text_logo),
-                    contentDescription = "Keeply"
-                )
-            },
-            leadingIcon = null,
-            trailingIcon = {
-                Image(
-                    painter = KeeplyTheme.icons.alarmStateOn,
-                    contentDescription = "Notification"
-                )
-            },
-            onClickTrailing = {}
-        )
-
+    state.homeData?.let { homeData ->
         Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .weight(1f)
-                .padding(
-                    top = 20.dp,
-                    bottom = 112.dp
-                )
+                .fillMaxSize()
+                .background(KeeplyTheme.colors.neutral100)
         ) {
-            if (isRestricted) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 11.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(KeeplyTheme.colors.neutral200)
-                        .clickable { onClickSetting() }
-                ) {
-                    Row(
+            KeeplyAppBar(
+                customTitleContent = {
+                    Image(
+                        modifier = Modifier
+                            .width(72.dp)
+                            .align(Alignment.CenterStart),
+                        painter = painterResource(R.drawable.ic_keeply_text_logo),
+                        contentDescription = "Keeply"
+                    )
+                },
+                leadingIcon = null,
+                trailingIcon = {
+                    Image(
+                        painter = KeeplyTheme.icons.alarmStateOn,
+                        contentDescription = "Notification"
+                    )
+                },
+                onClickTrailing = {}
+            )
+
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .weight(1f)
+                    .padding(
+                        top = 20.dp,
+                        bottom = 112.dp
+                    )
+            ) {
+                if (isRestricted) {
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(all = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(start = 16.dp, end = 16.dp, bottom = 11.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(KeeplyTheme.colors.neutral200)
+                            .clickable { onClickSetting() }
                     ) {
-                        KeeplyText(
-                            text = "권한 부족으로 서비스 내 일부 기능이 제한됩니다.\n설정에서 권한을 켜주세요.",
-                            style = KeeplyTheme.typography.caption02,
-                            color = KeeplyTheme.colors.neutral800
-                        )
-
-                        KeeplyText(
-                            text = "권한 설정",
-                            style = KeeplyTheme.typography.button01Suit.copy(
-                                textDecoration = TextDecoration.Underline
-                            ),
-                            color = KeeplyTheme.colors.neutral900
-                        )
-                    }
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-            ) {
-                KeeplyProgressBar(
-                    currentLength = 60
-                )
-
-                Row(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    HomeUncategorizedCard(
-                        modifier = Modifier
-                            .weight(1f),
-                        title = "미분류",
-                        count = 7,
-                        images = persistentListOf(
-                            painterResource(R.drawable.img_onboarding_01),
-                            painterResource(R.drawable.img_onboarding_02),
-                            painterResource(R.drawable.img_onboarding_03),
-                        )
-                    )
-
-                    HomeUncategorizedCard(
-                        modifier = Modifier
-                            .weight(1f),
-                        title = "만료예정",
-                        count = 0
-                    )
-                }
-            }
-
-            if (isRestricted.not()) {
-                KeeplyText(
-                    modifier = Modifier
-                        .padding(top = 36.dp, start = 16.dp),
-                    text = "최근 스크린샷",
-                    style = KeeplyTheme.typography.subtitle01,
-                )
-
-                // 최대 10개만 가져오기
-                val itemsToShow = (0 until minOf(lazyPagingItems.itemCount, latestScreenshotCount)).mapNotNull { index ->
-                    lazyPagingItems[index]
-                }
-
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp, bottom = 38.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    item { Spacer(modifier = Modifier.size(4.dp)) }
-
-                    items(itemsToShow.size) { index ->
-                        val screenshot = itemsToShow[index]
-                        ImageFrame(
-                            painter = rememberAsyncImagePainter(screenshot.uri),
+                        Row(
                             modifier = Modifier
-                                .width(96.dp)
-                                .clickable { }
+                                .fillMaxWidth()
+                                .padding(all = 12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            KeeplyText(
+                                text = "권한 부족으로 서비스 내 일부 기능이 제한됩니다.\n설정에서 권한을 켜주세요.",
+                                style = KeeplyTheme.typography.caption02,
+                                color = KeeplyTheme.colors.neutral800
+                            )
+
+                            KeeplyText(
+                                text = "권한 설정",
+                                style = KeeplyTheme.typography.button01Suit.copy(
+                                    textDecoration = TextDecoration.Underline
+                                ),
+                                color = KeeplyTheme.colors.neutral900
+                            )
+                        }
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                ) {
+                    KeeplyProgressBar(
+                        currentLength = homeData.imageCount
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        HomeUncategorizedCard(
+                            modifier = Modifier
+                                .weight(1f),
+                            title = "미분류",
+                            count = homeData.uncategorizedImageCount,
+                            images = homeData.uncategorizedImageList.map {
+                                rememberAsyncImagePainter(it.presignedUrl)
+                            }.toPersistentList()
+                        )
+
+                        HomeUncategorizedCard(
+                            modifier = Modifier
+                                .weight(1f),
+                            title = "만료예정",
+                            count = homeData.scheduledToDeleteImageCount,
+                            images = homeData.scheduledToDeleteImageList.map {
+                                rememberAsyncImagePainter(it.presignedUrl)
+                            }.toPersistentList()
                         )
                     }
-
-                    item { Spacer(modifier = Modifier.size(4.dp)) }
                 }
-            }
 
-            Column(
-                modifier = Modifier
-                    .padding(top = 38.dp, start = 16.dp, end = 16.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                if (isRestricted.not()) {
                     KeeplyText(
                         modifier = Modifier
-                            .weight(1f),
-                        text = "최근 업데이트된 폴더",
+                            .padding(top = 36.dp, start = 16.dp),
+                        text = "최근 스크린샷",
                         style = KeeplyTheme.typography.subtitle01,
                     )
 
-                    KeeplyIconButton(
-                        painter = KeeplyTheme.icons.arrowRight
-                    )
-                }
+                    // 최대 10개만 가져오기
+                    val itemsToShow = (0 until minOf(lazyPagingItems.itemCount, latestScreenshotCount)).mapNotNull { index ->
+                        lazyPagingItems[index]
+                    }
 
-                Column(
-                    modifier = Modifier
-                        .padding(top = 12.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(KeeplyTheme.colors.neutralWhite)
-                        .padding(
-                            vertical = 2.dp,
-                            horizontal = 16.dp
-                        )
-                ) {
-                    val count = 4
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp, bottom = 38.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        item { Spacer(modifier = Modifier.size(4.dp)) }
 
-                    repeat(count) { index ->
-                        HomeKeeplyFolderItem(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    vertical = 18.dp
-                                )
-                        )
-
-                        if (index < count - 1) {
-                            HorizontalDivider(
-                                thickness = 1.dp,
-                                color = KeeplyTheme.colors.neutral200
+                        items(itemsToShow.size) { index ->
+                            val screenshot = itemsToShow[index]
+                            ImageFrame(
+                                painter = rememberAsyncImagePainter(screenshot.uri),
+                                modifier = Modifier
+                                    .width(96.dp)
+                                    .clickable { }
                             )
                         }
+
+                        item { Spacer(modifier = Modifier.size(4.dp)) }
                     }
                 }
 
-                KeeplyText(
-                    modifier = Modifier
-                        .padding(top = 36.dp),
-                    text = "최근 저장한 스크린샷",
-                    style = KeeplyTheme.typography.subtitle01,
-                )
-
                 Column(
                     modifier = Modifier
-                        .padding(top = 12.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(KeeplyTheme.colors.neutralWhite)
-                        .padding(horizontal = 16.dp)
+                        .padding(top = 38.dp, start = 16.dp, end = 16.dp)
                 ) {
-                    val count = 4
-
-                    repeat(count) { index ->
-                        HomeKeeplyScreenshotItem(
+                    if (homeData.recentFolders.isNotEmpty()) {
+                        Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 16.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            KeeplyText(
+                                modifier = Modifier
+                                    .weight(1f),
+                                text = "최근 업데이트된 폴더",
+                                style = KeeplyTheme.typography.subtitle01,
+                            )
+
+                            KeeplyIconButton(
+                                painter = KeeplyTheme.icons.arrowRight
+                            )
+                        }
+
+                        Column(
+                            modifier = Modifier
+                                .padding(top = 12.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(KeeplyTheme.colors.neutralWhite)
+                                .padding(
+                                    vertical = 2.dp,
+                                    horizontal = 16.dp
+                                )
+                        ) {
+                            repeat(homeData.recentFolders.size) { index ->
+                                val homeFolder = homeData.recentFolders[index]
+                                HomeKeeplyFolderItem(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            vertical = 18.dp
+                                        ),
+                                    homeFolder = homeFolder
+                                )
+
+                                if (index < homeData.recentFolders.size - 1) {
+                                    HorizontalDivider(
+                                        thickness = 1.dp,
+                                        color = KeeplyTheme.colors.neutral200
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    if (homeData.recentSavedImages.isNotEmpty()) {
+                        KeeplyText(
+                            modifier = Modifier
+                                .padding(top = 36.dp),
+                            text = "최근 저장한 스크린샷",
+                            style = KeeplyTheme.typography.subtitle01,
                         )
 
-                        if (index < count - 1) {
-                            HorizontalDivider(
-                                thickness = 1.dp,
-                                color = KeeplyTheme.colors.neutral200
-                            )
+                        Column(
+                            modifier = Modifier
+                                .padding(top = 12.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(KeeplyTheme.colors.neutralWhite)
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            repeat(homeData.recentSavedImages.size) { index ->
+                                val homeImage = homeData.recentSavedImages[index]
+
+                                HomeKeeplyScreenshotItem(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 16.dp),
+                                    painter = rememberAsyncImagePainter(homeImage.presignedUrl),
+                                    tag = homeImage.tag,
+                                    tagColor = homeImage.tagColor,
+                                    date = homeImage.updatedAt.formatDate(),
+                                    insight = homeImage.insight,
+                                )
+
+                                if (index < homeData.recentSavedImages.size - 1) {
+                                    HorizontalDivider(
+                                        thickness = 1.dp,
+                                        color = KeeplyTheme.colors.neutral200
+                                    )
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
 
+        }
     }
 }
 
@@ -304,6 +325,8 @@ fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     KeeplyTheme {
-        HomeScreen(flowOf(PagingData.empty<Screenshot>()).collectAsLazyPagingItems())
+        HomeScreen(
+            state = HomeState() ,
+            lazyPagingItems = flowOf(PagingData.empty<Screenshot>()).collectAsLazyPagingItems())
     }
 }

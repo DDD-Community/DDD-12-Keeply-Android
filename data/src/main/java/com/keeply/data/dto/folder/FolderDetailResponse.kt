@@ -13,6 +13,7 @@ data class FolderImageResponse(
     val presignedUrl: String? = null,
     val insight: String? = null,
     val tag: String? = null,
+    val tagColor: String? = null,
     val isCategorized: Boolean? = null,
     val scheduledDeleteAt: String? = null,
     val daysUntilDeletion: Int? = null

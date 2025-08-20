@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 data class HomeFolderDto(
     @SerialName("folderId")
     val folderId: Long,
+    @SerialName("folderName")
+    val folderName: String,
     @SerialName("color")
     val color: String,
     @SerialName("updatedAt")

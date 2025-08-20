@@ -5,12 +5,14 @@
 
     <string name="scan">Scan</string>
 
-    <string name="onboarding_page_first_title">기록하고 싶은 부분만 크롭</string>
-    <string name="onboarding_page_first_content">스크린샷의 원하는 부분만 크롭해서 기록해요.\n크롭한 부분의 텍스트를 추출할 수 있어요.</string>
-    <string name="onboarding_page_second_title">OCR 추출로 간편하게 저장</string>
-    <string name="onboarding_page_second_content">추출된 텍스트를 이미지와 함께\n원하는 폴더에 저장할 수 있어요.</string>
-    <string name="onboarding_page_third_title">폴더에 깔끔하게 정리하는 스크린샷</string>
-    <string name="onboarding_page_third_content">목적에 따라 체계적으로 분류해\n원하는 스크린샷을 빠르게 찾을 수 있어요.</string>
+    <string name="onboarding_page_first_title">공유 버튼을 눌러 스크린샷 저장</string>
+    <string name="onboarding_page_first_content">스크린샷을 찍은 직후, 또는 갤러리의 스크린샷을\n공유 버튼을 눌러 Keeply에 저장할 수 있어요.</string>
+    <string name="onboarding_page_second_title">기록하고 싶은 부분만 크롭</string>
+    <string name="onboarding_page_second_content">스크린샷의 원하는 부분만 크롭해서 기록해요.\n크롭한 부분의 텍스트를 추출할 수 있어요.</string>
+    <string name="onboarding_page_third_title">OCR 추출로 간편하게 저장</string>
+    <string name="onboarding_page_third_content">추출된 텍스트를 이미지와 함께\n원하는 폴더에 저장할 수 있어요.</string>
+    <string name="onboarding_page_fourth_title">폴더에 깔끔하게 정리하는 스크린샷</string>
+    <string name="onboarding_page_fourth_content">문장 아카이빙, 정보 저장 등 목적에 따라 분류해\n원하는 스크린샷을 빠르게 찾을 수 있어요.</string>
 
     <!-- Scan -->
     <string name="scan_onboarding_title">Crop!</string>

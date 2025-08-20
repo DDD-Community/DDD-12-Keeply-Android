@@ -12,6 +12,8 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.keeply.presentation.core.components.colorBar.toComposeColor
+import com.keeply.presentation.core.components.colorBar.fromHexString
 import com.keeply.presentation.core.components.FileTag
 import com.keeply.presentation.core.components.FileTagStyle
 import com.keeply.presentation.core.components.ImageFrame
@@ -23,8 +25,9 @@ fun HomeKeeplyScreenshotItem(
     modifier: Modifier = Modifier,
     painter: Painter? = null,
     tag: String = "",
+    tagColor: String = "",
     date: String = "",
-    insight: String = ""
+    insight: String = "",
 ) {
     Row(
         modifier = modifier
@@ -48,7 +51,12 @@ fun HomeKeeplyScreenshotItem(
                     modifier = Modifier
                         .weight(1f),
                     text = tag,
-                    style = FileTagStyle.Small
+                    style = FileTagStyle.Small,
+                    color = if (tagColor.isNotEmpty()) {
+                        fromHexString(tagColor)?.toComposeColor() ?: KeeplyTheme.colors.orange400
+                    } else {
+                        KeeplyTheme.colors.orange400
+                    }
                 )
 
                 KeeplyText(
