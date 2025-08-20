@@ -6,24 +6,47 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.keeply.presentation.core.components.KeeplyAppBar
-import com.keeply.presentation.core.components.KeeplyToggle
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.my.setting.component.SettingToggleItem
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun SettingAlertRoute(
     viewModel: SettingAlertViewModel = hiltViewModel(),
+    onBackClick: () -> Unit = {}
 ) {
-    SettingAlertScreen()
+    val state by viewModel.collectAsState()
+    
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is SettingAlertSideEffect.ShowError -> {
+
+            }
+        }
+    }
+    
+    SettingAlertScreen(
+        state = state,
+        onStorageNotificationChange = { enabled -> viewModel.updateStorageNotification(enabled) },
+        onMarketingNotificationChange = { enabled -> viewModel.updateMarketingNotification(enabled) },
+        onBackClick = onBackClick
+    )
 }
 
 @Composable
-fun SettingAlertScreen() {
+fun SettingAlertScreen(
+    state: SettingAlertState = SettingAlertState(),
+    onStorageNotificationChange: (Boolean) -> Unit = {},
+    onMarketingNotificationChange: (Boolean) -> Unit = {},
+    onBackClick: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -38,7 +61,7 @@ fun SettingAlertScreen() {
                     tint = KeeplyTheme.colors.neutralBlack
                 )
             },
-            onClickLeading = { },
+            onClickLeading = onBackClick,
         )
 
         Column(
@@ -51,14 +74,14 @@ fun SettingAlertScreen() {
         ) {
             SettingToggleItem(
                 text = "저장 용량 알림",
-                isChecked = true,
-                onToggleValueChange = {}
+                isChecked = state.allowStorageNotification,
+                onToggleValueChange = onStorageNotificationChange
             )
 
             SettingToggleItem(
                 text = "마케팅 알림",
-                isChecked = false,
-                onToggleValueChange = {}
+                isChecked = state.allowMarketingNotification,
+                onToggleValueChange = onMarketingNotificationChange
             )
 
             SettingToggleItem(
