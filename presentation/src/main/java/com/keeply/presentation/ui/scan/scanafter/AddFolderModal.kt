@@ -38,7 +38,11 @@ fun AddFolderModal(
     onCreateFolder: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
 ) {
-    BaseAlertModal {
+    BaseAlertModal(
+        onDismissCallback = onNavigateBack,
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
