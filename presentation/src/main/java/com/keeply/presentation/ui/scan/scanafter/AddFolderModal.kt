@@ -77,16 +77,16 @@ fun AddFolderModal(
                     .background(neutral200)
             )
 
+            // TODO: 디자인 수정 필요
             KeeplyTextField(
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .background(KeeplyTheme.colors.neutral100)
                     .fillMaxWidth(),
                 value = state.folderName,
                 onValueChange = onFolderNameChange,
                 helpIcon = if (state.checkFolderRegex()) null else KeeplyTheme.icons.error,
-                helpText = if (state.checkFolderRegex()) "" else "최대 20자까지 입력 가능합니다.",
-                placeholder = "폴더명"
+                helpText = if (state.checkFolderRegex()) "" else "최소 1자 미만. 최대 20자까지 입력해주세요.",
+                placeholder = "새 폴더"
             )
 
             KeeplyText(
