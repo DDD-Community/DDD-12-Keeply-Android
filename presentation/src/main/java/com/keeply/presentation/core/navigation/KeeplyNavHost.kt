@@ -69,6 +69,8 @@ internal fun KeeplyNavHost(
             }
         )
 
-        settingAlertNavGraph()
+        settingAlertNavGraph(
+            onBackClick = { navigator.popBackStack() }
+        )
     }
 }
