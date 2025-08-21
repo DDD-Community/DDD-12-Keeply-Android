@@ -204,7 +204,7 @@ fun HomeScreen(
                     LazyRow(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 12.dp, bottom = 38.dp),
+                            .padding(top = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         item { Spacer(modifier = Modifier.size(4.dp)) }
@@ -225,7 +225,7 @@ fun HomeScreen(
 
                 Column(
                     modifier = Modifier
-                        .padding(top = 38.dp, start = 16.dp, end = 16.dp)
+                        .padding(top = 36.dp, start = 16.dp, end = 16.dp)
                 ) {
                     if (homeData.recentFolders.isNotEmpty()) {
                         Row(
