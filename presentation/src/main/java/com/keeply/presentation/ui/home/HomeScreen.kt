@@ -71,6 +71,7 @@ fun HomeRoute(
         state = uiState,
         lazyPagingItems = lazyPagingItems,
         isRestricted = uiState.isRestrictedService,
+        latestScreenshotCount = viewModel.latestScreenshotCount,
         onClickSetting = { openAppSettings(context) }
     )
 }
@@ -80,6 +81,7 @@ fun HomeScreen(
     state: HomeState,
     lazyPagingItems: LazyPagingItems<Screenshot>,
     isRestricted: Boolean = false,
+    latestScreenshotCount: Int = 10,
     onClickSetting: () -> Unit = {}
 ) {
     state.homeData?.let { homeData ->
@@ -195,7 +197,7 @@ fun HomeScreen(
                     )
 
                     // 최대 10개만 가져오기
-                    val itemsToShow = (0 until minOf(lazyPagingItems.itemCount, 10)).mapNotNull { index ->
+                    val itemsToShow = (0 until minOf(lazyPagingItems.itemCount, latestScreenshotCount)).mapNotNull { index ->
                         lazyPagingItems[index]
                     }
 
