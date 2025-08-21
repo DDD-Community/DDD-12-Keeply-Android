@@ -1,7 +1,6 @@
 package com.keeply.presentation.ui.scan.scanbefore
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
@@ -85,12 +84,12 @@ fun ScanBeforeRoute(
         onBack = onBack,
         onNavigateToCrop = onNavigateToCrop,
         doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() },
-        callScan = { imageUri ->
+        callScan = { imageUri, isScanSkip ->
             // TODO real -> Crop후 imageUri 사용하도록 수정하는게 좋을 듯함
             viewModel.scanImage(
                 image = uiState.uri.toUri().toFile(context),
                 successCallback = { result ->
-                    onNavigateToScanAfter(uiState.uri.toUri(), result, false)
+                    onNavigateToScanAfter(uiState.uri.toUri(), result, isScanSkip)
                 }
             )
         }
@@ -105,11 +104,10 @@ fun ScanBeforeScreen(
     onBack: () -> Unit,
     onNavigateToCrop: (Uri) -> Unit,
     doNotRepeatButtonCallback: () -> Unit,
-    callScan: (Uri) -> Unit = {}
+    callScan: (Uri, Boolean) -> Unit = { _, _ -> }
 ) {
     if (uri == null) return // 모달을 띄우거나 ~
 
-    Log.d("TAG", "ScanBeforeScreen: $uri")
     var isMenuVisible by remember { mutableStateOf(true) }
     var isShowDialog by remember { mutableStateOf(true) }
     var isScanLoading by remember { mutableStateOf(false) }
@@ -245,7 +243,7 @@ fun ScanBeforeScreen(
                         onClickCrop = { },
                         onClickScan = {
                             isScanLoading = true
-                            callScan(uri)
+                            callScan(uri, false)
                         }
                     )
 
@@ -254,9 +252,9 @@ fun ScanBeforeScreen(
                             .size(40.dp)
                             .clip(CircleShape)
                             .background(KeeplyTheme.colors.neutral200)
+                            .clickable { callScan(uri, true) }
                             .padding(11.dp)
-                            .align(Alignment.CenterEnd)
-                            .clickable { },
+                            .align(Alignment.CenterEnd),
                         painter = KeeplyTheme.icons.skip,
                         tint = KeeplyTheme.colors.neutral800,
                         contentDescription = "crop",
