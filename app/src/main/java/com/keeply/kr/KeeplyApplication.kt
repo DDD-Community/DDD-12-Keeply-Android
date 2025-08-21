@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.common.KakaoSdk
 import com.keeply.data.user.local.UserDataSource
+import com.keeply.presentation.core.notification.NotificationHelper
 import com.microsoft.clarity.Clarity
 import com.microsoft.clarity.ClarityConfig
 import com.microsoft.clarity.models.LogLevel
@@ -25,6 +26,7 @@ class KeeplyApplication: Application() {
         
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
 
+        NotificationHelper.createNotificationChannel(this)
         initFcmToken()
         initClarity()
     }
