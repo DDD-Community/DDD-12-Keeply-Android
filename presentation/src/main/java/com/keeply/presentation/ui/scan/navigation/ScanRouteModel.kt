@@ -24,6 +24,6 @@ sealed interface ScanRoute: ScanRouteModel {
         val url: String,
         val cachedImageId: String?,
         val detectedText: String?,
-        val recommendedTags: List<String>?
+        val isSkip: Boolean
     ) : ScanRouteModel
 }

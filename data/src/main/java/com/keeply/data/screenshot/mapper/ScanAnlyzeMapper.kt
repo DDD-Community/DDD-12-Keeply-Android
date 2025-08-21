@@ -6,6 +6,5 @@ import com.keeply.domain.model.ScanAnalyze
 
 fun ScanAnalyzeResponse?.toDomain() = ScanAnalyze(
     cachedImageId = this?.cachedImageId.default(),
-    detectedText = this?.detectedText.default(),
-    recommendedTags = this?.recommendedTags.default()
+    detectedText = this?.detectedText.default()
 )

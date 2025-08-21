@@ -16,13 +16,15 @@ class OcrRepositoryImpl @Inject constructor(
 ) : OcrRepository {
     override suspend fun analyzeImage(
         isNew: Boolean,
-        imageId: Long?,
+        imageId: Int?,
+        isSkip: Boolean,
         file: File
     ): Flow<ScanAnalyze> = flow {
         emit(
             ocrService.analyzeImage(
                 isNew = isNew.toString().toPlainRequestBody(),
                 imageId = imageId?.toString()?.toPlainRequestBody(),
+                isSkip = isSkip.toString().toPlainRequestBody(),
                 file = file.toMultipartPart()
             ).response.toDomain()
         )

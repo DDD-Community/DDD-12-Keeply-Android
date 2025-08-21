@@ -59,6 +59,7 @@ class ScanBeforeViewModel @Inject constructor(
 
     fun scanImage(
         image: File?,
+        isSkip: Boolean = false,
         successCallback: (ScanAnalyze) -> Unit
     ) = viewModelScope.launch {
         if (image == null) return@launch
@@ -67,6 +68,7 @@ class ScanBeforeViewModel @Inject constructor(
         scanImageUseCase(
             isNew = true,
             imageId = null,
+            isSkip = isSkip,
             file = image
         ).catch {
             it.stackTrace
@@ -75,7 +77,6 @@ class ScanBeforeViewModel @Inject constructor(
             onScanComplete(true)
             successCallback(it)
             onOcrResult(it)
-            Log.d("euzl", "scanImage: $it") // for test
         }
     }
 
