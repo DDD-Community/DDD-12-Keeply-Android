@@ -6,8 +6,7 @@ import com.keeply.domain.model.ScanAnalyze
 @Immutable
 data class ScanBeforeState(
     val uri: String,
-    val textField: String = "",
-    val textFieldMaxLength: Int = 300,
+    val isShowOnBoarding: Boolean = false,
     val isScanCompleted: Boolean = false,
     val ocrResult: ScanAnalyze? = null
 )
