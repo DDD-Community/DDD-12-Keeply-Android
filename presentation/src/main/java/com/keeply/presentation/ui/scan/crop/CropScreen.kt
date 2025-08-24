@@ -8,12 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -36,14 +35,31 @@ fun CropRoute(
     val uiState by viewModel.collectAsState()
     
     CropScreen(
-        uri = uiState.uri.toUri()
+        uri = if (uiState.uri.isNotEmpty()) uiState.uri.toUri() else null,
+        cropRect = uiState.cropRect,
+        imageSize = uiState.imageSize,
+        onCropRectChange = { newRect -> 
+            viewModel.updateCropRect(newRect)
+        },
+        onCropComplete = {
+            viewModel.cropImage()
+        }
     )
 }
 
 @Composable
 fun CropScreen(
-    uri: Uri? = null
+    uri: Uri? = null,
+    cropRect: Rect = Rect.Zero,
+    imageSize: Size = Size.Zero,
+    onCropRectChange: (Rect) -> Unit = {},
+    onCropComplete: () -> Unit = {}
 ) {
+    val density = LocalDensity.current
+    var actualImageSize by remember { mutableStateOf(Size.Zero) }
+    var localCropRect by remember { mutableStateOf(Rect.Zero) }
+    var isInitialized by remember { mutableStateOf(false) }
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,8 +77,6 @@ fun CropScreen(
                 rememberAsyncImagePainter(uri)
             }
 
-            val imageHeightPx = remember { mutableIntStateOf(0) }
-
             Image(
                 painter = painter,
                 contentDescription = null,
@@ -71,14 +85,52 @@ fun CropScreen(
                         horizontal = 34.dp,
                         vertical = 70.dp
                     )
-                    .fillMaxSize(),
-                contentScale = ContentScale.Crop
+                    .fillMaxSize()
+                    .onGloballyPositioned { coordinates ->
+                        actualImageSize = Size(
+                            width = coordinates.size.width.toFloat(),
+                            height = coordinates.size.height.toFloat()
+                        )
+                    },
+                contentScale = ContentScale.Fit
             )
 
-            
+            if (actualImageSize != Size.Zero) {
+                LaunchedEffect(actualImageSize, isInitialized) {
+                    if (!isInitialized && actualImageSize != Size.Zero) {
+                        val margin = 0.1f
+                        val initialCropRect = Rect(
+                            left = actualImageSize.width * margin,
+                            top = actualImageSize.height * margin,
+                            right = actualImageSize.width * (1f - margin),
+                            bottom = actualImageSize.height * (1f - margin)
+                        )
+                        localCropRect = initialCropRect
+                        onCropRectChange(initialCropRect)
+                        isInitialized = true
+                    }
+                }
+                
+                CropOverlay(
+                    modifier = Modifier
+                        .padding(
+                            horizontal = 34.dp,
+                            vertical = 70.dp
+                        )
+                        .fillMaxSize(),
+                    cropRect = localCropRect,
+                    onCropRectChange = { newRect ->
+                        localCropRect = newRect
+                        onCropRectChange(newRect)
+                    },
+                    imageSize = actualImageSize
+                )
+            }
         }
 
-        CropBar()
+        CropBar(
+            onCropClick = onCropComplete
+        )
     }
 }
 

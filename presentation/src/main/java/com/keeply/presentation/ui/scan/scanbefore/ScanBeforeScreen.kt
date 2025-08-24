@@ -80,7 +80,7 @@ fun ScanBeforeRoute(
         isShowOnBoarding = uiState.isShowOnBoarding,
         isScanCompleted = uiState.isScanCompleted,
         onBack = onBack,
-        onNavigateToCrop = { onNavigateToCrop(uiState.uri.toUri()) },
+        onNavigateToCrop = onNavigateToCrop,
         onBoardingConfirmCallback = { viewModel.onBoardingConfirmClicked() },
         onBoardingDisabledCallback = { viewModel.onBoardingNeverShowClicked() },
         callScan = { imageUri, isScanSkip ->
@@ -101,7 +101,7 @@ fun ScanBeforeScreen(
     isShowOnBoarding: Boolean = false,
     isScanCompleted: Boolean = false,
     onBack: () -> Unit,
-    onNavigateToCrop: () -> Unit,
+    onNavigateToCrop: (Uri) -> Unit,
     onBoardingConfirmCallback: () -> Unit,
     onBoardingDisabledCallback: () -> Unit,
     callScan: (Uri, Boolean) -> Unit = { _, _ -> }
@@ -239,7 +239,9 @@ fun ScanBeforeScreen(
                     ScanBar(
                         modifier = Modifier
                             .align(Alignment.Center),
-                        onClickCrop = onNavigateToCrop,
+                        onClickCrop = { 
+                            onNavigateToCrop(uri)
+                        },
                         onClickScan = {
                             isScanLoading = true
                             callScan(uri, false)

@@ -25,7 +25,7 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 fun CropBar(
     modifier: Modifier = Modifier,
     onClickCancel: () -> Unit = {},
-    onClickConfirm: () -> Unit = {}
+    onCropClick: () -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -66,13 +66,13 @@ fun CropBar(
             modifier = Modifier
                 .clip(CircleShape)
                 .clickable {
-                    onClickConfirm()
+                    onCropClick()
                 }
                 .background(KeeplyTheme.colors.orange400)
                 .size(40.dp)
                 .padding(8.dp),
             painter = KeeplyTheme.icons.checkmark,
-            contentDescription = "cancel",
+            contentDescription = "crop",
             tint = KeeplyTheme.colors.neutralWhite
         )
     }
