@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.keeply.presentation.ui.scan.scanafter.ScanAfterRoute
 import com.keeply.presentation.ui.scan.scanbefore.ScanBeforeRoute
-import com.keeply.presentation.ui.scan.scanbefore.ScanCropRoute
+import com.keeply.presentation.ui.scan.crop.CropRoute
 import com.keeply.presentation.ui.scan.screenshot.ScreenshotRoute
 
 @Composable
@@ -40,12 +40,7 @@ fun ScanNavHost(
             )
         }
         composable<ScanRoute.ScanCrop> { backStackEntry ->
-            ScanCropRoute(
-                onBack = { navigator.navController.popBackStack() },
-                onCropped = { uri ->
-                    navigator.navController.navigate(ScanRoute.ScanBefore(Uri.encode(uri.toString())))
-                }
-            )
+            CropRoute()
         }
         composable<ScanRoute.ScanAfter> { backStackEntry ->
             ScanAfterRoute(
