@@ -14,6 +14,9 @@ class LoginKakaoUseCaseImpl @Inject constructor(
         userRepository.loginKakao(loginKakao).onEach { token ->
             userRepository.saveAccessToken(token.accessToken)
             userRepository.saveRefreshToken(token.refreshToken)
+            loginKakao.kakao_account?.email?.let { userRepository.saveUserEmail(it) }
+            loginKakao.kakao_account?.profile?.nickname?.let { userRepository.saveUserNickname(it) }
+            loginKakao.kakao_account?.profile?.profile_image_url?.let { userRepository.saveUserImage(it) }
         }
 
 }
