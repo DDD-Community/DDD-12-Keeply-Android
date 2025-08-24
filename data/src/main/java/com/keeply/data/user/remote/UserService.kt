@@ -3,10 +3,13 @@ package com.keeply.data.user.remote
 import com.keeply.data.core.base.BaseResponse
 import com.keeply.data.user.model.LoginKakaoRequest
 import com.keeply.data.user.model.LogoutResponse
+import com.keeply.data.user.model.NotificationSettingRequest
+import com.keeply.data.user.model.NotificationSettingResponse
 import com.keeply.data.user.model.TokenResponse
 import com.keeply.data.user.model.WithdrawResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface UserService {
@@ -19,5 +22,11 @@ interface UserService {
 
     @DELETE("api/user")
     suspend fun withdraw(): BaseResponse<WithdrawResponse>
+
+    @GET("api/user/notification")
+    suspend fun getNotificationSetting(): BaseResponse<NotificationSettingResponse>
+
+    @POST("api/user/notification")
+    suspend fun updateNotificationSetting(@Body request: NotificationSettingRequest): BaseResponse<NotificationSettingResponse>
 
 }

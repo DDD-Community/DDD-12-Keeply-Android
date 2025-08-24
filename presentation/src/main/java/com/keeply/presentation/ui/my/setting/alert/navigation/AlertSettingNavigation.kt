@@ -13,8 +13,12 @@ fun NavController.navigateSettingAlert() {
     navigate(AlertRoute.AlertSetting)
 }
 
-fun NavGraphBuilder.settingAlertNavGraph() {
+fun NavGraphBuilder.settingAlertNavGraph(
+    onBackClick: () -> Unit
+) {
     composable<AlertRoute.AlertSetting> {
-        SettingAlertRoute()
+        SettingAlertRoute(
+            onBackClick = onBackClick
+        )
     }
 }
