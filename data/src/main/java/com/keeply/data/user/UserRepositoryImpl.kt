@@ -72,6 +72,24 @@ class UserRepositoryImpl @Inject constructor(
         userDataSource.clearRefreshToken()
     }
 
+    override suspend fun saveUserEmail(email: String) =
+        userDataSource.saveUserEmail(email)
+
+    override suspend fun saveUserNickname(nickname: String) =
+        userDataSource.saveUserNickname(nickname)
+
+    override suspend fun saveUserImage(image: String) =
+        userDataSource.saveUserImage(image)
+
+    override suspend fun getUserEmail(): String? =
+        userDataSource.getUserEmail()
+
+    override suspend fun getUserNickname(): String? =
+        userDataSource.getUserNickname()
+
+    override suspend fun getUserImage(): String? =
+        userDataSource.getUserImage()
+
     override suspend fun getNotificationSetting(): Flow<NotificationSetting> = flow {
         try {
             val response = userService.getNotificationSetting()
