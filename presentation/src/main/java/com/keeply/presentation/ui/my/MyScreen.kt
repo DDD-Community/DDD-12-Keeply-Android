@@ -36,6 +36,16 @@ import android.widget.Toast
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.keeply.presentation.core.components.KeeplyAlertCheckModal
 import com.keeply.presentation.extend.restartApplication
+import com.keeply.presentation.core.notification.NotificationHelper
+import com.keeply.presentation.core.notification.FcmTokenManager
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import androidx.core.content.getSystemService
+import com.keeply.presentation.BuildConfig
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -45,6 +55,7 @@ fun MyRoute(
 ) {
     val context = LocalContext.current
     val state by viewModel.collectAsState()
+    val scope = rememberCoroutineScope()
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
@@ -63,6 +74,8 @@ fun MyRoute(
     }
     
     MyScreen(
+        context = context,
+        scope = scope,
         onLogoutClick = viewModel::logout,
         onWithdrawClick = viewModel::showWithdrawModal,
         onAlertSettingClick = navigateToAlertSetting
@@ -91,6 +104,8 @@ fun MyRoute(
 
 @Composable
 fun MyScreen(
+    context: Context,
+    scope: CoroutineScope,
     onLogoutClick: () -> Unit = {},
     onWithdrawClick: () -> Unit = {},
     onAlertSettingClick: () -> Unit = {}
@@ -175,6 +190,42 @@ fun MyScreen(
                 MyPageMenuItem(
                     text = stringResource(R.string.my_page_permission_settings)
                 )
+
+                //TODO 테스트를 위한 UI 추후 지워야함
+                if (BuildConfig.DEBUG) {
+                    MyPageMenuItem(
+                        text = "FCM 테스트",
+                        onClick = {
+                            if (NotificationHelper.hasNotificationPermission(context)) {
+                                NotificationHelper.showNotification(
+                                    context = context,
+                                    title = "FCM 테스트",
+                                    body = "알림이 정상적으로 작동합니다! 🎉"
+                                )
+                            } else {
+                                Toast.makeText(context, "알림 권한이 필요합니다. 설정에서 권한을 허용해주세요.", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    )
+
+                    MyPageMenuItem(
+                        text = "FCM 토큰 확인",
+                        onClick = {
+                            val fcmTokenManager = FcmTokenManager()
+                            scope.launch {
+                                val token = fcmTokenManager.getCurrentToken()
+                                if (token != null) {
+                                    val clipboard = context.getSystemService<ClipboardManager>()
+                                    val clip = ClipData.newPlainText("FCM Token", token)
+                                    clipboard?.setPrimaryClip(clip)
+                                    Toast.makeText(context, "FCM 토큰이 클립보드에 복사되었습니다", Toast.LENGTH_LONG).show()
+                                } else {
+                                    Toast.makeText(context, "FCM 토큰을 가져올 수 없습니다", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    )
+                }
             }
 
             Column(
@@ -270,7 +321,9 @@ fun MyPageMenuItem(
 @Preview
 @Composable
 fun MyRoutePreview() {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     KeeplyTheme {
-        MyScreen()
+        MyScreen(context = context, scope = scope)
     }
 }
