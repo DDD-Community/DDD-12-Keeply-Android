@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,15 +35,16 @@ import com.keeply.presentation.core.theme.neutral100
 @Composable
 fun ScreenshotRoute(
     onBack: () -> Unit,
-    onNavigateToDetail: (Uri) -> Unit,
+    onNavigateToScanBefore: (Uri, Boolean) -> Unit,
     viewModel: LocalScreenshotViewModel = hiltViewModel()
 ) {
     val lazyPagingItems = viewModel.screenshots.collectAsLazyPagingItems()
+    val isShowOnBoarding by viewModel.showOnBoardingModal.collectAsState()
 
     ScreenshotScreen(
         lazyPagingItems = lazyPagingItems,
         onBack = onBack,
-        onNavigateToDetail = onNavigateToDetail,
+        onNavigateToDetail = { uri -> onNavigateToScanBefore(uri, isShowOnBoarding) },
     )
 }
 

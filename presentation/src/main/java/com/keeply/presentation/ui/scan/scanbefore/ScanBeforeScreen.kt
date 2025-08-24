@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -75,21 +74,21 @@ fun ScanBeforeRoute(
     val context = LocalContext.current
 
     val uiState by viewModel.collectAsState()
-    val isShowOnBoarding by viewModel.showOnBoardingModal.collectAsState()
 
     ScanBeforeScreen(
         uri = uiState.uri.toUri(),
-        isShowOnBoarding = isShowOnBoarding,
+        isShowOnBoarding = uiState.isShowOnBoarding,
         isScanCompleted = uiState.isScanCompleted,
         onBack = onBack,
         onNavigateToCrop = onNavigateToCrop,
-        doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() },
+        onBoardingConfirmCallback = { viewModel.onBoardingConfirmClicked() },
+        onBoardingDisabledCallback = { viewModel.onBoardingNeverShowClicked() },
         callScan = { imageUri, isScanSkip ->
             // TODO real -> Crop후 imageUri 사용하도록 수정하는게 좋을 듯함
             viewModel.scanImage(
                 image = uiState.uri.toUri().toFile(context),
                 successCallback = { result ->
-                    onNavigateToScanAfter(uiState.uri.toUri(), result, isScanSkip)
+                    onNavigateToScanAfter(uiState.uri.toUri(), result, false)
                 }
             )
         }
@@ -103,13 +102,13 @@ fun ScanBeforeScreen(
     isScanCompleted: Boolean = false,
     onBack: () -> Unit,
     onNavigateToCrop: (Uri) -> Unit,
-    doNotRepeatButtonCallback: () -> Unit,
+    onBoardingConfirmCallback: () -> Unit,
+    onBoardingDisabledCallback: () -> Unit,
     callScan: (Uri, Boolean) -> Unit = { _, _ -> }
 ) {
     if (uri == null) return // 모달을 띄우거나 ~
 
     var isMenuVisible by remember { mutableStateOf(true) }
-    var isShowDialog by remember { mutableStateOf(true) }
     var isScanLoading by remember { mutableStateOf(false) }
 
     Box(
@@ -118,10 +117,10 @@ fun ScanBeforeScreen(
             .background(neutral900)
     ) {
 
-        if (isShowOnBoarding && isShowDialog) {
+        if (isShowOnBoarding) {
             ScanOnBoardingModal(
-                confirmButtonCallback = { isShowDialog = !isShowDialog },
-                doNotRepeatButtonCallback = { doNotRepeatButtonCallback() }
+                onBoardingConfirmCallback = onBoardingConfirmCallback,
+                onBoardingDisabledCallback = onBoardingDisabledCallback
             )
         }
 
@@ -267,17 +266,17 @@ fun ScanBeforeScreen(
 
 @Composable
 fun ScanOnBoardingModal(
-    confirmButtonCallback: () -> Unit,
-    doNotRepeatButtonCallback: () -> Unit
+    onBoardingConfirmCallback: () -> Unit,
+    onBoardingDisabledCallback: () -> Unit
 ) {
     BaseAlertModal(
-        onDismissCallback = confirmButtonCallback,
+        onDismissCallback = onBoardingConfirmCallback,
         underContent = {
             KeeplyText(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(top = 12.dp)
-                    .clickable { doNotRepeatButtonCallback() },
+                    .clickable { onBoardingDisabledCallback() },
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
                         append("다시 보지 않기")
@@ -331,7 +330,7 @@ fun ScanOnBoardingModal(
                     modifier = Modifier
                         .weight(1f),
                     text = stringResource(R.string.scan_onboarding_confirm),
-                    onClick = confirmButtonCallback
+                    onClick = onBoardingConfirmCallback
                 )
             }
         }
@@ -345,7 +344,8 @@ private fun ScanScreenPreview() {
         ScanBeforeScreen(
             onBack = { },
             onNavigateToCrop = { },
-            doNotRepeatButtonCallback = { }
+            onBoardingConfirmCallback = { },
+            onBoardingDisabledCallback = { }
         )
     }
 }
