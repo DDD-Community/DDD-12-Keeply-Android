@@ -5,6 +5,7 @@ import com.keeply.data.user.mapper.toDomain
 import com.keeply.data.user.mapper.toRequest
 import com.keeply.data.user.remote.UserService
 import com.keeply.domain.model.LoginKakao
+import com.keeply.domain.model.NotificationSetting
 import com.keeply.domain.model.Token
 import com.keeply.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
@@ -69,6 +70,36 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun clearTokens() {
         userDataSource.clearAccessToken()
         userDataSource.clearRefreshToken()
+    }
+
+    override suspend fun getNotificationSetting(): Flow<NotificationSetting> = flow {
+        try {
+            val response = userService.getNotificationSetting()
+            if (response.success == true) {
+                emit(response.response.toDomain())
+            } else {
+                throw Exception(response.reason ?: "알림 설정 조회에 실패했습니다")
+            }
+        } catch (e: HttpException) {
+            throw Exception("네트워크 오류가 발생했습니다: ${e.message}")
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun updateNotificationSetting(notificationSetting: NotificationSetting): Flow<NotificationSetting> = flow {
+        try {
+            val response = userService.updateNotificationSetting(notificationSetting.toRequest())
+            if (response.success == true) {
+                emit(response.response.toDomain())
+            } else {
+                throw Exception(response.reason ?: "알림 설정 업데이트에 실패했습니다")
+            }
+        } catch (e: HttpException) {
+            throw Exception("네트워크 오류가 발생했습니다: ${e.message}")
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
 }

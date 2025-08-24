@@ -3,6 +3,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Usage : 알림 권한 -->
+
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- Usage : 스크린샷 불러오기 -->
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" /> <!-- Usage : 스크린샷 불러오기 -->
