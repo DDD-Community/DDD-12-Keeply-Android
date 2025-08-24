@@ -20,6 +20,18 @@ interface UserRepository {
     
     suspend fun clearTokens()
 
+    suspend fun saveUserEmail(email: String)
+
+    suspend fun saveUserNickname(nickname: String)
+
+    suspend fun saveUserImage(image: String)
+
+    suspend fun getUserEmail(): String?
+
+    suspend fun getUserNickname(): String?
+
+    suspend fun getUserImage(): String?
+
     suspend fun getNotificationSetting(): Flow<NotificationSetting>
 
     suspend fun updateNotificationSetting(notificationSetting: NotificationSetting): Flow<NotificationSetting>
