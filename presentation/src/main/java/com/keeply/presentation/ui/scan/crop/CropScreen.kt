@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,20 +27,38 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.CropBar
+import com.keeply.presentation.core.components.KeeplyAppBar
+import com.keeply.presentation.core.components.KeeplyText
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun CropRoute(
+    onBack: () -> Unit = {},
+    onCropCompleted: (String) -> Unit = {},
     viewModel: CropViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.collectAsState()
+    
+    LaunchedEffect(viewModel) {
+        viewModel.container.sideEffectFlow.collect { sideEffect ->
+            when (sideEffect) {
+                is CropSideEffect.CropCompleted -> {
+                    onCropCompleted(sideEffect.croppedImageUri)
+                }
+            }
+        }
+    }
     
     CropScreen(
         uri = if (uiState.uri.isNotEmpty()) uiState.uri.toUri() else null,
         cropRect = uiState.cropRect,
         imageSize = uiState.imageSize,
+        onBack = onBack,
         onCropRectChange = { newRect -> 
             viewModel.updateCropRect(newRect)
+        },
+        onImageSizeChanged = { size ->
+            viewModel.updateImageSize(size)
         },
         onCropComplete = {
             viewModel.cropImage()
@@ -52,7 +71,9 @@ fun CropScreen(
     uri: Uri? = null,
     cropRect: Rect = Rect.Zero,
     imageSize: Size = Size.Zero,
+    onBack: () -> Unit = {},
     onCropRectChange: (Rect) -> Unit = {},
+    onImageSizeChanged: (Size) -> Unit = {},
     onCropComplete: () -> Unit = {}
 ) {
     val density = LocalDensity.current
@@ -87,10 +108,12 @@ fun CropScreen(
                     )
                     .fillMaxSize()
                     .onGloballyPositioned { coordinates ->
-                        actualImageSize = Size(
+                        val newSize = Size(
                             width = coordinates.size.width.toFloat(),
                             height = coordinates.size.height.toFloat()
                         )
+                        actualImageSize = newSize
+                        onImageSizeChanged(newSize)
                     },
                 contentScale = ContentScale.Fit
             )
@@ -129,6 +152,7 @@ fun CropScreen(
         }
 
         CropBar(
+            onClickCancel = onBack,
             onCropClick = onCropComplete
         )
     }

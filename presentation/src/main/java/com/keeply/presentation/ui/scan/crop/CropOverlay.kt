@@ -182,6 +182,45 @@ private fun DrawScope.drawCropOverlay(
         stroke = handleStroke,
         corner = Corner.BOTTOM_RIGHT
     )
+    
+    // 가장자리 핸들
+    val edgeHandleLength = 20.dp.toPx()
+    
+    // 상단 가장자리 핸들
+    drawEdgeHandle(
+        center = Offset(cropRect.center.x, cropRect.top),
+        handleLength = edgeHandleLength,
+        color = handleColor,
+        stroke = handleStroke,
+        edge = Edge.TOP
+    )
+    
+    // 하단 가장자리 핸들
+    drawEdgeHandle(
+        center = Offset(cropRect.center.x, cropRect.bottom),
+        handleLength = edgeHandleLength,
+        color = handleColor,
+        stroke = handleStroke,
+        edge = Edge.BOTTOM
+    )
+    
+    // 좌측 가장자리 핸들
+    drawEdgeHandle(
+        center = Offset(cropRect.left, cropRect.center.y),
+        handleLength = edgeHandleLength,
+        color = handleColor,
+        stroke = handleStroke,
+        edge = Edge.LEFT
+    )
+    
+    // 우측 가장자리 핸들
+    drawEdgeHandle(
+        center = Offset(cropRect.right, cropRect.center.y),
+        handleLength = edgeHandleLength,
+        color = handleColor,
+        stroke = handleStroke,
+        edge = Edge.RIGHT
+    )
 }
 
 private fun DrawScope.drawCornerHandle(
@@ -261,8 +300,61 @@ private fun DrawScope.drawCornerHandle(
     }
 }
 
+private fun DrawScope.drawEdgeHandle(
+    center: Offset,
+    handleLength: Float,
+    color: Color,
+    stroke: Stroke,
+    edge: Edge
+) {
+    val halfLength = handleLength / 2
+    
+    when (edge) {
+        Edge.TOP -> {
+            // 수평선
+            drawLine(
+                color = color,
+                start = Offset(center.x - halfLength, center.y),
+                end = Offset(center.x + halfLength, center.y),
+                strokeWidth = stroke.width
+            )
+        }
+        Edge.BOTTOM -> {
+            // 수평선
+            drawLine(
+                color = color,
+                start = Offset(center.x - halfLength, center.y),
+                end = Offset(center.x + halfLength, center.y),
+                strokeWidth = stroke.width
+            )
+        }
+        Edge.LEFT -> {
+            // 수직선
+            drawLine(
+                color = color,
+                start = Offset(center.x, center.y - halfLength),
+                end = Offset(center.x, center.y + halfLength),
+                strokeWidth = stroke.width
+            )
+        }
+        Edge.RIGHT -> {
+            // 수직선
+            drawLine(
+                color = color,
+                start = Offset(center.x, center.y - halfLength),
+                end = Offset(center.x, center.y + halfLength),
+                strokeWidth = stroke.width
+            )
+        }
+    }
+}
+
 private enum class Corner {
     TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+}
+
+private enum class Edge {
+    TOP, BOTTOM, LEFT, RIGHT
 }
 
 private enum class DragHandle {
