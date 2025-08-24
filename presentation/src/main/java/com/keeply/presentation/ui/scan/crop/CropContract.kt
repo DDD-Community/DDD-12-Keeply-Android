@@ -4,7 +4,8 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class CropState(
-    val title: String = "크롭"
+    val title: String = "크롭",
+    val uri: String = ""
 )
 
 sealed interface CropSideEffect
