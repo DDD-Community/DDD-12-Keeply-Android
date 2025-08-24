@@ -96,17 +96,7 @@ private fun DrawScope.drawCropOverlay(
     canvasSize: Size,
     handleSize: Float
 ) {
-    // 어두운 오버레이 (크롭 영역 제외)
-    val overlayPath = Path().apply {
-        addRect(androidx.compose.ui.geometry.Rect(Offset.Zero, canvasSize))
-        addRect(cropRect)
-        fillType = androidx.compose.ui.graphics.PathFillType.EvenOdd
-    }
-    
-    drawPath(
-        path = overlayPath,
-        color = Color.Black.copy(alpha = 0.5f)
-    )
+    // 투명한 배경 - 어두운 오버레이 제거
     
     // 크롭 영역 테두리
     drawRect(

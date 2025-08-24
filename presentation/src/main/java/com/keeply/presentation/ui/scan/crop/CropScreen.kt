@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,6 +81,7 @@ fun CropScreen(
     var actualImageSize by remember { mutableStateOf(Size.Zero) }
     var localCropRect by remember { mutableStateOf(Rect.Zero) }
     var isInitialized by remember { mutableStateOf(false) }
+    var intrinsicImageSize by remember { mutableStateOf(Size.Zero) }
     
     Column(
         modifier = Modifier
@@ -96,6 +98,14 @@ fun CropScreen(
                 painterResource(id = R.drawable.img_onboarding_02)
             } else {
                 rememberAsyncImagePainter(uri)
+            }
+
+            // Painter의 intrinsic 크기 얻기
+            LaunchedEffect(painter) {
+                val intrinsicSize = painter.intrinsicSize
+                if (intrinsicSize != Size.Unspecified && intrinsicSize.width > 0f && intrinsicSize.height > 0f) {
+                    intrinsicImageSize = intrinsicSize
+                }
             }
 
             Image(
@@ -118,15 +128,32 @@ fun CropScreen(
                 contentScale = ContentScale.Fit
             )
 
-            if (actualImageSize != Size.Zero) {
-                LaunchedEffect(actualImageSize, isInitialized) {
-                    if (!isInitialized && actualImageSize != Size.Zero) {
-                        val margin = 0.1f
+            if (actualImageSize != Size.Zero && intrinsicImageSize != Size.Zero) {
+                LaunchedEffect(actualImageSize, intrinsicImageSize, isInitialized) {
+                    if (!isInitialized && actualImageSize != Size.Zero && intrinsicImageSize != Size.Zero) {
+                        // ContentScale.Fit으로 실제 표시되는 이미지 크기 계산
+                        val imageAspectRatio = intrinsicImageSize.width / intrinsicImageSize.height
+                        val viewAspectRatio = actualImageSize.width / actualImageSize.height
+                        
+                        val (displayedWidth, displayedHeight) = if (imageAspectRatio > viewAspectRatio) {
+                            // 이미지가 더 넓음 - width에 맞춰짐
+                            actualImageSize.width to actualImageSize.width / imageAspectRatio
+                        } else {
+                            // 이미지가 더 높음 - height에 맞춰짐
+                            actualImageSize.height * imageAspectRatio to actualImageSize.height
+                        }
+                        
+                        // 중앙 정렬된 이미지의 실제 위치 계산
+                        val offsetX = (actualImageSize.width - displayedWidth) / 2f
+                        val offsetY = (actualImageSize.height - displayedHeight) / 2f
+                        
+                        // 실제 표시되는 이미지 영역에 맞춰 초기 크롭 영역 설정
+                        val margin = 0.02f // 아주 작은 마진 (2%)
                         val initialCropRect = Rect(
-                            left = actualImageSize.width * margin,
-                            top = actualImageSize.height * margin,
-                            right = actualImageSize.width * (1f - margin),
-                            bottom = actualImageSize.height * (1f - margin)
+                            left = offsetX + (displayedWidth * margin),
+                            top = offsetY + (displayedHeight * margin),
+                            right = offsetX + (displayedWidth * (1f - margin)),
+                            bottom = offsetY + (displayedHeight * (1f - margin))
                         )
                         localCropRect = initialCropRect
                         onCropRectChange(initialCropRect)
