@@ -37,7 +37,7 @@ class ScanAfterViewModel @Inject constructor(
                 } else {
                     scanAfter.detectedText.split("\n")
                 }.toPersistentList(),
-                recommendedTags = scanAfter.recommendedTags?.toPersistentList()
+                showSelectTextBottomSheet = scanAfter.isSkip.not()
             )
         )
 

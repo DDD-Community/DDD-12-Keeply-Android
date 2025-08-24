@@ -34,8 +34,8 @@ fun ScanNavHost(
                 onNavigateToCrop = { uri ->
                     navigator.navController.navigate(ScanRoute.ScanCrop(Uri.encode(uri.toString())))
                 },
-                onNavigateToScanAfter = { uri, result ->
-                    navigator.navController.navigate(ScanRoute.ScanAfter(Uri.encode(uri.toString()), result.cachedImageId, result.detectedText, result.recommendedTags))
+                onNavigateToScanAfter = { uri, result, isSkip ->
+                    navigator.navController.navigate(ScanRoute.ScanAfter(Uri.encode(uri.toString()), result.cachedImageId, result.detectedText, isSkip))
                 }
             )
         }

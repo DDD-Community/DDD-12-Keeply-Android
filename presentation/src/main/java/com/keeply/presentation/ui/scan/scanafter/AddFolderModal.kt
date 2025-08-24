@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +27,7 @@ import com.keeply.presentation.core.components.KeeplyTextField
 import com.keeply.presentation.core.components.colorBar.ColorBar
 import com.keeply.presentation.core.components.colorBar.FolderColor
 import com.keeply.presentation.core.theme.KeeplyTheme
+import com.keeply.presentation.core.theme.neutral100
 import com.keeply.presentation.core.theme.neutral200
 import com.keeply.presentation.core.theme.neutral600
 import com.keeply.presentation.ui.folder.add.AddFolderState
@@ -38,7 +40,11 @@ fun AddFolderModal(
     onCreateFolder: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
 ) {
-    BaseAlertModal {
+    BaseAlertModal(
+        onDismissCallback = onNavigateBack,
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -73,16 +79,18 @@ fun AddFolderModal(
                     .background(neutral200)
             )
 
+            // TODO: 디자인 수정 필요
             KeeplyTextField(
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .background(KeeplyTheme.colors.neutral100)
                     .fillMaxWidth(),
+                inputModifier = Modifier
+                    .background(neutral100, RoundedCornerShape(4.dp)),
                 value = state.folderName,
                 onValueChange = onFolderNameChange,
                 helpIcon = if (state.checkFolderRegex()) null else KeeplyTheme.icons.error,
-                helpText = if (state.checkFolderRegex()) "" else "최대 20자까지 입력 가능합니다.",
-                placeholder = "폴더명"
+                helpText = if (state.checkFolderRegex()) "" else "최소 1자 미만. 최대 20자까지 입력해주세요.",
+                placeholder = "새 폴더"
             )
 
             KeeplyText(

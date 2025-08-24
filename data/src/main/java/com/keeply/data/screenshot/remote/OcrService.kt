@@ -15,6 +15,7 @@ interface OcrService {
     suspend fun analyzeImage(
         @Part("isNew") isNew: RequestBody,
         @Part("imageId") imageId: RequestBody?,
+        @Part("isSkip") isSkip: RequestBody,
         @Part file: MultipartBody.Part
     ): BaseResponse<ScanAnalyzeResponse>
 }

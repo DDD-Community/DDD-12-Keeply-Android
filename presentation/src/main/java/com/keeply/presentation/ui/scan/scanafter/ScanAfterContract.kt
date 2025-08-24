@@ -10,7 +10,6 @@ data class ScanAfterState(
     val uri: String,
     val cachedImageId: String = "",
     val detectedText: String? = null,
-    val recommendedTags: ImmutableList<String>? = null,
     val detectedTextList: ImmutableList<String> = persistentListOf(),
     val selectedIndices: ImmutableList<Int> = persistentListOf(),
     val textField: String = "",

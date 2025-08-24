@@ -9,6 +9,6 @@ import javax.inject.Inject
 class ScanImageUseCaseImpl @Inject constructor(
     val repository: OcrRepository
 ) : ScanImageUseCase {
-    override suspend fun invoke(isNew: Boolean, imageId: Long?, file: File): Flow<ScanAnalyze> =
-        repository.analyzeImage(isNew, imageId, file)
+    override suspend fun invoke(isNew: Boolean, imageId: Int?, isSkip: Boolean, file: File): Flow<ScanAnalyze> =
+        repository.analyzeImage(isNew, imageId, isSkip, file)
 }

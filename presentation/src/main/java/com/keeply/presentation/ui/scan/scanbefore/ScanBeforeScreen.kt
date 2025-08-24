@@ -70,7 +70,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun ScanBeforeRoute(
     onBack: () -> Unit,
     onNavigateToCrop: (Uri) -> Unit,
-    onNavigateToScanAfter: (Uri, ScanAnalyze) -> Unit,
+    onNavigateToScanAfter: (Uri, ScanAnalyze, Boolean) -> Unit,
     viewModel: ScanBeforeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -86,29 +86,13 @@ fun ScanBeforeRoute(
         onNavigateToCrop = onNavigateToCrop,
         doNotRepeatButtonCallback = { viewModel.onDoNotShowAgain() },
         callScan = { imageUri ->
-            // real -> Crop후 imageUri 사용하도록 수정하는게 좋을 듯함
+            // TODO real -> Crop후 imageUri 사용하도록 수정하는게 좋을 듯함
             viewModel.scanImage(
                 image = uiState.uri.toUri().toFile(context),
                 successCallback = { result ->
-                    onNavigateToScanAfter(uiState.uri.toUri(), result)
+                    onNavigateToScanAfter(uiState.uri.toUri(), result, false)
                 }
             )
-            
-            // for test (OCR 하지 앟는 임시 버전)
-//            onNavigateToScanAfter(
-//                imageUri,
-//                ScanAnalyze(
-//                    recommendedTags = null,
-//                    cachedImageId = null,
-//                    detectedText = "하이하이\n다음말이다\n반갑소\n이러한 책 속의 인용들을 보며, 나는 좋은 문구를 기록만 해두는 경우가 많은데, 잘 활용하는 것도 중요하단 생각을 많이 했다.\n하이하이\n" +
-//                            "다음말이다\n" +
-//                            "반갑소\n" +
-//                            "이러한 책 속의 인용들을 보며, 나는 좋은 문구를 기록만 해두는 경우가 많은데, 잘 활용하는 것도 중요하단 생각을 많이 했다.\n하이하이\n" +
-//                            "다음말이다\n" +
-//                            "반갑소\n" +
-//                            "이러한 책 속의 인용들을 보며, 나는 좋은 문구를 기록만 해두는 경우가 많은데, 잘 활용하는 것도 중요하단 생각을 많이 했다."
-//                )
-//            )
         }
     )
 }
