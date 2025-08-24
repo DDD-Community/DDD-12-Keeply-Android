@@ -23,8 +23,8 @@ fun ScanNavHost(
         composable<ScanRoute.ScanScreenShot> {
             ScreenshotRoute(
                 onBack = onNavigateBack,
-                onNavigateToDetail = { uri ->
-                    navigator.navController.navigate(ScanRoute.ScanBefore(Uri.encode(uri.toString())))
+                onNavigateToScanBefore = { uri, isShowOnBoarding ->
+                    navigator.navController.navigate(ScanRoute.ScanBefore(Uri.encode(uri.toString()), isShowOnBoarding))
                 }
             )
         }
