@@ -112,10 +112,30 @@ fun ScanBeforeScreen(
     var isMenuVisible by remember { mutableStateOf(true) }
     var isScanLoading by remember { mutableStateOf(false) }
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val clickableModifier = if (isScanLoading) {
+        Modifier
+            .padding(35.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = { }
+            )
+    } else {
+        Modifier
+            .padding(0.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onClick = { isMenuVisible = !isMenuVisible }
+            )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(neutral900)
+            .then(clickableModifier)
     ) {
 
         if (isShowOnBoarding) {
@@ -125,31 +145,11 @@ fun ScanBeforeScreen(
             )
         }
 
-        val interactionSource = remember { MutableInteractionSource() }
-        val clickableModifier = if (isScanLoading) {
-            Modifier
-                .padding(35.dp)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
-                    onClick = { }
-                )
-        } else {
-            Modifier
-                .padding(0.dp)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = LocalIndication.current,
-                    onClick = { isMenuVisible = !isMenuVisible }
-                )
-        }
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .align(Alignment.Center)
-                .then(clickableModifier)
         ) {
             val painter = if (LocalInspectionMode.current) {
                 painterResource(id = R.drawable.img_onboarding_02)
