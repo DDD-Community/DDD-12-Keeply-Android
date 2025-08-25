@@ -113,29 +113,20 @@ fun ScanBeforeScreen(
     var isScanLoading by remember { mutableStateOf(false) }
 
     val interactionSource = remember { MutableInteractionSource() }
-    val clickableModifier = if (isScanLoading) {
-        Modifier
-            .padding(35.dp)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = { }
-            )
-    } else {
-        Modifier
-            .padding(0.dp)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = LocalIndication.current,
-                onClick = { isMenuVisible = !isMenuVisible }
-            )
-    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(neutral900)
-            .then(clickableModifier)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = if (isScanLoading) null else LocalIndication.current,
+                onClick = {
+                    if (isScanLoading.not()) {
+                        isMenuVisible = !isMenuVisible
+                    }
+                }
+            )
     ) {
 
         if (isShowOnBoarding) {
@@ -147,6 +138,7 @@ fun ScanBeforeScreen(
 
         Box(
             modifier = Modifier
+                .padding(if (isScanLoading) 35.dp else 0.dp)
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .align(Alignment.Center)
