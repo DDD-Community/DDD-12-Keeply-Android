@@ -17,7 +17,7 @@ sealed interface ScanRoute : ScanRouteModel {
     @Serializable
     data class ScanCrop(
         val url: String
-    ) : ScanRouteModel
+    ): ScanRouteModel
 
     @Serializable
     data class ScanAfter(

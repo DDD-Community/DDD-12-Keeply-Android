@@ -69,6 +69,7 @@ fun ScanBeforeRoute(
     onBack: () -> Unit,
     onNavigateToCrop: (Uri) -> Unit,
     onNavigateToScanAfter: (Uri, ScanAnalyze, Boolean) -> Unit,
+    croppedImageUri: String? = null,
     viewModel: ScanBeforeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -76,7 +77,7 @@ fun ScanBeforeRoute(
     val uiState by viewModel.collectAsState()
 
     ScanBeforeScreen(
-        uri = uiState.uri.toUri(),
+        uri = croppedImageUri?.toUri() ?: uiState.uri.toUri(),
         isShowOnBoarding = uiState.isShowOnBoarding,
         isScanCompleted = uiState.isScanCompleted,
         onBack = onBack,
@@ -86,9 +87,9 @@ fun ScanBeforeRoute(
         callScan = { imageUri, isScanSkip ->
             // TODO real -> Crop후 imageUri 사용하도록 수정하는게 좋을 듯함
             viewModel.scanImage(
-                image = uiState.uri.toUri().toFile(context),
+                image = (croppedImageUri?.toUri() ?: uiState.uri.toUri()).toFile(context),
                 successCallback = { result ->
-                    onNavigateToScanAfter(uiState.uri.toUri(), result, false)
+                    onNavigateToScanAfter(croppedImageUri?.toUri() ?: uiState.uri.toUri(), result, false)
                 }
             )
         }
@@ -239,7 +240,9 @@ fun ScanBeforeScreen(
                     ScanBar(
                         modifier = Modifier
                             .align(Alignment.Center),
-                        onClickCrop = { },
+                        onClickCrop = { 
+                            onNavigateToCrop(uri)
+                        },
                         onClickScan = {
                             isScanLoading = true
                             callScan(uri, false)
