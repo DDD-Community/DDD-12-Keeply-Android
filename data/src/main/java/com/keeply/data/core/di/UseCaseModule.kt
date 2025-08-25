@@ -12,6 +12,8 @@ import com.keeply.domain.usecase.scan.SetDoNotShowDialogUseCase
 import com.keeply.domain.usecase.scan.SetDoNotShowDialogUseCaseImpl
 import com.keeply.domain.usecase.screenshot.GetLocalScreenshotsUseCase
 import com.keeply.domain.usecase.screenshot.GetLocalScreenshotsUseCaseImpl
+import com.keeply.domain.usecase.user.GetUserInfoUseCase
+import com.keeply.domain.usecase.user.GetUserInfoUseCaseImpl
 import com.keeply.domain.usecase.user.LoginKakaoUseCase
 import com.keeply.domain.usecase.user.LoginKakaoUseCaseImpl
 import dagger.Module
@@ -64,5 +66,12 @@ object UseCaseModule {
         repository = ocrRepository
     )
 
+    @Provides
+    @Singleton
+    fun provideGetUserInfoUseCase(
+        userRepository: UserRepository
+    ): GetUserInfoUseCase = GetUserInfoUseCaseImpl(
+        userRepository = userRepository
+    )
 
 }

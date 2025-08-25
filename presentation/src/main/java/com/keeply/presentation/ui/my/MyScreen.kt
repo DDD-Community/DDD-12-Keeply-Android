@@ -45,6 +45,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import androidx.core.content.getSystemService
+import coil.compose.rememberAsyncImagePainter
+import com.keeply.domain.extend.default
 import com.keeply.presentation.BuildConfig
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -76,6 +78,9 @@ fun MyRoute(
     MyScreen(
         context = context,
         scope = scope,
+        userEmail = state.userEmail,
+        userNickname = state.userNickname,
+        userImage = state.userImage,
         onLogoutClick = viewModel::logout,
         onWithdrawClick = viewModel::showWithdrawModal,
         onAlertSettingClick = navigateToAlertSetting
@@ -106,6 +111,9 @@ fun MyRoute(
 fun MyScreen(
     context: Context,
     scope: CoroutineScope,
+    userEmail: String? = null,
+    userNickname: String? = null,
+    userImage: String? = null,
     onLogoutClick: () -> Unit = {},
     onWithdrawClick: () -> Unit = {},
     onAlertSettingClick: () -> Unit = {}
@@ -145,7 +153,7 @@ fun MyScreen(
                     modifier = Modifier
                         .clip(CircleShape)
                         .size(44.dp),
-                    painter = ColorPainter(KeeplyTheme.colors.neutral200),
+                    painter = userImage?.let { rememberAsyncImagePainter(it) } ?: ColorPainter(KeeplyTheme.colors.neutral200),
                     contentDescription = null
                 )
 
@@ -154,12 +162,12 @@ fun MyScreen(
                         .weight(1f)
                 ) {
                     KeeplyText(
-                        text = "닉네임",
+                        text = userNickname.default(),
                         style = KeeplyTheme.typography.button01Suit
                     )
 
                     KeeplyText(
-                        text = "Android@gmail.com",
+                        text = userEmail.default(),
                         style = KeeplyTheme.typography.button02Altform,
                         color = KeeplyTheme.colors.neutral800
                     )
