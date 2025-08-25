@@ -54,7 +54,8 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun HomeRoute(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onClickUncategorized: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val uiState by viewModel.collectAsState()
@@ -72,7 +73,8 @@ fun HomeRoute(
         lazyPagingItems = lazyPagingItems,
         isRestricted = uiState.isRestrictedService,
         latestScreenshotCount = viewModel.latestScreenshotCount,
-        onClickSetting = { openAppSettings(context) }
+        onClickSetting = { openAppSettings(context) },
+        onClickUncategorized = onClickUncategorized
     )
 }
 
@@ -82,7 +84,8 @@ fun HomeScreen(
     lazyPagingItems: LazyPagingItems<Screenshot>,
     isRestricted: Boolean = false,
     latestScreenshotCount: Int = 10,
-    onClickSetting: () -> Unit = {}
+    onClickSetting: () -> Unit = {},
+    onClickUncategorized: () -> Unit = {}
 ) {
     state.homeData?.let { homeData ->
         Column(
@@ -168,7 +171,8 @@ fun HomeScreen(
                     ) {
                         HomeUncategorizedCard(
                             modifier = Modifier
-                                .weight(1f),
+                                .weight(1f)
+                                .clickable { onClickUncategorized() },
                             title = "미분류",
                             count = homeData.uncategorizedImageCount,
                             images = homeData.uncategorizedImageList.map {
@@ -178,7 +182,8 @@ fun HomeScreen(
 
                         HomeUncategorizedCard(
                             modifier = Modifier
-                                .weight(1f),
+                                .weight(1f)
+                                .clickable { onClickUncategorized() },
                             title = "만료예정",
                             count = homeData.scheduledToDeleteImageCount,
                             images = homeData.scheduledToDeleteImageList.map {
