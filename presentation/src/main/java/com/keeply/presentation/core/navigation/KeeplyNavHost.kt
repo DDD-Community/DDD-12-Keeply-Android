@@ -33,6 +33,12 @@ internal fun KeeplyNavHost(
         homeNavGraph(
             onClickUncategorized = {
                 navigator.navigateUncategorized(FolderTabs.Uncategorized)
+            },
+            onClickFolder = {
+                navigator.navigate(KeeplyTab.FOLDER)
+            },
+            onClickScreenshot = { uri ->
+                navigator.navigateToScanWithUri(uri)
             }
         )
 
