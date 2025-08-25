@@ -18,9 +18,10 @@ import android.content.pm.PackageManager
 object NotificationHelper {
     
     private const val TAG = "NotificationHelper"
-    const val CHANNEL_ID = "keeply_notification_channel"
-    const val CHANNEL_NAME = "Keeply 알림"
-    const val CHANNEL_DESCRIPTION = "Keeply 앱에서 보내는 알림입니다"
+    private const val CHANNEL_ID = "keeply_notification_channel"
+    private const val CHANNEL_NAME = "Keeply 알림"
+    private const val CHANNEL_DESCRIPTION = "Keeply 앱에서 보내는 알림입니다"
+    
     
     fun hasNotificationPermission(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -34,7 +35,6 @@ object NotificationHelper {
     }
     
     fun createNotificationChannel(context: Context) {
-        Log.d(TAG, "알림 채널 생성 시작")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
@@ -45,7 +45,6 @@ object NotificationHelper {
             
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
-            Log.d(TAG, "알림 채널 생성 완료: $CHANNEL_ID")
         }
     }
     
@@ -55,11 +54,9 @@ object NotificationHelper {
         body: String,
         notificationId: Int = System.currentTimeMillis().toInt()
     ) {
-        Log.d(TAG, "알림 표시 요청: $title - $body")
         
         // 알림 권한 체크
         if (!hasNotificationPermission(context)) {
-            Log.w(TAG, "알림 권한이 없습니다")
             return
         }
         
@@ -88,12 +85,9 @@ object NotificationHelper {
         try {
             with(NotificationManagerCompat.from(context)) {
                 notify(notificationId, builder.build())
-                Log.d(TAG, "알림 표시 성공: ID=$notificationId")
             }
         } catch (e: SecurityException) {
-            Log.e(TAG, "알림 표시 실패: 권한 오류", e)
         } catch (e: Exception) {
-            Log.e(TAG, "알림 표시 실패: 알 수 없는 오류", e)
         }
     }
 }
