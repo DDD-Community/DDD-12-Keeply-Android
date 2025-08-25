@@ -49,12 +49,23 @@ class KeeplyNavigator(
         }
 
     fun navigate(tab: KeeplyTab) {
+        val isScanTab = tab == KeeplyTab.SCAN
         val navOptions = navOptions {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
+            if (isScanTab) {
+                // Scan 탭: 기존 백스택 유지
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            } else {
+                // 다른 탭: 모든 백스택 완전 제거
+                popUpTo(0) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+                restoreState = false
             }
-            launchSingleTop = true
-            restoreState = true
         }
 
         when (tab) {
@@ -72,9 +83,10 @@ class KeeplyNavigator(
         val navOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
+                inclusive = true
             }
             launchSingleTop = true
-            restoreState = true
+            restoreState = false
         }
 
         navController.navigateFolder(selectedTab = selectedTab, navOptions =navOptions)
