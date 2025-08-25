@@ -6,5 +6,7 @@ import kotlinx.serialization.Serializable
 data class FolderResponse(
     val folderId: Long?,
     val folderName: String?,
-    val color: String?
+    val color: String?,
+    val isDuplicate: Boolean = false,
+    val duplicatedMessage: String?
 )

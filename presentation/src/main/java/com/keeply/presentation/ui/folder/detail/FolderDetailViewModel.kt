@@ -100,6 +100,7 @@ class FolderDetailViewModel @Inject constructor(
                         )
                     }
                     loadFolderDetail()
+                    postSideEffect(FolderDetailSideEffect.ShowDuplicate(isDuplicate = updatedFolder.isDuplicate, duplicatedMessage = updatedFolder.duplicatedMessage))
                 }
         }
     }

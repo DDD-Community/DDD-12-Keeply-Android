@@ -36,9 +36,9 @@ class AddFolderViewModel @Inject constructor(
                     val errorMessage = exception.message ?: "폴더 생성에 실패했습니다."
                     postSideEffect(AddFolderSideEffect.ShowError(errorMessage))
                 }
-                .collect {
+                .collect { folder ->
                     reduce { state.copy(folderName = "", folderColor = FolderColor.ORANGE) }
-                    postSideEffect(AddFolderSideEffect.ShowCreateSuccess)
+                    postSideEffect(AddFolderSideEffect.ShowCreateSuccess(isDuplicate = folder.isDuplicate, duplicatedMessage = folder.duplicatedMessage))
                 }
         } else {
             postSideEffect(AddFolderSideEffect.ShowError("폴더 이름을 입력해주세요."))

@@ -39,8 +39,11 @@ fun AddFolderRoute(
 
     viewModel.collectSideEffect { sideEffect ->
         when(sideEffect) {
-            AddFolderSideEffect.ShowCreateSuccess -> {
+            is AddFolderSideEffect.ShowCreateSuccess -> {
                 onNavigateSaveBack()
+                if (sideEffect.isDuplicate && sideEffect.duplicatedMessage.isNullOrBlank().not()) {
+                    Toast.makeText(context, sideEffect.duplicatedMessage, Toast.LENGTH_SHORT).show()
+                }
             }
             is AddFolderSideEffect.ShowError -> {
                 Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()

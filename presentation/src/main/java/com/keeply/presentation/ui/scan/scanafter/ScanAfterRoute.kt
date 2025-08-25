@@ -69,9 +69,12 @@ fun ScanAfterRoute(
     if (uiState.showAddFolderModal) {
         addFolderViewModel.collectSideEffect { sideEffect ->
             when (sideEffect) {
-                AddFolderSideEffect.ShowCreateSuccess -> {
+                is AddFolderSideEffect.ShowCreateSuccess -> {
                     viewModel.onAddFolderModal(false)
                     viewModel.loadFolders()
+                    if (sideEffect.isDuplicate && sideEffect.duplicatedMessage.isNullOrBlank().not()) {
+                        Toast.makeText(context, sideEffect.duplicatedMessage, Toast.LENGTH_SHORT).show()
+                    }
                 }
 
                 is AddFolderSideEffect.ShowError -> {
