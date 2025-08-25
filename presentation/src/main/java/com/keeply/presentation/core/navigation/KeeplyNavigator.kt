@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.keeply.domain.extend.default
 import com.keeply.presentation.ui.alarm.navigation.navigateAlarm
+import com.keeply.presentation.ui.folder.FolderTabs
 import com.keeply.presentation.ui.folder.navigation.navigateFolder
 import com.keeply.presentation.ui.home.navigation.navigateHome
 import com.keeply.presentation.ui.my.navigation.navigateMy
@@ -58,15 +59,29 @@ class KeeplyNavigator(
 
         when (tab) {
             KeeplyTab.HOME -> navController.navigateHome(navOptions)
-            KeeplyTab.FOLDER -> navController.navigateFolder(navOptions)
+            KeeplyTab.FOLDER -> navController.navigateFolder(navOptions = navOptions)
             KeeplyTab.SCAN -> navController.navigateScan(navOptions)
             KeeplyTab.ALARM -> navController.navigateAlarm(navOptions)
             KeeplyTab.MY -> navController.navigateMy(navOptions)
         }
     }
 
+    fun navigateUncategorized(
+        selectedTab: FolderTabs = FolderTabs.Folder
+    ) {
+        val navOptions = navOptions {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+
+        navController.navigateFolder(selectedTab = selectedTab, navOptions =navOptions)
+    }
+
     fun navigateOnboarding() = navController.navigateOnboarding()
-    
+
     fun navigateHome() = navController.navigateHome(navOptions {
         popUpTo(navController.graph.id) {
             inclusive = true
@@ -86,7 +101,7 @@ enum class KeeplyTab(
         route = HomeRoute.Home
     ),
     FOLDER(
-        route = HomeRoute.Folder
+        route = HomeRoute.Folder()
     ),
     SCAN(
         route = HomeRoute.Scan
