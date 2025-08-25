@@ -55,7 +55,9 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel(),
-    onClickUncategorized: () -> Unit = {}
+    onClickUncategorized: () -> Unit = {},
+    onClickFolder: () -> Unit = {},
+    onClickScreenshot: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     val uiState by viewModel.collectAsState()
@@ -74,7 +76,9 @@ fun HomeRoute(
         isRestricted = uiState.isRestrictedService,
         latestScreenshotCount = viewModel.latestScreenshotCount,
         onClickSetting = { openAppSettings(context) },
-        onClickUncategorized = onClickUncategorized
+        onClickUncategorized = onClickUncategorized,
+        onClickFolder = onClickFolder,
+        onClickScreenshot = onClickScreenshot
     )
 }
 
@@ -85,7 +89,9 @@ fun HomeScreen(
     isRestricted: Boolean = false,
     latestScreenshotCount: Int = 10,
     onClickSetting: () -> Unit = {},
-    onClickUncategorized: () -> Unit = {}
+    onClickUncategorized: () -> Unit = {},
+    onClickFolder: () -> Unit = {},
+    onClickScreenshot: (String) -> Unit = {}
 ) {
     state.homeData?.let { homeData ->
         Column(
@@ -220,7 +226,7 @@ fun HomeScreen(
                                 painter = rememberAsyncImagePainter(screenshot.uri),
                                 modifier = Modifier
                                     .width(96.dp)
-                                    .clickable { }
+                                    .clickable { onClickScreenshot(screenshot.uri.toString()) }
                             )
                         }
 
@@ -246,7 +252,8 @@ fun HomeScreen(
                             )
 
                             KeeplyIconButton(
-                                painter = KeeplyTheme.icons.arrowRight
+                                painter = KeeplyTheme.icons.arrowRight,
+                                onClick = { onClickFolder() }
                             )
                         }
 
