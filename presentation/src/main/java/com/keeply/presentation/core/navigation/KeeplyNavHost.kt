@@ -5,6 +5,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import com.keeply.presentation.ui.alarm.navigation.alarmNavGraph
+import com.keeply.presentation.ui.folder.FolderTabs
 import com.keeply.presentation.ui.folder.add.navigation.addFolderNavGraph
 import com.keeply.presentation.ui.folder.detail.navigation.folderDetailNavGraph
 import com.keeply.presentation.ui.folder.navigation.folderNavGraph
@@ -29,7 +30,11 @@ internal fun KeeplyNavHost(
             ExitTransition.None
         }
     ) {
-        homeNavGraph()
+        homeNavGraph(
+            onClickUncategorized = {
+                navigator.navigateUncategorized(FolderTabs.Uncategorized)
+            }
+        )
 
         folderNavGraph(
             navController = navigator.navController
