@@ -4,9 +4,12 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
@@ -14,12 +17,13 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.keeply.presentation.core.theme.neutralBlack
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -28,6 +32,7 @@ import kotlin.math.min
 fun CropOverlay(
     modifier: Modifier = Modifier,
     cropRect: Rect,
+    initialCropRect: Rect,
     onCropRectChange: (Rect) -> Unit,
     imageSize: Size
 ) {
@@ -82,6 +87,7 @@ fun CropOverlay(
         ) {
             drawCropOverlay(
                 cropRect = cropRect,
+                initialCropRect = initialCropRect,
                 imageSize = imageSize,
                 canvasSize = size,
                 handleSize = handleSize
@@ -92,12 +98,25 @@ fun CropOverlay(
 
 private fun DrawScope.drawCropOverlay(
     cropRect: Rect,
+    initialCropRect: Rect,
     imageSize: Size,
     canvasSize: Size,
     handleSize: Float
 ) {
     // 투명한 배경 - 어두운 오버레이 제거
-    
+    val overlayColor = neutralBlack.copy(alpha = 0.2f)
+
+    val path = Path().apply {
+        addRect(initialCropRect) // 이미지 원본 영역
+        addRect(cropRect) // 크롭 영역
+        fillType = PathFillType.EvenOdd
+    }
+
+    drawPath(
+        path = path,
+        color = overlayColor
+    )
+
     // 크롭 영역 테두리
     drawRect(
         color = Color.White,
