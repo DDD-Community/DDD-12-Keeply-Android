@@ -12,9 +12,15 @@ fun NavController.navigateHome(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.homeNavGraph(
-    onClickUncategorized: () -> Unit = {}
+    onClickUncategorized: () -> Unit = {},
+    onClickFolder: () -> Unit = {},
+    onClickScreenshot: (String) -> Unit = {}
 ) {
     composable<HomeRoute.Home> {
-        HomeRoute(onClickUncategorized = onClickUncategorized)
+        HomeRoute(
+            onClickUncategorized = onClickUncategorized,
+            onClickFolder = onClickFolder,
+            onClickScreenshot = onClickScreenshot
+        )
     }
 }
