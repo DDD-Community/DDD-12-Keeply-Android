@@ -1,9 +1,14 @@
 package com.keeply.presentation.ui.folder
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.keeply.domain.folder.usecase.GetFolderDetailUseCase
 import com.keeply.domain.folder.usecase.GetFoldersUseCase
+import com.keeply.presentation.core.navigation.FolderRoute
+import com.keeply.presentation.core.navigation.HomeRoute
+import com.keeply.presentation.ui.scan.navigation.ScanRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.catch
@@ -17,9 +22,14 @@ import javax.inject.Inject
 @HiltViewModel
 class FolderViewModel @Inject constructor(
     private val getFoldersUseCase: GetFoldersUseCase,
-    private val getFolderDetailUseCase: GetFolderDetailUseCase
+    private val getFolderDetailUseCase: GetFolderDetailUseCase,
+    private val savedStateHandle: SavedStateHandle
 ) : ContainerHost<FolderState, FolderSideEffect>, ViewModel() {
-    override val container: Container<FolderState, FolderSideEffect> = container(FolderState())
+    private val folder: HomeRoute.Folder = savedStateHandle.toRoute()
+
+    override val container: Container<FolderState, FolderSideEffect> = container(FolderState(
+        selectedTab = folder.selectedTab
+    ))
 
     init {
         loadFolders()
@@ -33,7 +43,6 @@ class FolderViewModel @Inject constructor(
             )
         }
         
-        // 미분류 탭을 선택했을 때 uncategorized 폴더 조회
         if (newTab == FolderTabs.Uncategorized && state.uncategorizedImages.isEmpty()) {
             loadUncategorizedImages()
         }
@@ -100,6 +109,21 @@ class FolderViewModel @Inject constructor(
             state.copy(
                 isExpireToday = isExpireToday
             )
+        }
+    }
+    
+    
+    fun setSelectedTab(index: Int) = intent {
+        val newTab = FolderTabs.fromIndex(index)
+        reduce {
+            state.copy(
+                selectedTab = newTab
+            )
+        }
+        
+        // 미분류 탭을 선택했을 때 uncategorized 폴더 조회
+        if (newTab == FolderTabs.Uncategorized && state.uncategorizedImages.isEmpty()) {
+            loadUncategorizedImages()
         }
     }
 }
