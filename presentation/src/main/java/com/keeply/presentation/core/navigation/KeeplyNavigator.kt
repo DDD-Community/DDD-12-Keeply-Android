@@ -99,6 +99,19 @@ class KeeplyNavigator(
             inclusive = true
         }
     })
+    
+    fun navigateToScanWithUri(uri: String) {
+        val scanNavOptions = navOptions {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+
+        navController.currentBackStackEntry?.savedStateHandle?.set("sharedImageUri", uri)
+        navController.navigateScan(scanNavOptions)
+    }
 
     @Composable
     fun shouldShowNavigationBar()  = KeeplyTab.contains {
