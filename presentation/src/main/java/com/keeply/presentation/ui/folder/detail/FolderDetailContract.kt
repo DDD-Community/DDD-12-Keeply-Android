@@ -21,6 +21,7 @@ data class FolderDetailState(
 )
 
 sealed interface FolderDetailSideEffect {
+    data class ShowDuplicate(val isDuplicate: Boolean = false, val duplicatedMessage: String?) : FolderDetailSideEffect
     data class ShowError(val message: String) : FolderDetailSideEffect
     data object NavigateBackWithRefresh : FolderDetailSideEffect
 }

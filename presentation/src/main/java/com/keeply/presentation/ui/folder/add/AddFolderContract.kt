@@ -12,6 +12,6 @@ data class AddFolderState(
 }
 
 sealed interface AddFolderSideEffect {
-    data object ShowCreateSuccess : AddFolderSideEffect
+    data class ShowCreateSuccess(val isDuplicate: Boolean = false, val duplicatedMessage: String?) : AddFolderSideEffect
     data class ShowError(val message: String) : AddFolderSideEffect
 }

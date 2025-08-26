@@ -11,7 +11,9 @@ fun FolderResponse?.toDomain(): Folder {
         folderName = this?.folderName.default(),
         color = this?.color.default(),
         imageCount = 0,
-        updatedAt = ""
+        updatedAt = "",
+        isDuplicate = this?.isDuplicate ?: false,
+        duplicatedMessage = this?.duplicatedMessage.default()
     )
 }
 
