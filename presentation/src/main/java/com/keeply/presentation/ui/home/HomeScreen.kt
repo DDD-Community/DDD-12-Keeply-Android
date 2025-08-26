@@ -54,7 +54,10 @@ import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun HomeRoute(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onClickUncategorized: () -> Unit = {},
+    onClickFolder: () -> Unit = {},
+    onClickScreenshot: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     val uiState by viewModel.collectAsState()
@@ -72,7 +75,10 @@ fun HomeRoute(
         lazyPagingItems = lazyPagingItems,
         isRestricted = uiState.isRestrictedService,
         latestScreenshotCount = viewModel.latestScreenshotCount,
-        onClickSetting = { openAppSettings(context) }
+        onClickSetting = { openAppSettings(context) },
+        onClickUncategorized = onClickUncategorized,
+        onClickFolder = onClickFolder,
+        onClickScreenshot = onClickScreenshot
     )
 }
 
@@ -82,7 +88,10 @@ fun HomeScreen(
     lazyPagingItems: LazyPagingItems<Screenshot>,
     isRestricted: Boolean = false,
     latestScreenshotCount: Int = 10,
-    onClickSetting: () -> Unit = {}
+    onClickSetting: () -> Unit = {},
+    onClickUncategorized: () -> Unit = {},
+    onClickFolder: () -> Unit = {},
+    onClickScreenshot: (String) -> Unit = {}
 ) {
     state.homeData?.let { homeData ->
         Column(
@@ -168,7 +177,8 @@ fun HomeScreen(
                     ) {
                         HomeUncategorizedCard(
                             modifier = Modifier
-                                .weight(1f),
+                                .weight(1f)
+                                .clickable { onClickUncategorized() },
                             title = "미분류",
                             count = homeData.uncategorizedImageCount,
                             images = homeData.uncategorizedImageList.map {
@@ -178,7 +188,8 @@ fun HomeScreen(
 
                         HomeUncategorizedCard(
                             modifier = Modifier
-                                .weight(1f),
+                                .weight(1f)
+                                .clickable { onClickUncategorized() },
                             title = "만료예정",
                             count = homeData.scheduledToDeleteImageCount,
                             images = homeData.scheduledToDeleteImageList.map {
@@ -215,7 +226,7 @@ fun HomeScreen(
                                 painter = rememberAsyncImagePainter(screenshot.uri),
                                 modifier = Modifier
                                     .width(96.dp)
-                                    .clickable { }
+                                    .clickable { onClickScreenshot(screenshot.uri.toString()) }
                             )
                         }
 
@@ -241,7 +252,8 @@ fun HomeScreen(
                             )
 
                             KeeplyIconButton(
-                                painter = KeeplyTheme.icons.arrowRight
+                                painter = KeeplyTheme.icons.arrowRight,
+                                onClick = { onClickFolder() }
                             )
                         }
 

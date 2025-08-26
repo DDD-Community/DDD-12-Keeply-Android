@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.keeply.domain.extend.default
 import com.keeply.presentation.ui.alarm.navigation.navigateAlarm
+import com.keeply.presentation.ui.folder.FolderTabs
 import com.keeply.presentation.ui.folder.navigation.navigateFolder
 import com.keeply.presentation.ui.home.navigation.navigateHome
 import com.keeply.presentation.ui.my.navigation.navigateMy
@@ -48,7 +49,59 @@ class KeeplyNavigator(
         }
 
     fun navigate(tab: KeeplyTab) {
+        val isScanTab = tab == KeeplyTab.SCAN
         val navOptions = navOptions {
+            if (isScanTab) {
+                // Scan 탭: 기존 백스택 유지
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            } else {
+                // 다른 탭: 모든 백스택 완전 제거
+                popUpTo(0) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+                restoreState = false
+            }
+        }
+
+        when (tab) {
+            KeeplyTab.HOME -> navController.navigateHome(navOptions)
+            KeeplyTab.FOLDER -> navController.navigateFolder(navOptions = navOptions)
+            KeeplyTab.SCAN -> navController.navigateScan(navOptions)
+            KeeplyTab.ALARM -> navController.navigateAlarm(navOptions)
+            KeeplyTab.MY -> navController.navigateMy(navOptions)
+        }
+    }
+
+    fun navigateUncategorized(
+        selectedTab: FolderTabs = FolderTabs.Folder
+    ) {
+        val navOptions = navOptions {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+                inclusive = true
+            }
+            launchSingleTop = true
+            restoreState = false
+        }
+
+        navController.navigateFolder(selectedTab = selectedTab, navOptions =navOptions)
+    }
+
+    fun navigateOnboarding() = navController.navigateOnboarding()
+
+    fun navigateHome() = navController.navigateHome(navOptions {
+        popUpTo(navController.graph.id) {
+            inclusive = true
+        }
+    })
+    
+    fun navigateToScanWithUri(uri: String) {
+        val scanNavOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }
@@ -56,22 +109,9 @@ class KeeplyNavigator(
             restoreState = true
         }
 
-        when (tab) {
-            KeeplyTab.HOME -> navController.navigateHome(navOptions)
-            KeeplyTab.FOLDER -> navController.navigateFolder(navOptions)
-            KeeplyTab.SCAN -> navController.navigateScan(navOptions)
-            KeeplyTab.ALARM -> navController.navigateAlarm(navOptions)
-            KeeplyTab.MY -> navController.navigateMy(navOptions)
-        }
+        navController.currentBackStackEntry?.savedStateHandle?.set("sharedImageUri", uri)
+        navController.navigateScan(scanNavOptions)
     }
-
-    fun navigateOnboarding() = navController.navigateOnboarding()
-    
-    fun navigateHome() = navController.navigateHome(navOptions {
-        popUpTo(navController.graph.id) {
-            inclusive = true
-        }
-    })
 
     @Composable
     fun shouldShowNavigationBar()  = KeeplyTab.contains {
@@ -86,7 +126,7 @@ enum class KeeplyTab(
         route = HomeRoute.Home
     ),
     FOLDER(
-        route = HomeRoute.Folder
+        route = HomeRoute.Folder()
     ),
     SCAN(
         route = HomeRoute.Scan

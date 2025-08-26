@@ -11,10 +11,11 @@ import com.keeply.presentation.core.navigation.FolderRoute.Companion.FOLDER_CREA
 import com.keeply.presentation.core.navigation.FolderRoute.Companion.FOLDER_UPDATED
 import com.keeply.presentation.core.navigation.HomeRoute
 import com.keeply.presentation.ui.folder.FolderRoute
+import com.keeply.presentation.ui.folder.FolderTabs
 import com.keeply.presentation.ui.folder.add.navigation.navigateAddFolder
 
-fun NavController.navigateFolder(navOptions: NavOptions) {
-    navigate(HomeRoute.Folder, navOptions)
+fun NavController.navigateFolder(navOptions: NavOptions, selectedTab: FolderTabs = FolderTabs.Folder) {
+    navigate(HomeRoute.Folder(selectedTab), navOptions)
 }
 
 fun NavGraphBuilder.folderNavGraph(

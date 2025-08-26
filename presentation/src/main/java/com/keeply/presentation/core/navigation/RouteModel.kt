@@ -1,5 +1,6 @@
 package com.keeply.presentation.core.navigation
 
+import com.keeply.presentation.ui.folder.FolderTabs
 import kotlinx.serialization.Serializable
 
 sealed interface Route
@@ -9,7 +10,7 @@ sealed interface HomeRoute: Route {
     data object Home: HomeRoute
 
     @Serializable
-    data object Folder: HomeRoute
+    data class Folder(val selectedTab: FolderTabs = FolderTabs.Folder): HomeRoute
 
     @Serializable
     data object Scan: HomeRoute
