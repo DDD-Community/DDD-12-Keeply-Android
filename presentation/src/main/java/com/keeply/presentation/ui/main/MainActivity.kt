@@ -3,7 +3,9 @@ package com.keeply.presentation.ui.main
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -41,11 +43,28 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private var backKeyPressedTime = 0L
+    private val onBackPressedCallback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+                    backKeyPressedTime = System.currentTimeMillis()
+
+                    Toast.makeText(this@MainActivity, "뒤로가기 버튼을 한번 더 누르면 앱이 종료됩니다.", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    finishAffinity()
+                }
+            }
+        }
+
     private var sharedImageUri: Uri? = null
     private var shouldNavigateToScanBefore = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
         // Intent 처리
         handleIntent(intent)
         enableEdgeToEdge(
