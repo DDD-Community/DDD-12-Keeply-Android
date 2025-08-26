@@ -38,6 +38,7 @@ import androidx.compose.ui.zIndex
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.keeply.domain.image.usecase.SaveImageUseCase
+import com.keeply.presentation.core.components.KeeplyAlertModal
 import com.keeply.presentation.core.components.KeeplyToast
 import com.keeply.presentation.core.components.ToastManager
 import com.keeply.presentation.core.theme.KeeplyTheme
@@ -90,8 +91,12 @@ class ShareDialogActivity : ComponentActivity() {
                     .fillMaxSize()
             ) {
                 if (showDialog) {
-                    ShareOptionDialog(
-                        onSaveNow = {
+                    KeeplyAlertModal(
+                        title = "이미지 저장",
+                        content = "해당 이미지를 어떻게 저장할까요?\n이미지만 저장 시 미분류로 저장돼요.",
+                        confirmButtonText = "텍스트와 저장",
+                        cancelButtonText = "이미지만 저장",
+                        confirmButtonCallback = {
                             // 지금 저장하기 - MainActivity로 이동하여 ScanBeforeScreen으로 네비게이션
                             val mainIntent =
                                 Intent(this@ShareDialogActivity, MainActivity::class.java).apply {
@@ -105,7 +110,7 @@ class ShareDialogActivity : ComponentActivity() {
                             startActivity(mainIntent)
                             finish()
                         },
-                        onSaveLater = {
+                        cancelButtonCallback = {
                             // 다이얼로그 먼저 닫기
                             isClosingForLater = true
                             showDialog = false
@@ -116,7 +121,7 @@ class ShareDialogActivity : ComponentActivity() {
                                     // URI를 File로 변환
 
                                     val file = imageUri.toFile(this@ShareDialogActivity)
-                                    
+
                                     // SaveImage API 호출
                                     saveImageUseCase(file).catch { error ->
                                         // 에러 발생 시 에러 토스트 표시
@@ -144,7 +149,7 @@ class ShareDialogActivity : ComponentActivity() {
                                 finish()
                             }
                         },
-                        onDismiss = {
+                        onDismissCallback = {
                             if (!isClosingForLater) {
                                 finish()
                             }
