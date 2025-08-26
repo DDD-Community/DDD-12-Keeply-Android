@@ -60,6 +60,11 @@ class MainActivity : ComponentActivity() {
 
     private var sharedImageUri: Uri? = null
     private var shouldNavigateToScanBefore = false
+
+    // OnboardingScreen에서 호출할 수 있는 public 메소드
+    fun handleBackPressed() {
+        onBackPressedCallback.handleOnBackPressed()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
