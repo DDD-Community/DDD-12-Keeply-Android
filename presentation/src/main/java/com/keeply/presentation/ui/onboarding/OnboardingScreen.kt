@@ -2,6 +2,8 @@ package com.keeply.presentation.ui.onboarding
 
 import android.content.Context
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -41,6 +43,7 @@ import com.kakao.sdk.user.model.User
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.extend.shadow01
+import com.keeply.presentation.ui.main.MainActivity
 import com.keeply.presentation.ui.onboarding.component.KakaoLoginButton
 import com.keeply.presentation.ui.onboarding.component.PermissionRequestDialog
 import com.keeply.presentation.ui.permission.PermissionUpgradeDialog
@@ -59,6 +62,16 @@ fun OnboardingRoute(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         viewModel.onPermissionResult(isGranted)
+    }
+
+    val context = LocalContext.current
+    BackHandler {
+        val activity = context as? ComponentActivity
+        activity?.let {
+            if (it is MainActivity) {
+                it.handleBackPressed()
+            }
+        }
     }
 
     viewModel.collectSideEffect { sideEffect ->
