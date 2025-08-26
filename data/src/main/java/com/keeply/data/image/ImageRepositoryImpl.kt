@@ -4,12 +4,17 @@ import com.keeply.data.core.extension.toException
 import com.keeply.data.dto.image.CreateImageRequest
 import com.keeply.data.image.mapper.toDomain
 import com.keeply.data.image.remote.ImageService
+import com.keeply.data.screenshot.mapper.toMultipartPart
 import com.keeply.domain.image.model.Image
 import com.keeply.domain.image.repository.ImageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
+import java.io.File
 import javax.inject.Inject
 
 class ImageRepositoryImpl @Inject constructor(
@@ -39,6 +44,20 @@ class ImageRepositoryImpl @Inject constructor(
             
             if (response.success == true && response.response != null) {
                 emit(response.response.toDomain())
+            } else {
+                throw Exception(response.reason)
+            }
+        } catch (e: HttpException) {
+            throw e.toException(json)
+        }
+    }
+    
+    override suspend fun saveImage(file: File): Flow<Long> = flow {
+        try {
+            val response = imageService.saveImage(file.toMultipartPart())
+            
+            if (response.success == true && response.response != null) {
+                emit(response.response.imageId)
             } else {
                 throw Exception(response.reason)
             }
