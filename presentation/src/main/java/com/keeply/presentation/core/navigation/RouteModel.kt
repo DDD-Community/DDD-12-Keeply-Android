@@ -49,3 +49,9 @@ sealed interface AlertRoute: Route {
     data object AlertSetting: AlertRoute
 
 }
+
+sealed interface AuthRoute: Route {
+    @Serializable
+    data object AuthSetting: AuthRoute
+
+}
