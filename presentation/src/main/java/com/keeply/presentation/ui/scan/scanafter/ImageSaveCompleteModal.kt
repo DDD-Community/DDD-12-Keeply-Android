@@ -18,6 +18,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.keeply.domain.folder.model.Folder
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.BaseAlertModal
 import com.keeply.presentation.core.components.KeeplyButton
@@ -26,7 +27,8 @@ import com.keeply.presentation.core.theme.KeeplyTheme
 
 @Composable
 fun ImageSaveCompleteModal(
-    onNavigateToFolder: () -> Unit = {}
+    folder: Folder,
+    onNavigateToFolder: (String, String, String) -> Unit = { _, _, _ -> }
 ) {
     // 외부 클릭 다 무시 !!
     // TODO: 사이즈나 여백 내 맘대로 ..
@@ -79,7 +81,7 @@ fun ImageSaveCompleteModal(
                 text = stringResource(R.string.scan_complete_modal_button),
                 textStyle = KeeplyTheme.typography.button01Suit,
                 onClick = {
-                    onNavigateToFolder()
+                    onNavigateToFolder(folder.folderId.toString(), folder.folderName, folder.color)
                 }
             )
         }
@@ -90,6 +92,6 @@ fun ImageSaveCompleteModal(
 @Composable
 fun ImageSaveCompleteModalPreview() {
     KeeplyTheme {
-        ImageSaveCompleteModal()
+        ImageSaveCompleteModal(Folder(folderId = 1L, folderName = "test", color = "00", imageCount = 0, updatedAt = ""))
     }
 }
