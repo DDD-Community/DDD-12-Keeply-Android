@@ -42,10 +42,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun setRestrictService(restrict: Boolean) = intent {
-        reduce { state.copy(isRestrictedService = restrict) }
+    fun setRestrictService(isRestricted: Boolean) = intent {
+        reduce { state.copy(isRestrictedService = isRestricted) }
 
-        if (restrict.not()) {
+        if (isRestricted.not()) {
             screenshots = getLocalScreenshotsUseCase(pageSize = latestScreenshotCount)
                 .flow
                 .cachedIn(viewModelScope)

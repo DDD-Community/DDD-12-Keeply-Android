@@ -69,8 +69,6 @@ fun HomeRoute(
     val uiState by viewModel.collectAsState()
     val lazyPagingItems = viewModel.screenshots.collectAsLazyPagingItems()
 
-    viewModel.setRestrictService(isPermissionGranted(context))
-
     LaunchedEffect(Unit) {
         viewModel.loadHomeData()
     }
@@ -108,8 +106,9 @@ fun HomeScreen(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
+                // '전체 허용'이 아닌 경우 제한된 서비스 표시
                 val photoPermissionStatus = getPhotoPermissionStatus(context)
-                setRestrictService(photoPermissionStatus == ImagePermissionStatus.FULL_ACCESS)
+                setRestrictService(photoPermissionStatus != ImagePermissionStatus.FULL_ACCESS)
             }
         }
         screenLifecycleOwner.lifecycle.addObserver(observer)
