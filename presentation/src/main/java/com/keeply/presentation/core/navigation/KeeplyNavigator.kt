@@ -13,7 +13,9 @@ import androidx.navigation.navOptions
 import com.keeply.domain.extend.default
 import com.keeply.presentation.ui.alarm.navigation.navigateAlarm
 import com.keeply.presentation.ui.folder.FolderTabs
+import com.keeply.presentation.ui.folder.detail.navigation.navigateFolderDetail
 import com.keeply.presentation.ui.folder.navigation.navigateFolder
+import com.keeply.presentation.ui.folder.navigation.navigateSelectedFolder
 import com.keeply.presentation.ui.home.navigation.navigateHome
 import com.keeply.presentation.ui.my.navigation.navigateMy
 import com.keeply.presentation.ui.onboarding.navigation.navigateOnboarding
@@ -90,6 +92,23 @@ class KeeplyNavigator(
         }
 
         navController.navigateFolder(selectedTab = selectedTab, navOptions =navOptions)
+    }
+
+    fun navigateSelectedFolder(
+        folderId: String,
+        folderName: String,
+        folderColor: String
+    ) {
+        val navOptions = navOptions {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+                inclusive = true
+            }
+            launchSingleTop = true
+            restoreState = false
+        }
+
+        navController.navigateSelectedFolder(navOptions = navOptions, folderId = folderId.toLong(), folderName = folderName, folderColor = folderColor)
     }
 
     fun navigateOnboarding() = navController.navigateOnboarding()

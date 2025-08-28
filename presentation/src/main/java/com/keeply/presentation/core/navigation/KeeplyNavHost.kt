@@ -37,6 +37,10 @@ internal fun KeeplyNavHost(
             onClickFolder = {
                 navigator.navigate(KeeplyTab.FOLDER)
             },
+            onClickSelectedFolder = { folderId, folderName, folderColor ->
+                navigator.navigate(KeeplyTab.FOLDER)
+                navigator.navigateSelectedFolder(folderId = folderId, folderName = folderName, folderColor = folderColor)
+            },
             onClickScreenshot = { uri ->
                 navigator.navigateToScanWithUri(uri)
             }
