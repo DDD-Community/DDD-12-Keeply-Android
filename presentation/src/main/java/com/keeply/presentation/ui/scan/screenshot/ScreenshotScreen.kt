@@ -207,7 +207,7 @@ fun ScreenshotFrame(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxHeight()
+            .fillMaxSize()
     ) {
         Column(
             modifier = Modifier
