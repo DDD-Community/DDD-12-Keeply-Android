@@ -84,12 +84,11 @@ fun ScanBeforeRoute(
         onNavigateToCrop = onNavigateToCrop,
         onBoardingConfirmCallback = { viewModel.onBoardingConfirmClicked() },
         onBoardingDisabledCallback = { viewModel.onBoardingNeverShowClicked() },
-        callScan = { imageUri, isScanSkip ->
-            // TODO real -> Crop후 imageUri 사용하도록 수정하는게 좋을 듯함
+        callScan = { isScanSkip ->
             viewModel.scanImage(
                 image = (croppedImageUri?.toUri() ?: uiState.uri.toUri()).toFile(context),
                 successCallback = { result ->
-                    onNavigateToScanAfter(croppedImageUri?.toUri() ?: uiState.uri.toUri(), result, false)
+                    onNavigateToScanAfter(croppedImageUri?.toUri() ?: uiState.uri.toUri(), result, isScanSkip)
                 }
             )
         }
@@ -105,7 +104,7 @@ fun ScanBeforeScreen(
     onNavigateToCrop: (Uri) -> Unit,
     onBoardingConfirmCallback: () -> Unit,
     onBoardingDisabledCallback: () -> Unit,
-    callScan: (Uri, Boolean) -> Unit = { _, _ -> }
+    callScan: (Boolean) -> Unit = { _ -> }
 ) {
     if (uri == null) return // 모달을 띄우거나 ~
 
@@ -237,7 +236,7 @@ fun ScanBeforeScreen(
                         },
                         onClickScan = {
                             isScanLoading = true
-                            callScan(uri, false)
+                            callScan(false)
                         }
                     )
 
@@ -246,7 +245,7 @@ fun ScanBeforeScreen(
                             .size(40.dp)
                             .clip(CircleShape)
                             .background(KeeplyTheme.colors.neutral200)
-                            .clickable { callScan(uri, true) }
+                            .clickable { callScan(true) }
                             .padding(11.dp)
                             .align(Alignment.CenterEnd),
                         painter = KeeplyTheme.icons.skip,
