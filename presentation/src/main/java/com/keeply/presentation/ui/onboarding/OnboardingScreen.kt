@@ -97,7 +97,6 @@ fun OnboardingRoute(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
     uiState: OnboardingState,
