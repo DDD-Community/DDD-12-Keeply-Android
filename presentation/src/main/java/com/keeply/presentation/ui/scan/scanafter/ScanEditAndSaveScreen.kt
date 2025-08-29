@@ -26,7 +26,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.keeply.domain.folder.model.Folder
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.FolderList
-import com.keeply.presentation.core.components.ImageFrame
+import com.keeply.presentation.core.components.OriginalSizeImageFrame
 import com.keeply.presentation.core.components.InsightTextField
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
@@ -74,11 +74,11 @@ fun ScanEditAndSaveScreen(
                     rememberAsyncImagePainter(URLDecoder.decode(uri.toString(), "UTF-8"))
                 }
 
-                ImageFrame(
-                    painter = painter,
+                OriginalSizeImageFrame(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 19.dp, bottom = 40.dp),
+                    imageUrl = uri.toString()
                 )
             }
 

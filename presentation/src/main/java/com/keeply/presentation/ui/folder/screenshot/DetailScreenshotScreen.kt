@@ -15,17 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.FileTag
 import com.keeply.presentation.core.components.FileTagStyle
-import com.keeply.presentation.core.components.ImageFrame
+import com.keeply.presentation.core.components.OriginalSizeImageFrame
 import com.keeply.presentation.core.components.InsightTextField
 import com.keeply.presentation.core.components.KeeplyAppBar
 import com.keeply.presentation.core.components.KeeplyText
@@ -124,17 +121,11 @@ fun DetailScreenshotScreen(
                 }
             }
             item {
-                val painter = if (LocalInspectionMode.current) {
-                    painterResource(id = R.drawable.img_onboarding_02)
-                } else {
-                    rememberAsyncImagePainter(model = presignedUrl)
-                }
-
-                ImageFrame(
-                    painter = painter,
+                OriginalSizeImageFrame(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 10.dp, bottom = 18.dp),
+                    imageUrl = presignedUrl
                 )
             }
 
