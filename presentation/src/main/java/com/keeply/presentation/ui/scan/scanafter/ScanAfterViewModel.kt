@@ -107,7 +107,7 @@ class ScanAfterViewModel @Inject constructor(
                 tag = "Sample"
             ).catch { error ->
                 reduce { state.copy(isLoading = false) }
-                postSideEffect(ScanAfterSideEffect.ShowError(error.message ?: "이미지 저장에 실패했습니다"))
+                postSideEffect(ScanAfterSideEffect.ShowError(/*error.message ?: */"이미지 저장에 실패했습니다"))
             }.collectLatest { image ->
                 reduce { state.copy(isLoading = false) }
                 reduce { state.copy(showSuccessModal = true) }
