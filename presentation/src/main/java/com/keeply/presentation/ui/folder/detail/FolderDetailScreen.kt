@@ -3,6 +3,7 @@ package com.keeply.presentation.ui.folder.detail
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,8 +20,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
@@ -32,10 +33,10 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.KeeplyAlertModal
 import com.keeply.presentation.core.components.KeeplyAppBar
-import com.keeply.presentation.core.components.KeeplyModalBottomSheet
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyIconButton
+import com.keeply.presentation.core.components.KeeplyModalBottomSheet
 import com.keeply.presentation.core.components.KeeplyText
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.folder.detail.component.FolderModifyBottomSheetContent
@@ -48,6 +49,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun FolderDetailRoute(
     onBack: () -> Unit,
     onBackWithUpdate: () -> Unit,
+    onClickImage: (Long, String, String) -> Unit,
     viewModel: FolderDetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.collectAsState()
@@ -68,9 +70,11 @@ fun FolderDetailRoute(
                     Toast.makeText(context, sideEffect.duplicatedMessage, Toast.LENGTH_SHORT).show()
                 }
             }
+
             is FolderDetailSideEffect.ShowError -> {
                 Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
             }
+
             is FolderDetailSideEffect.NavigateBackWithRefresh -> {
                 onBackWithUpdate()
             }
@@ -78,10 +82,11 @@ fun FolderDetailRoute(
     }
 
     BackHandler { onBack.invoke() }
-    
+
     FolderDetailScreen(
         state = state,
         onBack = onBack,
+        onClickImage = onClickImage,
         onShowBottomSheet = viewModel::showBottomSheet
     )
 
@@ -119,6 +124,7 @@ fun FolderDetailRoute(
 fun FolderDetailScreen(
     state: FolderDetailState,
     onBack: () -> Unit,
+    onClickImage: (Long, String, String) -> Unit,
     onShowBottomSheet: () -> Unit = {}
 ) {
     Column(
@@ -148,7 +154,7 @@ fun FolderDetailScreen(
 
         val isNotEmpty = state.images.isNotEmpty()
 
-        if(isNotEmpty) {
+        if (isNotEmpty) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -172,7 +178,7 @@ fun FolderDetailScreen(
 
                     KeeplyIconButton(
                         painter = KeeplyTheme.icons.add,
-                        onClick = {  }
+                        onClick = { }
                     )
                 }
 
@@ -187,14 +193,17 @@ fun FolderDetailScreen(
                             modifier = Modifier
                                 .padding(
                                     vertical = 16.dp
-                                ),
+                                )
+                                .clickable {
+                                    onClickImage(image.imageId, image.tag, image.tagColor)
+                                },
                             painter = rememberAsyncImagePainter(model = image.presignedUrl),
                             tag = image.tag,
                             tagColor = image.tagColor,
                             insight = image.insight,
                         )
 
-                        if (index < state.images.size - 1 ) {
+                        if (index < state.images.size - 1) {
                             HorizontalDivider(
                                 thickness = 1.dp,
                                 color = KeeplyTheme.colors.neutral200
@@ -256,6 +265,7 @@ private fun FolderDetailScreenPreview() {
                 folderName = "나의 폴더",
                 images = persistentListOf()
             ),
+            onClickImage = { _, _, _ -> },
             onBack = { }
         )
     }
