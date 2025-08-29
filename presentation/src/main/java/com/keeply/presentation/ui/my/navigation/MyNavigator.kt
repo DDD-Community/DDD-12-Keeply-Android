@@ -13,11 +13,13 @@ fun NavController.navigateMy(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.myNavGraph(
-    navigateToAlertSetting: () -> Unit = {}
+    navigateToAlertSetting: () -> Unit = {},
+    navigateToAuthSetting: () -> Unit = {}
 ) {
     composable<HomeRoute.My> {
         MyRoute(
-            navigateToAlertSetting = navigateToAlertSetting
+            navigateToAlertSetting = navigateToAlertSetting,
+            navigateToAuthSetting = navigateToAuthSetting
         )
     }
 }

@@ -53,7 +53,8 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun MyRoute(
     viewModel: MyViewModel = hiltViewModel(),
-    navigateToAlertSetting: () -> Unit = {}
+    navigateToAlertSetting: () -> Unit = {},
+    navigateToAuthSetting: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val state by viewModel.collectAsState()
@@ -83,7 +84,8 @@ fun MyRoute(
         userImage = state.userImage,
         onLogoutClick = viewModel::logout,
         onWithdrawClick = viewModel::showWithdrawModal,
-        onAlertSettingClick = navigateToAlertSetting
+        onAlertSettingClick = navigateToAlertSetting,
+        onAuthSettingClick = navigateToAuthSetting
     )
 
     if (state.isShowWithdrawModal) {
@@ -116,7 +118,8 @@ fun MyScreen(
     userImage: String? = null,
     onLogoutClick: () -> Unit = {},
     onWithdrawClick: () -> Unit = {},
-    onAlertSettingClick: () -> Unit = {}
+    onAlertSettingClick: () -> Unit = {},
+    onAuthSettingClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -196,7 +199,8 @@ fun MyScreen(
                 )
 
                 MyPageMenuItem(
-                    text = stringResource(R.string.my_page_permission_settings)
+                    text = stringResource(R.string.my_page_permission_settings),
+                    onClick = onAuthSettingClick
                 )
 
                 //TODO 테스트를 위한 UI 추후 지워야함

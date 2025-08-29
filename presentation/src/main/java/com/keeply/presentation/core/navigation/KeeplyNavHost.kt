@@ -13,6 +13,8 @@ import com.keeply.presentation.ui.home.navigation.homeNavGraph
 import com.keeply.presentation.ui.my.navigation.myNavGraph
 import com.keeply.presentation.ui.my.setting.alert.navigation.navigateSettingAlert
 import com.keeply.presentation.ui.my.setting.alert.navigation.settingAlertNavGraph
+import com.keeply.presentation.ui.my.setting.auth.navigation.authSettingNavGraph
+import com.keeply.presentation.ui.my.setting.auth.navigation.navigateAuthSetting
 import com.keeply.presentation.ui.onboarding.navigation.onboardingNavGraph
 import com.keeply.presentation.ui.scan.navigation.scanNavGraph
 
@@ -54,7 +56,8 @@ internal fun KeeplyNavHost(
         alarmNavGraph()
 
         myNavGraph(
-            navigateToAlertSetting = { navigator.navController.navigateSettingAlert() }
+            navigateToAlertSetting = { navigator.navController.navigateSettingAlert() },
+            navigateToAuthSetting = { navigator.navController.navigateAuthSetting() }
         )
 
         onboardingNavGraph(
@@ -81,6 +84,10 @@ internal fun KeeplyNavHost(
         )
 
         settingAlertNavGraph(
+            onBackClick = { navigator.popBackStack() }
+        )
+
+        authSettingNavGraph(
             onBackClick = { navigator.popBackStack() }
         )
     }
