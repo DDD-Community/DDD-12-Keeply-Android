@@ -17,22 +17,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import com.keeply.domain.folder.model.Folder
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.FolderList
-import com.keeply.presentation.core.components.OriginalSizeImageFrame
 import com.keeply.presentation.core.components.InsightTextField
 import com.keeply.presentation.core.components.KeeplyButton
 import com.keeply.presentation.core.components.KeeplyButtonSize
 import com.keeply.presentation.core.components.KeeplyButtonStyle
 import com.keeply.presentation.core.components.KeeplyIconButton
 import com.keeply.presentation.core.components.KeeplyText
+import com.keeply.presentation.core.components.OriginalSizeImageFrame
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.core.theme.neutral100
 import kotlinx.collections.immutable.ImmutableList
@@ -41,7 +38,7 @@ import java.net.URLDecoder
 
 @Composable
 fun ScanEditAndSaveScreen(
-    uri: Uri? = null,
+    uri: Uri,
     textField: String,
     textFieldLength: Int,
     textFieldMaxLength: Int,
@@ -66,19 +63,12 @@ fun ScanEditAndSaveScreen(
                 .weight(1f)
                 .padding(horizontal = 16.dp)
         ) {
-            // TODO: image사이즈에 맞춰지도록 수정 필요
             item {
-                val painter = if (LocalInspectionMode.current) {
-                    painterResource(id = R.drawable.img_onboarding_02)
-                } else {
-                    rememberAsyncImagePainter(URLDecoder.decode(uri.toString(), "UTF-8"))
-                }
-
                 OriginalSizeImageFrame(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 19.dp, bottom = 40.dp),
-                    imageUrl = uri.toString()
+                    imageUrl = URLDecoder.decode(uri.toString(), "UTF-8")
                 )
             }
 
@@ -166,6 +156,7 @@ fun ScanEditAndSaveScreen(
 private fun ScanScreenPreview() {
     KeeplyTheme {
         ScanEditAndSaveScreen(
+            uri = Uri.EMPTY,
             textField = "",
             textFieldLength = 0,
             textFieldMaxLength = 300,
