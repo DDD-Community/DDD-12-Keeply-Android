@@ -15,7 +15,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun ScanAfterRoute(
     onBack: () -> Unit,
-    onNavigateToHome: () -> Unit,
+    onNavigateToFolder: (String, String, String) -> Unit = { _, _, _ -> },
     viewModel: ScanAfterViewModel = hiltViewModel(),
     addFolderViewModel: AddFolderViewModel = hiltViewModel()
 ) {
@@ -44,7 +44,7 @@ fun ScanAfterRoute(
         textFieldLength = uiState.textFieldLength,
         textFieldMaxLength = uiState.textFieldMaxLength,
         folderList = uiState.folders,
-        selectedFolderId = uiState.selectedFolderId,
+        selectedFolderId = uiState.selectedFolder?.folderId ?: -1L,
         onAddFolderClick = { viewModel.onAddFolderModal(true) },
         onTextChange = viewModel::onTextChange,
         onSelectFolder = viewModel::onSelectFolder,
@@ -93,11 +93,11 @@ fun ScanAfterRoute(
     }
 
     if (uiState.showSuccessModal) {
-        ImageSaveCompleteModal(
-            onNavigateToFolder = {
-                viewModel.dismissSuccessModal()
-                onNavigateToHome()
-            }
-        )
+        uiState.selectedFolder?.let { folder ->
+            ImageSaveCompleteModal(
+                folder = folder,
+                onNavigateToFolder = onNavigateToFolder
+            )
+        }
     }
 }

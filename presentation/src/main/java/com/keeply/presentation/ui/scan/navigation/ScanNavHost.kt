@@ -12,7 +12,7 @@ import com.keeply.presentation.ui.scan.screenshot.ScreenshotRoute
 @Composable
 fun ScanNavHost(
     navigator: ScanNavigator,
-    onNavigateToHome: () -> Unit = {},
+    onNavigateToFolder: (String, String, String) -> Unit = { _, _, _ -> },
     onNavigateBack: () -> Unit = {}
 ) {
     NavHost(
@@ -53,7 +53,7 @@ fun ScanNavHost(
         composable<ScanRoute.ScanAfter> { backStackEntry ->
             ScanAfterRoute(
                 onBack = { navigator.navController.popBackStack() },
-                onNavigateToHome = onNavigateToHome // TODO: Folder이동으로 바뀔 듯
+                onNavigateToFolder = onNavigateToFolder
             )
         }
     }

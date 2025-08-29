@@ -18,6 +18,10 @@ fun NavController.navigateFolder(navOptions: NavOptions, selectedTab: FolderTabs
     navigate(HomeRoute.Folder(selectedTab), navOptions)
 }
 
+fun NavController.navigateSelectedFolder(navOptions: NavOptions, folderId: Long, folderName: String, folderColor: String) {
+    navigate(FolderRoute.FolderDetail(folderId, folderName, folderColor), navOptions)
+}
+
 fun NavGraphBuilder.folderNavGraph(
     navController: NavHostController
 ) {

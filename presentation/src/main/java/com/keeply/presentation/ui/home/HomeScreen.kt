@@ -58,6 +58,7 @@ fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel(),
     onClickUncategorized: () -> Unit = {},
     onClickFolder: () -> Unit = {},
+    onClickSelectedFolder: (String, String, String) -> Unit = { _, _, _ -> },
     onClickScreenshot: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -79,6 +80,7 @@ fun HomeRoute(
         onClickSetting = { openAppSettings(context) },
         onClickUncategorized = onClickUncategorized,
         onClickFolder = onClickFolder,
+        onClickSelectedFolder = onClickSelectedFolder,
         onClickScreenshot = onClickScreenshot
     )
 }
@@ -92,6 +94,7 @@ fun HomeScreen(
     onClickSetting: () -> Unit = {},
     onClickUncategorized: () -> Unit = {},
     onClickFolder: () -> Unit = {},
+    onClickSelectedFolder: (String, String, String) -> Unit = { _, _, _ -> },
     onClickScreenshot: (String) -> Unit = {}
 ) {
     state.homeData?.let { homeData ->
@@ -276,7 +279,8 @@ fun HomeScreen(
                                         .padding(
                                             vertical = 18.dp
                                         ),
-                                    homeFolder = homeFolder
+                                    homeFolder = homeFolder,
+                                    onClickSelectedFolder = onClickSelectedFolder
                                 )
 
                                 if (index < homeData.recentFolders.size - 1) {

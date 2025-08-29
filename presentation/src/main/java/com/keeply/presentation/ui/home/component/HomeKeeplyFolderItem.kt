@@ -1,6 +1,7 @@
 package com.keeply.presentation.ui.home.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +28,8 @@ import com.keeply.presentation.extend.formatDate
 @Composable
 fun HomeKeeplyFolderItem(
     modifier: Modifier = Modifier,
-    homeFolder: HomeFolder
+    homeFolder: HomeFolder,
+    onClickSelectedFolder: (String, String, String) -> Unit = { _, _, _ -> }
 ) {
     val folderColor = homeFolder.color.let {
         FolderColor.entries.firstOrNull { color ->
@@ -37,6 +39,7 @@ fun HomeKeeplyFolderItem(
 
     Row(
         modifier = modifier
+            .clickable { onClickSelectedFolder(homeFolder.folderId.toString(), homeFolder.folderName, homeFolder.color) }
     ) {
         FolderIcon(
             iconModifier = Modifier

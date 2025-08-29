@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.keeply.domain.folder.model.Folder
 import com.keeply.domain.folder.usecase.GetFoldersUseCase
 import com.keeply.domain.image.usecase.CreateImageUseCase
 import com.keeply.presentation.ui.scan.navigation.ScanRoute
@@ -83,14 +84,14 @@ class ScanAfterViewModel @Inject constructor(
         }
     }
 
-    fun onSelectFolder(folderId: Long) = intent {
-        reduce { state.copy(selectedFolderId = folderId) }
+    fun onSelectFolder(folder: Folder) = intent {
+        reduce { state.copy(selectedFolder = folder) }
     }
 
     fun onSaveClick() = intent {
         reduce { state.copy(isLoading = true) }
 
-        if (state.selectedFolderId == -1L) {
+        if (state.selectedFolder == null) {
             reduce { state.copy(isLoading = false) }
             postSideEffect(ScanAfterSideEffect.ShowError("폴더를 선택해주세요"))
             return@intent
@@ -102,7 +103,7 @@ class ScanAfterViewModel @Inject constructor(
                 cachedImageId = state.cachedImageId,
                 imageId = 0,
                 imageInsight = state.textField,
-                folderId = state.selectedFolderId,
+                folderId = state.selectedFolder?.folderId ?: -1L,
                 tag = "Sample"
             ).catch { error ->
                 reduce { state.copy(isLoading = false) }
@@ -138,7 +139,7 @@ class ScanAfterViewModel @Inject constructor(
                         )
                     }
                     if (folders.isNotEmpty()) {
-                        onSelectFolder(folders.get(0).folderId) // default select folder
+                        onSelectFolder(folders[0]) // default select folder
                     }
                 }
         }

@@ -17,7 +17,7 @@ data class ScanAfterState(
     val textFieldMaxLength: Int = 300,
     val isLoading: Boolean = false,
     val folders: ImmutableList<Folder> = persistentListOf(),
-    val selectedFolderId: Long = -1L,
+    val selectedFolder: Folder? = null,
     val error: String? = null,
     val showSelectTextBottomSheet: Boolean = true, // 초기값 설정
     val showAddFolderModal: Boolean = false,

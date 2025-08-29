@@ -39,6 +39,10 @@ internal fun KeeplyNavHost(
             onClickFolder = {
                 navigator.navigate(KeeplyTab.FOLDER)
             },
+            onClickSelectedFolder = { folderId, folderName, folderColor ->
+                navigator.navigate(KeeplyTab.FOLDER)
+                navigator.navigateSelectedFolder(folderId = folderId, folderName = folderName, folderColor = folderColor)
+            },
             onClickScreenshot = { uri ->
                 navigator.navigateToScanWithUri(uri)
             }
@@ -50,7 +54,11 @@ internal fun KeeplyNavHost(
 
         scanNavGraph(
             navController = navigator.navController,
-            onNavigateBack = { navigator.popBackStack() }
+            onNavigateBack = { navigator.popBackStack() },
+            onNavigateToFolder = { folderId, folderName, folderColor ->
+                navigator.navigate(KeeplyTab.FOLDER)
+                navigator.navigateSelectedFolder(folderId = folderId, folderName = folderName, folderColor = folderColor)
+            }
         )
 
         alarmNavGraph()

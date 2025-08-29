@@ -49,7 +49,7 @@ fun ScanEditAndSaveScreen(
     selectedFolderId: Long,
     onAddFolderClick: () -> Unit = {},
     onTextChange: (String) -> Unit,
-    onSelectFolder: (Long) -> Unit,
+    onSelectFolder: (Folder) -> Unit,
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit
 ) {
@@ -122,7 +122,7 @@ fun ScanEditAndSaveScreen(
                 FolderList(
                     modifier = Modifier
                         .padding(top = if (index == 0) 16.dp else 6.dp, bottom = 6.dp)
-                        .clickable { onSelectFolder(folder.folderId) },
+                        .clickable { onSelectFolder(folder) },
                     folder = folder,
                     isSelected = folder.folderId == selectedFolderId
                 )
