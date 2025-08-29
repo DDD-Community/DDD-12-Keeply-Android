@@ -44,17 +44,31 @@ import kotlinx.coroutines.CoroutineScope
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import androidx.core.content.getSystemService
 import coil.compose.rememberAsyncImagePainter
 import com.keeply.domain.extend.default
 import com.keeply.presentation.BuildConfig
 import org.orbitmvi.orbit.compose.collectAsState
+import androidx.core.net.toUri
+
+private fun sendEmail(context: Context) {
+    val intent = Intent(Intent.ACTION_SENDTO).apply {
+        data = "mailto:keeply.help@gmail.com".toUri()
+        putExtra(Intent.EXTRA_SUBJECT, "Keeply 문의사항")
+    }
+    try {
+        context.startActivity(intent)
+    } catch (_: android.content.ActivityNotFoundException) {
+        Toast.makeText(context, "이메일 앱이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
+    }
+}
 
 @Composable
 fun MyRoute(
     viewModel: MyViewModel = hiltViewModel(),
     navigateToAlertSetting: () -> Unit = {},
-    navigateToAuthSetting: () -> Unit = {}
+    navigateToAuthSetting: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val state by viewModel.collectAsState()
@@ -85,7 +99,8 @@ fun MyRoute(
         onLogoutClick = viewModel::logout,
         onWithdrawClick = viewModel::showWithdrawModal,
         onAlertSettingClick = navigateToAlertSetting,
-        onAuthSettingClick = navigateToAuthSetting
+        onAuthSettingClick = navigateToAuthSetting,
+        onInquiryClick = { sendEmail(context) }
     )
 
     if (state.isShowWithdrawModal) {
@@ -119,7 +134,8 @@ fun MyScreen(
     onLogoutClick: () -> Unit = {},
     onWithdrawClick: () -> Unit = {},
     onAlertSettingClick: () -> Unit = {},
-    onAuthSettingClick: () -> Unit = {}
+    onAuthSettingClick: () -> Unit = {},
+    onInquiryClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -202,42 +218,6 @@ fun MyScreen(
                     text = stringResource(R.string.my_page_permission_settings),
                     onClick = onAuthSettingClick
                 )
-
-                //TODO 테스트를 위한 UI 추후 지워야함
-                if (BuildConfig.DEBUG) {
-                    MyPageMenuItem(
-                        text = "FCM 테스트",
-                        onClick = {
-                            if (NotificationHelper.hasNotificationPermission(context)) {
-                                NotificationHelper.showNotification(
-                                    context = context,
-                                    title = "FCM 테스트",
-                                    body = "알림이 정상적으로 작동합니다! 🎉"
-                                )
-                            } else {
-                                Toast.makeText(context, "알림 권한이 필요합니다. 설정에서 권한을 허용해주세요.", Toast.LENGTH_LONG).show()
-                            }
-                        }
-                    )
-
-                    MyPageMenuItem(
-                        text = "FCM 토큰 확인",
-                        onClick = {
-                            val fcmTokenManager = FcmTokenManager()
-                            scope.launch {
-                                val token = fcmTokenManager.getCurrentToken()
-                                if (token != null) {
-                                    val clipboard = context.getSystemService<ClipboardManager>()
-                                    val clip = ClipData.newPlainText("FCM Token", token)
-                                    clipboard?.setPrimaryClip(clip)
-                                    Toast.makeText(context, "FCM 토큰이 클립보드에 복사되었습니다", Toast.LENGTH_LONG).show()
-                                } else {
-                                    Toast.makeText(context, "FCM 토큰을 가져올 수 없습니다", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
-                    )
-                }
             }
 
             Column(
@@ -257,7 +237,8 @@ fun MyScreen(
                 MyPageMenuItem(
                     modifier = Modifier
                         .padding(top = 12.dp),
-                    text = stringResource(R.string.my_page_inquiry)
+                    text = stringResource(R.string.my_page_inquiry),
+                    onClick = onInquiryClick
                 )
 
                 MyPageMenuItem(
@@ -336,6 +317,10 @@ fun MyRoutePreview() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     KeeplyTheme {
-        MyScreen(context = context, scope = scope)
+        MyScreen(
+            context = context, 
+            scope = scope,
+            onInquiryClick = { sendEmail(context) }
+        )
     }
 }
