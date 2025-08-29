@@ -1,6 +1,7 @@
 package com.keeply.domain.image.repository
 
 import com.keeply.domain.image.model.Image
+import com.keeply.domain.image.model.ImageInfo
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 
@@ -13,6 +14,8 @@ interface ImageRepository {
         folderId: Long,
         tag: String
     ): Flow<Image>
-    
+
     suspend fun saveImage(file: File): Flow<Long>
+
+    suspend fun getImageInfo(imageId: Long): Flow<ImageInfo>
 }

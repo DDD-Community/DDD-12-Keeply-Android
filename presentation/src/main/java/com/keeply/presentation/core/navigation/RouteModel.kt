@@ -38,6 +38,13 @@ sealed interface FolderRoute: Route {
         val folderColor: String
     ): FolderRoute
 
+    @Serializable
+    data class DetailScreenshot(
+        val imageId: Long,
+        val folderName: String,
+        val folderColor: String
+    )
+
     companion object {
         const val FOLDER_CREATED = "folder_created"
         const val FOLDER_UPDATED = "folder_updated"
