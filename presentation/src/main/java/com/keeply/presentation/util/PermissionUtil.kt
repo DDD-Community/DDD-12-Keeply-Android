@@ -51,3 +51,41 @@ fun checkImagePermissions(context: Context): ImagePermissionStatus {
         }
     }
 }
+
+fun getPhotoPermissionStatus(context: Context): ImagePermissionStatus {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        // API 34 이상 → 부분 접근 권한까지 체크
+        val hasFullAccess = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_MEDIA_IMAGES
+        ) == PackageManager.PERMISSION_GRANTED
+
+        // 제한적 허용
+        val hasPartialAccess = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+        ) == PackageManager.PERMISSION_GRANTED
+
+        when {
+            hasFullAccess -> ImagePermissionStatus.FULL_ACCESS
+            hasPartialAccess -> ImagePermissionStatus.PARTIAL_ACCESS
+            else -> ImagePermissionStatus.NO_ACCESS
+        }
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        // API 33 → 모든 사진 접근만 있음
+        val hasFullAccess = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_MEDIA_IMAGES
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasFullAccess) ImagePermissionStatus.FULL_ACCESS else ImagePermissionStatus.NO_ACCESS
+    } else {
+        // API 32 이하 → READ_EXTERNAL_STORAGE 사용
+        val hasLegacyAccess = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasLegacyAccess) ImagePermissionStatus.FULL_ACCESS else ImagePermissionStatus.NO_ACCESS
+    }
+}

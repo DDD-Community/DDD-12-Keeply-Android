@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,6 +31,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -47,6 +51,8 @@ import com.keeply.presentation.ui.home.component.HomeKeeplyFolderItem
 import com.keeply.presentation.ui.home.component.HomeKeeplyScreenshotItem
 import com.keeply.presentation.ui.home.component.HomeUncategorizedCard
 import com.keeply.presentation.ui.home.component.KeeplyProgressBar
+import com.keeply.presentation.ui.permission.ImagePermissionStatus
+import com.keeply.presentation.util.getPhotoPermissionStatus
 import com.keeply.presentation.util.isPermissionGranted
 import com.keeply.presentation.util.openAppSettings
 import kotlinx.collections.immutable.toPersistentList
@@ -65,8 +71,6 @@ fun HomeRoute(
     val uiState by viewModel.collectAsState()
     val lazyPagingItems = viewModel.screenshots.collectAsLazyPagingItems()
 
-    viewModel.setRestrictService(isPermissionGranted(context))
-
     LaunchedEffect(Unit) {
         viewModel.loadHomeData()
     }
@@ -77,6 +81,7 @@ fun HomeRoute(
         lazyPagingItems = lazyPagingItems,
         isRestricted = uiState.isRestrictedService,
         latestScreenshotCount = viewModel.latestScreenshotCount,
+        setRestrictService = viewModel::setRestrictService,
         onClickSetting = { openAppSettings(context) },
         onClickUncategorized = onClickUncategorized,
         onClickFolder = onClickFolder,
@@ -91,12 +96,31 @@ fun HomeScreen(
     lazyPagingItems: LazyPagingItems<Screenshot>,
     isRestricted: Boolean = false,
     latestScreenshotCount: Int = 10,
+    setRestrictService: (Boolean) -> Unit = {},
     onClickSetting: () -> Unit = {},
     onClickUncategorized: () -> Unit = {},
     onClickFolder: () -> Unit = {},
     onClickSelectedFolder: (String, String, String) -> Unit = { _, _, _ -> },
     onClickScreenshot: (String) -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val screenLifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                // '전체 허용'이 아닌 경우 제한된 서비스 표시
+                val photoPermissionStatus = getPhotoPermissionStatus(context)
+                setRestrictService(photoPermissionStatus != ImagePermissionStatus.FULL_ACCESS)
+            }
+        }
+        screenLifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            screenLifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     state.homeData?.let { homeData ->
         Column(
             modifier = Modifier

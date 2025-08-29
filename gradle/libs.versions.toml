@@ -46,6 +46,8 @@ clarity = "3.4.3"
 
 kakaoSdk = "2.21.4"
 
+accompanist = "0.37.3"
+
 [libraries]
 javapoet = { module = "com.squareup:javapoet", version.ref = "javapoet" }
 tools-build-gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -120,6 +122,9 @@ serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serializ
 
 ## 카카오
 kakao-user-sdk = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoSdk" }
+
+## accompanist
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
