@@ -1,5 +1,8 @@
 package com.keeply.data.core.di
 
+import com.keeply.domain.image.repository.ImageRepository
+import com.keeply.domain.image.usecase.SaveImageUseCase
+import com.keeply.domain.image.usecase.SaveImageUseCaseImpl
 import com.keeply.domain.repository.LocalScreenshotRepository
 import com.keeply.domain.repository.OcrRepository
 import com.keeply.domain.repository.PreferencesRepository
@@ -72,6 +75,14 @@ object UseCaseModule {
         userRepository: UserRepository
     ): GetUserInfoUseCase = GetUserInfoUseCaseImpl(
         userRepository = userRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideSaveImageUseCase(
+        imageRepository: ImageRepository
+    ): SaveImageUseCase = SaveImageUseCaseImpl(
+        imageRepository = imageRepository
     )
 
 }

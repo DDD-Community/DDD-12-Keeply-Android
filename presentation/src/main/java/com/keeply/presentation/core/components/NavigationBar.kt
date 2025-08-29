@@ -19,8 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.keeply.presentation.R
 import com.keeply.presentation.core.navigation.KeeplyTab
 import com.keeply.presentation.core.theme.KeeplyTheme
 
@@ -87,7 +89,7 @@ private fun NavigationBarCenterItem(
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            painter = KeeplyTheme.icons.add,
+            painter = painterResource(R.drawable.ic_add),
             contentDescription = "Scan",
             modifier = Modifier.size(28.dp),
             tint = Color.White

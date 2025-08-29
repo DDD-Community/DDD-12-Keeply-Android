@@ -34,6 +34,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
+import com.keeply.domain.extend.default
 import com.keeply.domain.model.Screenshot
 import com.keeply.presentation.R
 import com.keeply.presentation.core.components.ImageFrame
@@ -311,10 +312,10 @@ fun HomeScreen(
                                         .fillMaxWidth()
                                         .padding(vertical = 16.dp),
                                     painter = rememberAsyncImagePainter(homeImage.presignedUrl),
-                                    tag = homeImage.tag,
+                                    tag = homeImage.tag.default(),
                                     tagColor = homeImage.tagColor,
                                     date = homeImage.updatedAt.formatDate(),
-                                    insight = homeImage.insight,
+                                    insight = homeImage.insight ?: "",
                                 )
 
                                 if (index < homeData.recentSavedImages.size - 1) {

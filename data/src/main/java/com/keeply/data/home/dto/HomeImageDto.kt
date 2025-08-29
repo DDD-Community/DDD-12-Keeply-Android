@@ -10,11 +10,11 @@ data class HomeImageDto(
     @SerialName("presignedUrl")
     val presignedUrl: String,
     @SerialName("tag")
-    val tag: String,
+    val tag: String?,
     @SerialName("tagColor")
     val tagColor: String?,
     @SerialName("insight")
-    val insight: String,
+    val insight: String?,
     @SerialName("updatedAt")
     val updatedAt: String
 )

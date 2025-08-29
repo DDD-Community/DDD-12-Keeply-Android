@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,17 +35,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
+import com.keeply.domain.image.usecase.SaveImageUseCase
+import com.keeply.presentation.core.components.KeeplyAlertModal
 import com.keeply.presentation.core.components.KeeplyToast
 import com.keeply.presentation.core.components.ToastManager
 import com.keeply.presentation.core.theme.KeeplyTheme
 import com.keeply.presentation.ui.main.MainActivity
+import com.keeply.presentation.util.toFile
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import java.io.File
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ShareDialogActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var saveImageUseCase: SaveImageUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,11 +85,18 @@ class ShareDialogActivity : ComponentActivity() {
             var isClosingForLater by remember { mutableStateOf(false) }
 
             Box(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .statusBarsPadding()
+                    .fillMaxSize()
             ) {
                 if (showDialog) {
-                    ShareOptionDialog(
-                        onSaveNow = {
+                    KeeplyAlertModal(
+                        title = "이미지 저장",
+                        content = "해당 이미지를 어떻게 저장할까요?\n이미지만 저장 시 미분류로 저장돼요.",
+                        confirmButtonText = "텍스트와 저장",
+                        cancelButtonText = "이미지만 저장",
+                        confirmButtonCallback = {
                             // 지금 저장하기 - MainActivity로 이동하여 ScanBeforeScreen으로 네비게이션
                             val mainIntent =
                                 Intent(this@ShareDialogActivity, MainActivity::class.java).apply {
@@ -89,25 +110,46 @@ class ShareDialogActivity : ComponentActivity() {
                             startActivity(mainIntent)
                             finish()
                         },
-                        onSaveLater = {
+                        cancelButtonCallback = {
                             // 다이얼로그 먼저 닫기
                             isClosingForLater = true
                             showDialog = false
 
-                            // 나중에 저장하기 - 토스트 표시
-                            ToastManager.show(
-                                title = "미분류 이미지 저장 완료",
-                                content = "7일 이내 분류하지 않으면 사라져요!"
-                            )
-                            // TODO: 이미지를 임시 저장소에 저장
-
-                            // 토스트가 표시된 후 3초 뒤에 종료
+                            // 이미지를 파일로 변환하고 API 호출
                             lifecycleScope.launch {
+                                try {
+                                    // URI를 File로 변환
+
+                                    val file = imageUri.toFile(this@ShareDialogActivity)
+
+                                    // SaveImage API 호출
+                                    saveImageUseCase(file).catch { error ->
+                                        // 에러 발생 시 에러 토스트 표시
+                                        ToastManager.show(
+                                            title = "이미지 저장 실패",
+                                            content = "다시 시도해 주세요."
+                                        )
+                                    }.collect { imageId ->
+                                        // 성공 시 성공 토스트 표시
+                                        ToastManager.show(
+                                            title = "미분류 이미지 저장 완료",
+                                            content = "7일 이내 분류하지 않으면 사라져요!"
+                                        )
+                                    }
+                                } catch (e: Exception) {
+                                    // 파일 변환 실패 시
+                                    ToastManager.show(
+                                        title = "이미지 저장 실패",
+                                        content = "다시 시도해 주세요."
+                                    )
+                                }
+
+                                // 토스트가 표시된 후 3초 뒤에 종료
                                 delay(3000)
                                 finish()
                             }
                         },
-                        onDismiss = {
+                        onDismissCallback = {
                             if (!isClosingForLater) {
                                 finish()
                             }
